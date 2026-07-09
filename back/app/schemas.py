@@ -29,13 +29,18 @@ EventType = Literal[
 ]
 
 
+# Cota estricta de puntaje por tipo. El máximo real del formulario es ~28
+# (psicológica); 60 deja holgura para crecer pero rechaza valores absurdos.
+_SCORE = Field(default=0, ge=0, le=60)
+
+
 class Scores(BaseModel):
-    psicologica: int = 0
-    fisica: int = 0
-    economica: int = 0
-    patrimonial: int = 0
-    sexual: int = 0
-    intimidacion: int = 0
+    psicologica: int = _SCORE
+    fisica: int = _SCORE
+    economica: int = _SCORE
+    patrimonial: int = _SCORE
+    sexual: int = _SCORE
+    intimidacion: int = _SCORE
 
 
 class CollectEvent(BaseModel):
@@ -43,9 +48,9 @@ class CollectEvent(BaseModel):
     run_uid: str | None = Field(default=None, max_length=36)
     question_id: str | None = Field(default=None, max_length=32)
     next_id: str | None = Field(default=None, max_length=32)
-    step: int | None = Field(default=None, ge=0, le=99)
+    step: int | None = Field(default=None, ge=0, le=20)
     flow_type: Literal["pareja", "fam", "trab"] | None = None
-    age_bucket: str | None = Field(default=None, max_length=16)
+    age_bucket: Literal["minor", "18-25", "26-40", "41+"] | None = None
     municipio: str | None = Field(default=None, max_length=48)
     risk_level: Literal["low", "medium", "high"] | None = None
     scores: Scores | None = None

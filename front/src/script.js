@@ -326,7 +326,11 @@ function handleAnswerSelect(option) {
         const m = answeredId.match(/_(\d+)$/);
         const step = m ? parseInt(m[1], 10)
             : (answeredId === "age" || answeredId === "start") ? 1 : 0;
-        ReflejaStats.answer({ questionId: answeredId, nextId: nextId, step: step, flowType: flowType, ageBucket: ageBucket });
+        // Se envía el qid ESTABLE de la pregunta (no la clave), para que las
+        // estadísticas se mantengan bien definidas aunque el formulario cambie.
+        const qQid = (questions[answeredId] && questions[answeredId].qid) || answeredId;
+        const nQid = (questions[nextId] && questions[nextId].qid) || nextId;
+        ReflejaStats.answer({ questionId: qQid, nextId: nQid, step: step, flowType: flowType, ageBucket: ageBucket });
         if (nextId === "MINOR") ReflejaStats.minor();
     }
 

@@ -12,6 +12,7 @@ Todas las tablas llevan created_at y updated_at.
 from datetime import date, datetime
 
 from sqlalchemy import (
+    JSON,
     BigInteger,
     Boolean,
     Date,
@@ -88,6 +89,7 @@ class Visitor(TimestampMixin, Base):
     events_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     run_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     completed_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    action_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class FormRun(TimestampMixin, Base):
@@ -115,6 +117,9 @@ class FormRun(TimestampMixin, Base):
     score_patrimonial: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
     score_sexual: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
     score_intimidacion: Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
+    # Preguntas ya contadas en este run (idempotencia): {"r": [qids alcanzados],
+    # "a": [qids respondidos]}. Evita doble conteo por reenvíos/abuso.
+    counted: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
 
 class QuestionStat(TimestampMixin, Base):

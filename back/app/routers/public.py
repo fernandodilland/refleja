@@ -13,7 +13,7 @@ from collections import OrderedDict
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
-from .. import analytics
+from .. import analytics, form_meta
 from ..config import settings
 from ..database import get_db
 from ..deps import client_country, client_ip, require_public_vid
@@ -95,18 +95,24 @@ def create_session(
     return SessionResponse(token=token, expires_in_days=settings.PUBLIC_TOKEN_TTL_DAYS)
 
 
+_ACTION_EVENTS = frozenset(
+    {"page_view", "urgent_click", "hide_click", "restart", "directory_municipio"}
+)
+
+
 class _Quota:
-    """Cuotas de por vida del visitante (anti-abuso). Se comprueba contra el
+    """Cuotas de por vida del visitante (anti-abuso). Se comprueban contra el
     valor cargado al inicio del lote + lo acumulado dentro del lote."""
 
-    __slots__ = ("_events", "_runs", "_completions",
-                 "d_events", "d_runs", "d_completions", "d_page_views")
+    __slots__ = ("_events", "_runs", "_actions",
+                 "d_events", "d_runs", "d_completions", "d_page_views", "d_actions")
 
     def __init__(self, visitor) -> None:
         self._events = visitor.events_count
         self._runs = visitor.run_count
-        self._completions = visitor.completed_count
-        self.d_events = self.d_runs = self.d_completions = self.d_page_views = 0
+        self._actions = visitor.action_count
+        self.d_events = self.d_runs = self.d_completions = 0
+        self.d_page_views = self.d_actions = 0
 
     def events_left(self) -> bool:
         return (self._events + self.d_events) < settings.PUBLIC_MAX_EVENTS
@@ -114,8 +120,8 @@ class _Quota:
     def can_create_run(self) -> bool:
         return (self._runs + self.d_runs) < settings.PUBLIC_MAX_RUNS
 
-    def can_complete(self) -> bool:
-        return (self._completions + self.d_completions) < settings.PUBLIC_MAX_COMPLETIONS
+    def actions_left(self) -> bool:
+        return (self._actions + self.d_actions) < settings.PUBLIC_MAX_ACTIONS
 
 
 def _run_for(db: Session, event: CollectEvent, visitor_id: int, q: _Quota):
@@ -132,29 +138,46 @@ def _run_for(db: Session, event: CollectEvent, visitor_id: int, q: _Quota):
     return run
 
 
+def _count_q(db: Session, run, qid: str | None, kind: str) -> None:
+    """Cuenta reached('r') o answered('a') de un qid UNA sola vez por run
+    (idempotente ante reenvíos/abuso). Solo qids válidos del formulario."""
+    if not qid or qid not in form_meta.VALID_QUESTION_IDS:
+        return
+    counted = dict(run.counted) if run.counted else {}
+    seen = counted.get(kind) or []
+    if qid in seen:
+        return
+    counted[kind] = seen + [qid]
+    run.counted = counted  # reasignar para que SQLAlchemy detecte el cambio
+    if kind == "r":
+        analytics.bump_question(db, qid, reached=1)
+    else:
+        analytics.bump_question(db, qid, answered=1)
+
+
 def _process_event(
     db: Session, event: CollectEvent, vid_h: str, visitor_id: int, q: _Quota
 ) -> None:
     et = event.type
 
-    # Eventos globales (no ligados a un run del formulario).
-    if et == "page_view":
-        q.d_page_views += 1
-        analytics.bump_daily(db, page_views=1)
-        return
-    if et == "urgent_click":
-        analytics.bump_counter(db, "urgent_click")
-        return
-    if et == "hide_click":
-        analytics.bump_counter(db, "hide_click")
-        return
-    if et == "restart":
-        analytics.bump_counter(db, "restart")
-        return
-    if et == "directory_municipio":
-        muni = analytics.normalize_municipio(event.municipio)
-        if muni:
-            analytics.bump_counter(db, "dir_muni:" + muni)
+    # Eventos globales (no ligados a un run): acotados por la cuota de acciones.
+    if et in _ACTION_EVENTS:
+        if not q.actions_left():
+            return
+        q.d_actions += 1
+        if et == "page_view":
+            q.d_page_views += 1
+            analytics.bump_daily(db, page_views=1)
+        elif et == "urgent_click":
+            analytics.bump_counter(db, "urgent_click")
+        elif et == "hide_click":
+            analytics.bump_counter(db, "hide_click")
+        elif et == "restart":
+            analytics.bump_counter(db, "restart")
+        elif et == "directory_municipio":
+            muni = analytics.normalize_municipio(event.municipio)
+            if muni:
+                analytics.bump_counter(db, "dir_muni:" + muni)
         return
 
     # Eventos del formulario: requieren un run (acotado por la cuota de runs).
@@ -163,40 +186,42 @@ def _process_event(
         return
 
     if et == "run_start":
-        first_start = not run.started
         run.started = True
         if run.max_step < 1:
             run.max_step = 1
         run.last_question_id = "age"
-        if first_start:
-            analytics.bump_question(db, "age", reached=1)
+        _count_q(db, run, "age", "r")
 
     elif et == "answer":
-        if event.question_id:
-            analytics.bump_question(db, event.question_id, answered=1)
-        if event.next_id:
-            analytics.bump_question(db, event.next_id, reached=1)
+        flow = event.flow_type or run.flow_type
+        # Coherencia de flujo: solo se cuentan preguntas que pertenecen al flujo.
+        if form_meta.qid_ok_for_flow(event.question_id or "", flow):
+            _count_q(db, run, event.question_id, "a")
+        nxt = event.next_id if form_meta.qid_ok_for_flow(event.next_id or "", flow) else None
+        if nxt:
+            _count_q(db, run, nxt, "r")
         run.started = True
         if event.flow_type:
             if run.flow_type is None and not run.completed:
                 analytics.bump_daily(db, form_starts=1)
             run.flow_type = event.flow_type
-        if event.age_bucket:
+        if event.age_bucket:  # validado por el schema (enum cerrado)
             run.age_bucket = event.age_bucket
         if event.step is not None and event.step > run.max_step:
             run.max_step = event.step
-        run.last_question_id = event.next_id or event.question_id
+        last = nxt or (event.question_id if form_meta.qid_ok_for_flow(event.question_id or "", flow) else None)
+        if last:
+            run.last_question_id = last
 
     elif et == "minor":
-        # Menor de edad: cuenta como COMPLETADO (aunque sin preguntas).
+        # Menor de edad: cuenta como COMPLETADO (una sola vez por run).
         run.started = True
         run.age_bucket = "minor"
         run.last_question_id = "MINOR"
-        analytics.bump_daily(db, minors=1)
-        if not run.completed and q.can_complete():
+        if not run.completed:
             run.completed = True
             q.d_completions += 1
-            analytics.bump_daily(db, form_completes=1)
+            analytics.bump_daily(db, minors=1, form_completes=1)
 
     elif et == "municipio":
         muni = analytics.normalize_municipio(event.municipio)
@@ -220,8 +245,9 @@ def _process_event(
             run.score_patrimonial = s.patrimonial
             run.score_sexual = s.sexual
             run.score_intimidacion = s.intimidacion
-        # Solo cuenta como completado si no lo estaba y hay cuota disponible.
-        if not run.completed and q.can_complete():
+        # Completa una sola vez por run (acotado por la cuota de runs, no por un
+        # cap aparte: así no se subcuenta a quien completa varias veces).
+        if not run.completed:
             run.completed = True
             q.d_completions += 1
             analytics.bump_daily(db, form_completes=1)
@@ -261,8 +287,8 @@ def collect(
 
     # Persiste cuotas (incrementos atómicos) + last_seen en un solo UPDATE.
     analytics.bump_visitor_quota(
-        db, vid_h, events=q.d_events, runs=q.d_runs,
-        completions=q.d_completions, page_views=q.d_page_views,
+        db, vid_h, events=q.d_events, runs=q.d_runs, completions=q.d_completions,
+        page_views=q.d_page_views, actions=q.d_actions,
     )
     db.commit()
     return CollectResponse(ok=True, accepted=accepted)

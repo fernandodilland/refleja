@@ -396,8 +396,10 @@
       var form = res[0] || {};
       if (form.questions) {
         Object.keys(form.questions).forEach(function (id) {
-          var t = form.questions[id].text || id;
-          qLabels[id] = t.length > 46 ? t.slice(0, 44) + "…" : t;
+          var q = form.questions[id];
+          var qid = (q && q.qid) || id;   // etiquetar por qid estable
+          var t = (q && q.text) || id;
+          qLabels[qid] = t.length > 46 ? t.slice(0, 44) + "…" : t;
         });
       }
       qLabels["age"] = qLabels["age"] || "Edad";

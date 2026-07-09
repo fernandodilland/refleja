@@ -14,19 +14,12 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from .form_meta import VALID_QUESTION_IDS  # allowlist de qids (fuente: formulario.json)
 from .models import DailyMetric, EventCounter, FormRun, QuestionStat, Visitor
 from .security import utcnow
 
 _MOBILE_RE = re.compile(r"Mobi|Android|iPhone|iPod", re.I)
 _TABLET_RE = re.compile(r"iPad|Tablet", re.I)
-
-# IDs de pregunta válidos del cuestionario (evita inflar la tabla con basura).
-VALID_QUESTION_IDS = frozenset(
-    {"age", "start", "MINOR", "LOCATION", "RESULT"}
-    | {f"pareja_{i}" for i in range(1, 13)}
-    | {f"fam_{i}" for i in range(1, 13)}
-    | {f"trab_{i}" for i in range(1, 13)}
-)
 
 
 _MUNI_RE = re.compile(r"[^a-z0-9-]+")
@@ -139,7 +132,7 @@ def touch_visitor(db: Session, vid_hash: str, add_page_view: bool = False) -> No
 
 def bump_visitor_quota(
     db: Session, vid_hash: str, events: int = 0, runs: int = 0,
-    completions: int = 0, page_views: int = 0,
+    completions: int = 0, page_views: int = 0, actions: int = 0,
 ) -> None:
     """Persiste (incrementos atómicos) las cuotas del visitante + last_seen."""
     db.execute(
@@ -149,6 +142,7 @@ def bump_visitor_quota(
             events_count=Visitor.events_count + events,
             run_count=Visitor.run_count + runs,
             completed_count=Visitor.completed_count + completions,
+            action_count=Visitor.action_count + actions,
             page_views=Visitor.page_views + page_views,
             last_seen_at=utcnow(),
         )

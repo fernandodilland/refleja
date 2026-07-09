@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS visitor (
   events_count    INT       NOT NULL DEFAULT 0,   -- cuotas anti-abuso por token
   run_count       INT       NOT NULL DEFAULT 0,
   completed_count INT       NOT NULL DEFAULT 0,
+  action_count    INT       NOT NULL DEFAULT 0,
   last_seen_at  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   created_at    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -91,6 +92,7 @@ CREATE TABLE IF NOT EXISTS form_run (
   score_patrimonial   SMALLINT     NOT NULL DEFAULT 0,
   score_sexual        SMALLINT     NOT NULL DEFAULT 0,
   score_intimidacion  SMALLINT     NOT NULL DEFAULT 0,
+  counted             JSON         NULL,          -- qids ya contados (idempotencia)
   created_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at          DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),

@@ -1,0 +1,8 @@
+# /etc/sudoers.d/refleja-api   (debe quedar con permisos 0440)
+# Permite al usuario del servicio gestionar SOLO su servicio, sin contraseña.
+# Instalar con:
+#   sudo install -m 0440 back/deploy/refleja-api.sudoers /etc/sudoers.d/refleja-api
+#   sudo visudo -c        # valida la sintaxis
+#
+# Si 'which systemctl' o 'which journalctl' devuelven otra ruta, ajústala aquí.
+refleja-api ALL=(root) NOPASSWD: /usr/bin/systemctl restart refleja-api.service, /usr/bin/systemctl start refleja-api.service, /usr/bin/systemctl stop refleja-api.service, /usr/bin/systemctl status refleja-api.service, /usr/bin/systemctl status refleja-api.service --no-pager -l, /usr/bin/systemctl show -p ExecStart --value refleja-api.service, /usr/bin/journalctl -u refleja-api.service -n 120 --no-pager

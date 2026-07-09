@@ -1,0 +1,36 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend (uvicorn :20832)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--host", "127.0.0.1",
+        "--port", "20832",
+        "--reload"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "python": "${workspaceFolder}/back/.venv/bin/python",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "back: instalar dependencias"
+    },
+    {
+      "name": "Frontend (wrangler :8788)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npx wrangler dev -c front/wrangler.toml --port 8788",
+      "cwd": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Refleja: front + back (local)",
+      "configurations": ["Backend (uvicorn :20832)", "Frontend (wrangler :8788)"],
+      "stopAll": true
+    }
+  ]
+}

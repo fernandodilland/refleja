@@ -1,0 +1,1101 @@
+{
+  "flowLengths": {
+    "pareja": 12,
+    "fam": 12,
+    "trab": 12
+  },
+  "violenceTypeInfo": {
+    "psicologica": {
+      "name": "Violencia psicológica",
+      "desc": "Acciones u omisiones que dañan la salud mental y estabilidad emocional, tales como celos extremos, insultos, humillaciones, amenazas, manipulación o indiferencia.",
+      "examples": [
+        "Humillaciones, insultos constantes o descalificaciones en público o privado.",
+        "Celos extremos, vigilancia de tus movimientos o prohibición de relacionarte.",
+        "Gaslighting: hacerte dudar de tu propia memoria, percepción o salud mental.",
+        "Indiferencia afectiva (ley del hielo) o chantajes emocionales frecuentes."
+      ],
+      "legalSource": "Art. 6, Fracción I de la Ley General de Acceso de las Mujeres a una Vida Libre de Violencia."
+    },
+    "fisica": {
+      "name": "Violencia física",
+      "desc": "Cualquier acto que cause daño corporal no accidental mediante el uso de la fuerza física, armas u objetos que puedan provocar lesiones externas o internas.",
+      "examples": [
+        "Empujones, jalones, pellizcos, rasguños o bofetadas.",
+        "Golpes con el puño, patadas, o intentos de asfixia/estrangulamiento.",
+        "Agresiones con objetos, herramientas, armas o quemaduras directas.",
+        "Encierro forzado, ataduras o privación de tu libertad de movimiento."
+      ],
+      "legalSource": "Art. 6, Fracción II de la Ley General de Acceso de las Mujeres a una Vida Libre de Violencia."
+    },
+    "economica": {
+      "name": "Violencia económica",
+      "desc": "Acciones encaminadas a controlar, limitar o restringir tus recursos financieros, salarios o ingresos para generar dependencia y limitar tu autonomía.",
+      "examples": [
+        "Control total de tus ingresos económicos, obligándote a entregar tu sueldo.",
+        "Asignar presupuestos insuficientes para la comida o necesidades básicas de tus hijos como castigo.",
+        "Prohibir o sabotear tu acceso a trabajar, estudiar o desarrollarte profesionalmente.",
+        "Exigir cuentas excesivamente detalladas o comprobación de cada gasto realizado."
+      ],
+      "legalSource": "Art. 6, Fracción III de la Ley General de Acceso de las Mujeres a una Vida Libre de Violencia."
+    },
+    "patrimonial": {
+      "name": "Violencia patrimonial",
+      "desc": "Acciones que dañan o privan a la víctima de sus pertenencias, tales como esconder o destruir documentos personales, despojar de bienes o dañar herramientas de trabajo.",
+      "examples": [
+        "Destruir o quemar tu ropa, pertenencias personales u objetos con valor sentimental.",
+        "Esconder, retener o destruir tus documentos de identidad (INE, pasaporte, actas de nacimiento).",
+        "Apoderarse de bienes inmuebles, escrituras, tarjetas bancarias o herencias sin tu consentimiento.",
+        "Dañar o vender tus herramientas de trabajo o equipo para impedirte generar ingresos."
+      ],
+      "legalSource": "Art. 6, Fracción IV de la Ley General de Acceso de las Mujeres a una Vida Libre de Violencia."
+    },
+    "sexual": {
+      "name": "Violencia sexual",
+      "desc": "Cualquier acto de índole sexual impuesto sin consentimiento que degrade o dañe tu cuerpo, atente contra tu libertad, dignidad o integridad física.",
+      "examples": [
+        "Presionar, manipular o chantajearte para tener intimidad sexual cuando no lo deseas.",
+        "Exigir prácticas sexuales incómodas o dolorosas mediante la fuerza física o amenazas.",
+        "Tocar tu cuerpo o realizar insinuaciones lascivas e incómodas sin tu pleno consentimiento.",
+        "Forzar la realización o visualización de actos pornográficos o grabaciones no consentidas."
+      ],
+      "legalSource": "Art. 6, Fracción V de la Ley General de Acceso de las Mujeres a una Vida Libre de Violencia."
+    },
+    "intimidacion": {
+      "name": "Intimidación y amenazas",
+      "desc": "Conductas destinadas a infundir pánico constante mediante amenazas de daño físico o represalias, forzando a la víctima a actuar en contra de su voluntad.",
+      "examples": [
+        "Amenazas de muerte o de agresión física grave contra ti, tus hijos o mascotas.",
+        "Seguimiento obsesivo, acecho o vigilancias constantes fuera de tu casa o trabajo.",
+        "Gesticulaciones agresivas, portación o exhibición de armas para amedrentar.",
+        "Chantaje de cometer suicidio si decides terminar la relación o alejarte."
+      ],
+      "legalSource": "Código Penal del Estado de Nuevo León, Artículos sobre Amenazas y Violencia Familiar."
+    }
+  },
+  "questions": {
+    "age": {
+      "text": "¿Qué edad tienes?",
+      "explanation": "Tu edad nos ayuda a orientarte de la mejor manera posible. Si eres menor de edad, te recomendaremos cómo actuar con el apoyo de tus padres o tutores.",
+      "source": "Ley General de los Derechos de Niñas, Niños y Adolescentes (México)",
+      "options": [
+        {
+          "label": "Menos de 18 años",
+          "nextId": "MINOR",
+          "scores": {}
+        },
+        {
+          "label": "18 a 25 años",
+          "nextId": "start",
+          "scores": {}
+        },
+        {
+          "label": "26 a 40 años",
+          "nextId": "start",
+          "scores": {}
+        },
+        {
+          "label": "41 años o más",
+          "nextId": "start",
+          "scores": {}
+        }
+      ]
+    },
+    "start": {
+      "text": "Para comenzar, piensa en esa persona con la que no te sientes del todo segura o cómoda. ¿Qué relación tienes con ella?",
+      "explanation": "Identificar el vínculo nos ayuda a hacerte preguntas más específicas. La violencia se presenta de formas distintas dependiendo de si viene de una pareja, un familiar o en el entorno laboral/escolar.",
+      "source": "Instituto Nacional de las Mujeres (INMUJERES)",
+      "options": [
+        {
+          "label": "Mi pareja o ex pareja",
+          "nextId": "pareja_1",
+          "scores": {}
+        },
+        {
+          "label": "Un familiar (madre, padre, etc.)",
+          "nextId": "fam_1",
+          "scores": {}
+        },
+        {
+          "label": "Alguien de mi trabajo o escuela",
+          "nextId": "trab_1",
+          "scores": {}
+        },
+        {
+          "label": "Otra persona",
+          "nextId": "pareja_1",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_1": {
+      "text": "Después de una discusión fuerte o un episodio difícil, ¿esa persona se vuelve especialmente cariñosa, te da regalos, te promete que todo cambiará y actúa como la pareja perfecta?",
+      "explanation": "Esta es la fase de 'Luna de miel' del Ciclo de la Violencia. La persona agresora se muestra encantadora, romántica y llena de atenciones para que bajes la guardia. Esta fase crea una falsa esperanza de que la relación mejorará, pero es parte del patrón de control.",
+      "source": "Ciclo de la Violencia - Leonore Walker (1979)",
+      "options": [
+        {
+          "label": "Sí, siempre después de una pelea es muy cariñoso/a",
+          "nextId": "pareja_2",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "A veces intenta compensar con detalles",
+          "nextId": "pareja_2",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, no hay cambios después de las discusiones",
+          "nextId": "pareja_2",
+          "scores": {
+            "psicologica": 0
+          }
+        }
+      ]
+    },
+    "pareja_2": {
+      "text": "¿Sientes que 'caminas sobre cáscaras de huevo'? Es decir, ¿hay temporadas en las que tienes miedo constante de que algo que digas o hagas provoque una discusión explosiva?",
+      "explanation": "La fase de 'Acumulación de tensión' se caracteriza por una ansiedad creciente y un ambiente de miedo. La víctima modifica su comportamiento intentando evitar el conflicto, pero la tensión sigue escalando hasta volverse insostenible.",
+      "source": "Ciclo de la Violencia - Leonore Walker (1979)",
+      "options": [
+        {
+          "label": "Sí, evito ciertos temas y situaciones por miedo a su reacción",
+          "nextId": "pareja_3",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces noto que hay tensión acumulándose",
+          "nextId": "pareja_3",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, me siento libre de expresarme",
+          "nextId": "pareja_3",
+          "scores": {
+            "psicologica": 0
+          }
+        }
+      ]
+    },
+    "pareja_3": {
+      "text": "¿Cómo reacciona cuando hay una discusión fuerte?",
+      "explanation": "La fase de 'Explosión violenta' es cuando la violencia se manifiesta de forma visible. Puede ser psicológica (insultos, humillaciones), física (golpes, empujones), sexual, económica o patrimonial. Es el punto más peligroso y donde la integridad corre mayor riesgo.",
+      "source": "Ciclo de la Violencia - Leonore Walker (1979)",
+      "options": [
+        {
+          "label": "Me ha llegado a golpear, empujar o arañar.",
+          "nextId": "pareja_4",
+          "scores": {
+            "fisica": 3,
+            "psicologica": 2,
+            "sexual": 1
+          }
+        },
+        {
+          "label": "Grita, insulta y a veces me hace la ley del hielo.",
+          "nextId": "pareja_4",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "Discutimos pero al final hacemos acuerdos",
+          "nextId": "pareja_4",
+          "scores": {
+            "psicologica": 0
+          }
+        }
+      ]
+    },
+    "pareja_4": {
+      "text": "Después del episodio de explosión, ¿te promete que nunca volverá a pasar, te llena de regalos, te busca intensamente para tener relaciones y te dice que no puede vivir sin ti?",
+      "explanation": "La fase de 'Reconciliación' o 'Promesa de cambio' es una táctica de manipulación para mantener el control. Los regalos, la intimidad forzada y las promesas buscan que olvides la agresión. Sin intervención profesional, el ciclo inevitablemente se repetirá con más intensidad.",
+      "source": "Ciclo de la Violencia - Leonore Walker (1979)",
+      "options": [
+        {
+          "label": "Sí, promete cambiar, da regalos y me busca sexualmente",
+          "nextId": "pareja_5",
+          "scores": {
+            "psicologica": 2,
+            "sexual": 2
+          }
+        },
+        {
+          "label": "Se disculpa pero no hay grandes promesas ni regalos",
+          "nextId": "pareja_5",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, no hay fase de reconciliación",
+          "nextId": "pareja_5",
+          "scores": {
+            "psicologica": 0
+          }
+        }
+      ]
+    },
+    "pareja_5": {
+      "text": "¿Has notado que este patrón —tensión, explosión, reconciliación, calma— se repite una y otra vez, y cada vez la situación es peor o más intensa?",
+      "explanation": "Reconocer que existe un ciclo es el primer paso para romperlo. La violencia tiende a escalar: los periodos de calma se acortan y los episodios violentos se vuelven más frecuentes y graves. Sin ayuda profesional, el ciclo no se detiene por sí solo.",
+      "source": "Ciclo de la Violencia - Leonore Walker (1979)",
+      "options": [
+        {
+          "label": "Sí, es un ciclo que se repite y cada vez es peor",
+          "nextId": "pareja_6",
+          "scores": {
+            "psicologica": 3,
+            "fisica": 2,
+            "sexual": 2
+          }
+        },
+        {
+          "label": "Ha pasado más de una vez, pero no sabía que era un ciclo",
+          "nextId": "pareja_6",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "No, esto solo ha pasado una vez",
+          "nextId": "pareja_6",
+          "scores": {
+            "psicologica": 0
+          }
+        }
+      ]
+    },
+    "pareja_6": {
+      "text": "¿Controla tu dinero, te prohíbe trabajar, o exige saber en qué gastas cada peso que tienes?",
+      "explanation": "El control económico es una forma de violencia que te atrapa en la relación. Al quitarte la independencia financiera, te hace más difícil salir de la situación y profundiza tu dependencia.",
+      "source": "Organización de Naciones Unidas (ONU) - Definición de Violencia Económica",
+      "options": [
+        {
+          "label": "Sí, tengo que pedirle permiso o dar explicaciones",
+          "nextId": "pareja_7",
+          "scores": {
+            "economica": 3,
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "A veces hace comentarios sobre mi dinero",
+          "nextId": "pareja_7",
+          "scores": {
+            "economica": 1
+          }
+        },
+        {
+          "label": "No, manejamos nuestro dinero de forma independiente",
+          "nextId": "pareja_7",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_7": {
+      "text": "¿Te ha aislado de tu familia y amigos? ¿Tiene problemas si quieres verlos o hablar con ellos?",
+      "explanation": "El aislamiento es una táctica de control que te deja sin red de apoyo. Al cortarte de otros, hace que dependas más emocionalmente de él y dificulta que busques ayuda.",
+      "source": "Power and Control Wheel - Duluth Model (1981)",
+      "options": [
+        {
+          "label": "Sí, me ha alejado de mis seres queridos o lo presiona constantemente",
+          "nextId": "pareja_8",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces pone mala cara cuando veo a mi familia",
+          "nextId": "pareja_8",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, apoya mis relaciones con otros",
+          "nextId": "pareja_8",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_8": {
+      "text": "¿Te ha amenazado con hacer daño a tu familia, mascotas, o con quitarte a tus hijos si intentas dejarlo?",
+      "explanation": "Las amenazas a personas que amas son una forma extrema de control y manipulación. Buscan mantener el poder mediante el miedo a consecuencias devastadoras.",
+      "source": "Red Nacional de Refugios - Indicadores de Riesgo Severo",
+      "options": [
+        {
+          "label": "Sí, ha hecho amenazas directas o veladas",
+          "nextId": "pareja_9",
+          "scores": {
+            "psicologica": 3,
+            "intimidacion": 2
+          }
+        },
+        {
+          "label": "Ha mencionado algo similar pero de broma",
+          "nextId": "pareja_9",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, nunca ha hecho amenazas así",
+          "nextId": "pareja_9",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_9": {
+      "text": "¿Ha destruido cosas tuyas (ropa, documentos, objetos que amas) cuando se enoja?",
+      "explanation": "Romper tus pertenencias es violencia patrimonial. Busca intimidarte, controlar tu comportamiento y demostrar poder. Es un indicador de violencia física inminente.",
+      "source": "Ley General de Acceso de las Mujeres a una Vida Libre de Violencia (México)",
+      "options": [
+        {
+          "label": "Sí, ha roto cosas de valor o importancia para mí",
+          "nextId": "pareja_10",
+          "scores": {
+            "patrimonial": 3,
+            "intimidacion": 2
+          }
+        },
+        {
+          "label": "Ha roto cosas pero dice que fue accidental",
+          "nextId": "pareja_10",
+          "scores": {
+            "patrimonial": 1
+          }
+        },
+        {
+          "label": "No, respeta mis pertenencias",
+          "nextId": "pareja_10",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_10": {
+      "text": "¿Controla dónde estás todo el tiempo? ¿Te pide que le envíes tu ubicación, o revisa tu historial de ubicación?",
+      "explanation": "El control de ubicación es vigilancia obsesiva que denota desconfianza extrema y necesidad de control. Es síntoma de celos enfermizos y posesión.",
+      "source": "Instituto Nacional de las Mujeres (INMUJERES)",
+      "options": [
+        {
+          "label": "Sí, monitorea constantemente dónde estoy",
+          "nextId": "pareja_11",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces pregunta dónde estoy o qué hago",
+          "nextId": "pareja_11",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, respeta mi privacidad",
+          "nextId": "pareja_11",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_11": {
+      "text": "¿Te obliga, presiona o manipula para tener relaciones sexuales cuando no quieres?",
+      "explanation": "Cualquier presión para la actividad sexual sin tu consentimiento es violencia sexual. El consentimiento libre, voluntario e informado es esencial en toda relación.",
+      "source": "Código Penal Federal - Delitos Sexuales",
+      "options": [
+        {
+          "label": "Sí, frecuentemente me presiona o ignora mis negativas",
+          "nextId": "pareja_12",
+          "scores": {
+            "sexual": 3,
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "A veces insiste después de que digo no",
+          "nextId": "pareja_12",
+          "scores": {
+            "sexual": 1
+          }
+        },
+        {
+          "label": "No, respeta mi cuerpo y decisiones",
+          "nextId": "pareja_12",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_12": {
+      "text": "¿Has pensado en dejarle pero sientes que no puedes? ¿Tienes miedo a lo que pasará si intentas irte?",
+      "explanation": "El miedo a intentar salir es un indicador crítico de atrapamiento. Muchas mujeres no dejan relaciones violentas por temor a represalias que pueden ser graves o letales.",
+      "source": "Red Nacional de Refugios - Factores de Riesgo",
+      "options": [
+        {
+          "label": "Sí, siento que estoy atrapada o tengo mucho miedo",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 3,
+            "intimidacion": 3
+          }
+        },
+        {
+          "label": "A veces lo pienso pero no me atrevo",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "No, siento que puedo dejarle si lo decido",
+          "nextId": "LOCATION",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_1": {
+      "text": "¿Constantemente critica tu cuerpo, tus decisiones de vida, te humilla frente a otras personas o te compara negativamente?",
+      "explanation": "Las críticas destructivas y humillaciones continuas por parte de familiares destruyen la autoestima. La violencia psicológica en el núcleo familiar crea un ambiente hostil que a menudo normaliza el maltrato.",
+      "source": "Sistema Nacional para el Desarrollo Integral de la Familia (SNDIF)",
+      "options": [
+        {
+          "label": "Sí, me hace sentir que no valgo nada",
+          "nextId": "fam_2",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces hace comentarios hirientes",
+          "nextId": "fam_2",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, mi familia me respeta",
+          "nextId": "fam_2",
+          "scores": {
+            "psicologica": 0
+          }
+        }
+      ]
+    },
+    "fam_2": {
+      "text": "¿Te amenaza con correrte de la casa, dejar de apoyarte económicamente o quitarte a tus hijos si no haces lo que dice?",
+      "explanation": "Amenazar con privarte de vivienda, sustento económico o separarte de tus seres queridos como método de control es chantaje emocional severo, clasificado como violencia psicológica y económica.",
+      "source": "Comisión Nacional de los Derechos Humanos (CNDH)",
+      "options": [
+        {
+          "label": "Sí, el chantaje es constante",
+          "nextId": "fam_3",
+          "scores": {
+            "psicologica": 2,
+            "economica": 2
+          }
+        },
+        {
+          "label": "Lo ha dicho pero en momentos de mucho enojo",
+          "nextId": "fam_3",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, nunca me ha amenazado así",
+          "nextId": "fam_3",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_3": {
+      "text": "¿Ha usado la fuerza física (golpes, cachetadas, pellizcos) para castigarte o 'corregirte', justificando que es por tu bien?",
+      "explanation": "El uso de la fuerza física para 'educar' o 'corregir' nunca está justificado. Es una violación directa a la dignidad y se clasifica como Violencia Familiar y Física, siendo un delito perseguido por la ley.",
+      "source": "Ley General de los Derechos de Niñas, Niños y Adolescentes (México)",
+      "options": [
+        {
+          "label": "Sí, me ha lastimado físicamente",
+          "nextId": "fam_4",
+          "scores": {
+            "fisica": 3
+          }
+        },
+        {
+          "label": "No me ha golpeado a mí, pero rompe cosas",
+          "nextId": "fam_4",
+          "scores": {
+            "fisica": 1,
+            "patrimonial": 2
+          }
+        },
+        {
+          "label": "No, jamás ha usado violencia física",
+          "nextId": "fam_4",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_4": {
+      "text": "¿Te controla sobre lo que haces, adónde vas, o con quién hablas? ¿Necesitas pedirle permiso?",
+      "explanation": "El control excesivo sobre tus actividades, movimientos y relaciones es una forma de violencia psicológica que limita tu autonomía y libertad personal.",
+      "source": "Observatorio de Violencia Familiar - CNDH",
+      "options": [
+        {
+          "label": "Sí, tiene control sobre casi todo lo que hago",
+          "nextId": "fam_5",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces me cuestiona sobre mis actividades",
+          "nextId": "fam_5",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, respeta mi independencia",
+          "nextId": "fam_5",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_5": {
+      "text": "¿Te ignora, rechaza emocionalmente, o te hace sentir que eres carga para la familia?",
+      "explanation": "El rechazo emocional y la negligencia afectiva son formas de violencia psicológica que generan ansiedad, depresión y baja autoestima.",
+      "source": "Sistema Nacional para el Desarrollo Integral de la Familia (SNDIF)",
+      "options": [
+        {
+          "label": "Sí, constantemente me hace sentir rechazada",
+          "nextId": "fam_6",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces es indiferente con mis sentimientos",
+          "nextId": "fam_6",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, muestra interés en mis emociones",
+          "nextId": "fam_6",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_6": {
+      "text": "¿Te ha privado de acceso a educación, medicina, o cosas básicas como castigo?",
+      "explanation": "Negar acceso a servicios esenciales para la salud o desarrollo es negligencia grave y violencia económica. Afecta tu desarrollo físico y mental.",
+      "source": "Ley General de los Derechos de Niñas, Niños y Adolescentes (México)",
+      "options": [
+        {
+          "label": "Sí, me ha negado acceso a cosas que necesito",
+          "nextId": "fam_7",
+          "scores": {
+            "economica": 3,
+            "fisica": 1
+          }
+        },
+        {
+          "label": "A veces limita mi acceso a lo que necesito",
+          "nextId": "fam_7",
+          "scores": {
+            "economica": 1
+          }
+        },
+        {
+          "label": "No, me proporciona lo necesario",
+          "nextId": "fam_7",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_7": {
+      "text": "¿Ha tocado tu cuerpo de forma inapropiada o ha hecho comentarios sexuales sobre ti?",
+      "explanation": "Cualquier contacto o comentario sexual inapropiado por parte de familiares es violencia sexual y es un delito que requiere denuncia inmediata.",
+      "source": "Código Penal Federal - Abuso Sexual en el Ámbito Familiar",
+      "options": [
+        {
+          "label": "Sí, ha habido tocamientos o comentarios sexuales",
+          "nextId": "fam_8",
+          "scores": {
+            "sexual": 3
+          }
+        },
+        {
+          "label": "Ha hecho comentarios incómodos pero sin contacto",
+          "nextId": "fam_8",
+          "scores": {
+            "sexual": 1
+          }
+        },
+        {
+          "label": "No, jamás ha pasado",
+          "nextId": "fam_8",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_8": {
+      "text": "¿Exige que le obedezcas sin cuestionamientos? ¿Castiga si no haces lo que dice?",
+      "explanation": "La obediencia ciega impuesta mediante castigos es una forma de control autoritario que limita tu desarrollo autónomo y capacidad de tomar decisiones propias.",
+      "source": "Modelo Humanista de Crianza - UNICEF",
+      "options": [
+        {
+          "label": "Sí, exige obediencia absoluta y castiga desobediencia",
+          "nextId": "fam_9",
+          "scores": {
+            "psicologica": 2,
+            "intimidacion": 2
+          }
+        },
+        {
+          "label": "A veces se molesta si no hago lo que dice",
+          "nextId": "fam_9",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, podemos hablar y llegar a acuerdos",
+          "nextId": "fam_9",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_9": {
+      "text": "¿Te culpa por problemas familiares o te hace sentir responsable de sus emociones?",
+      "explanation": "Culpabilizarte por problemas que no causaste es manipulación emocional grave que te genera vergüenza, culpa y depresión sin razón justificada.",
+      "source": "Instituto Nacional de Psiquiatría - Raúl Caballero",
+      "options": [
+        {
+          "label": "Sí, constantemente me culpa de cosas que no son mi responsabilidad",
+          "nextId": "fam_10",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces me hace sentir responsable de sus problemas",
+          "nextId": "fam_10",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, entiende la diferencia entre causa y efecto",
+          "nextId": "fam_10",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_10": {
+      "text": "¿Te ha enviado mensajes amenazantes, las llamadas constantes para controlarte, o te acosa digitalmente?",
+      "explanation": "El acoso digital mediante mensajes, llamadas constantes o redes sociales es una forma moderna de violencia psicológica que no te deja espacio de paz.",
+      "source": "Ley Federal para Prevenir y Eliminar la Discriminación",
+      "options": [
+        {
+          "label": "Sí, me acosa constantemente por mensajes o llamadas",
+          "nextId": "fam_11",
+          "scores": {
+            "psicologica": 2,
+            "intimidacion": 1
+          }
+        },
+        {
+          "label": "A veces me envía mensajes frecuentes",
+          "nextId": "fam_11",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, respeta mi espacio en línea",
+          "nextId": "fam_11",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_11": {
+      "text": "¿Te expone públicamente (redes sociales, familia, vecinos) de forma humillante o compartiendo secretos?",
+      "explanation": "Exponer tu privacidad en público es una forma grave de humillación y violencia psicológica que daña tu reputación y autoestima.",
+      "source": "Observatorio de Violencia Digital - México",
+      "options": [
+        {
+          "label": "Sí, me ha expuesto públicamente de forma humillante",
+          "nextId": "fam_12",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces menciona cosas privadas en conversaciones",
+          "nextId": "fam_12",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, respeta mi privacidad",
+          "nextId": "fam_12",
+          "scores": {}
+        }
+      ]
+    },
+    "fam_12": {
+      "text": "¿Sientes que no puedes contar lo que vives en casa a otros por miedo a represalias o vergüenza?",
+      "explanation": "El secretismo obligado te aísla y facilita que el abuso continúe sin ser detectado. Romper el silencio es un acto de valentía necesario para sanar.",
+      "source": "Red Nacional de Refugios - Ciclo del Secreto en Violencia Familiar",
+      "options": [
+        {
+          "label": "Sí, tengo que guardar secretos por miedo o vergüenza",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "Me cuesta trabajo hablar de esto",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, me siento segura contando lo que pasa",
+          "nextId": "LOCATION",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_1": {
+      "text": "¿Se burla de tu trabajo, te asigna tareas imposibles a propósito o te amenaza constantemente con despedirte o reprobarte sin razón?",
+      "explanation": "El hostigamiento laboral o escolar ('Mobbing' o 'Bullying') incluye aislamiento, sobrecarga injustificada y burlas. Genera estrés crónico y afecta severamente la salud física y mental.",
+      "source": "Ley Federal del Trabajo de México (Artículos sobre acoso laboral)",
+      "options": [
+        {
+          "label": "Sí, siento hostigamiento constante",
+          "nextId": "trab_2",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "A veces es muy injusto/a",
+          "nextId": "trab_2",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, el trato es estrictamente profesional",
+          "nextId": "trab_2",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_2": {
+      "text": "¿Te ha hecho comentarios con doble sentido, insinuaciones sexuales, o te ha tocado de forma inapropiada sin tu consentimiento?",
+      "explanation": "Cualquier insinuación sexual, exhibición o tocamiento no consentido en ámbitos laborales o académicos constituye Acoso y Hostigamiento Sexual, delitos tipificados y castigados por la legislación civil y penal.",
+      "source": "Código Penal Federal de México (Delitos contra la libertad y el normal desarrollo psicosexual)",
+      "options": [
+        {
+          "label": "Sí, he sufrido acoso o tocamientos",
+          "nextId": "trab_3",
+          "scores": {
+            "sexual": 3
+          }
+        },
+        {
+          "label": "Hace chistes incómodos que no me gustan",
+          "nextId": "trab_3",
+          "scores": {
+            "sexual": 1,
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, nunca ha pasado de esa línea",
+          "nextId": "trab_3",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_3": {
+      "text": "¿Te aísla del equipo? ¿Los demás compañeros no te hablan o te excluyen de actividades?",
+      "explanation": "El aislamiento en el trabajo (ostracismo) es una forma de mobbing que genera estrés social intenso y afecta tu desempeño laboral y salud mental.",
+      "source": "Organización Internacional del Trabajo (OIT) - Definición de Acoso Laboral",
+      "options": [
+        {
+          "label": "Sí, me excluyen constantemente de actividades y conversaciones",
+          "nextId": "trab_4",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "A veces siento que no encajo con el equipo",
+          "nextId": "trab_4",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, tengo buena relación con mis compañeros",
+          "nextId": "trab_4",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_4": {
+      "text": "¿Te retiene información importante o no te permite acceso a recursos que necesitas para trabajar bien?",
+      "explanation": "Bloquear tu acceso a información y recursos es una táctica de sabotaje que afecta tu productividad y genera evaluaciones negativas injustas.",
+      "source": "Ley Federal del Trabajo - Derecho a Condiciones Equitativas",
+      "options": [
+        {
+          "label": "Sí, deliberadamente me niega información o recursos",
+          "nextId": "trab_5",
+          "scores": {
+            "psicologica": 2,
+            "economica": 1
+          }
+        },
+        {
+          "label": "A veces tengo que pedirle permiso para acceder a cosas",
+          "nextId": "trab_5",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, tengo acceso a lo que necesito",
+          "nextId": "trab_5",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_5": {
+      "text": "¿Supervisa tu trabajo de forma obsesiva o revisa constantemente lo que haces?",
+      "explanation": "La supervisión excesiva genera estrés crónico y desconfianza infundada. Implica que no confía en tu competencia profesional.",
+      "source": "Centro de Investigación en Psicología Aplicada - UNAM",
+      "options": [
+        {
+          "label": "Sí, me supervisa constantemente sin razón aparente",
+          "nextId": "trab_6",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "A veces siento que me vigila más de la cuenta",
+          "nextId": "trab_6",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, me da autonomía en mi trabajo",
+          "nextId": "trab_6",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_6": {
+      "text": "¿Ha usado tu orientación sexual, género, religión, origen o apariencia física para burlarse de ti?",
+      "explanation": "La discriminación basada en características personales es violencia y violación de derechos humanos. Es ilegal en contextos laborales.",
+      "source": "Ley Federal para Prevenir y Eliminar la Discriminación (LFPED)",
+      "options": [
+        {
+          "label": "Sí, me discrimina regularmente por mis características",
+          "nextId": "trab_7",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "Ha hecho comentarios discriminatorios ocasionales",
+          "nextId": "trab_7",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, respeta la diversidad",
+          "nextId": "trab_7",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_7": {
+      "text": "¿Ha prometido ascensos, beneficios o mejor trato a cambio de favores sexuales o acciones que no son laborales?",
+      "explanation": "El quid pro quo sexual (favores a cambio de beneficios) es coerción sexual y chantaje. Es un delito grave de acoso sexual.",
+      "source": "Código Penal Federal - Tipos de Acoso Sexual",
+      "options": [
+        {
+          "label": "Sí, ha sugerido claramente este intercambio",
+          "nextId": "trab_8",
+          "scores": {
+            "sexual": 3,
+            "economica": 2
+          }
+        },
+        {
+          "label": "Ha insinuado algo pero no de forma directa",
+          "nextId": "trab_8",
+          "scores": {
+            "sexual": 1
+          }
+        },
+        {
+          "label": "No, mantiene límites profesionales claros",
+          "nextId": "trab_8",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_8": {
+      "text": "¿Ha rondado mi escritorio, me ha seguido, o ha intentado quedarse a solas conmigo sin razón profesional?",
+      "explanation": "El acercamiento físico no deseado y los comportamientos para quedarse solo contigo son indicadores de acoso sexual en escalada.",
+      "source": "Protocolo para Atender Acoso Sexual Laboral - STPS",
+      "options": [
+        {
+          "label": "Sí, intenta quedarse solo conmigo frecuentemente",
+          "nextId": "trab_9",
+          "scores": {
+            "sexual": 2,
+            "intimidacion": 1
+          }
+        },
+        {
+          "label": "A veces me da incomodidad su proximidad",
+          "nextId": "trab_9",
+          "scores": {
+            "sexual": 1
+          }
+        },
+        {
+          "label": "No, respeta distancias profesionales",
+          "nextId": "trab_9",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_9": {
+      "text": "¿Ha amenazado con despedirte, baja de calificaciones, o represalias si no correspondes sus avances?",
+      "explanation": "Las represalias por rechazar avances sexuales o denunciar acoso constituyen retalición, que agrava la situación legal.",
+      "source": "Ley Federal del Trabajo - Protección contra Represalias",
+      "options": [
+        {
+          "label": "Sí, me ha amenazado explícitamente",
+          "nextId": "trab_10",
+          "scores": {
+            "intimidacion": 3,
+            "economica": 2
+          }
+        },
+        {
+          "label": "He sentido amenaza implícita en sus acciones",
+          "nextId": "trab_10",
+          "scores": {
+            "intimidacion": 1
+          }
+        },
+        {
+          "label": "No, no ha habido amenazas",
+          "nextId": "trab_10",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_10": {
+      "text": "¿Has reportado esto a recursos humanos o tu superior y no se ha tomado acción?",
+      "explanation": "La falta de respuesta institucional ante denuncias agrava la violencia. Es responsabilidad de la empresa investigar y protegerte.",
+      "source": "Protocolo para Prevenir, Atender y Sancionar el Acoso Sexual - NOM",
+      "options": [
+        {
+          "label": "Sí, reporté pero nada cambió o empeoró",
+          "nextId": "trab_11",
+          "scores": {
+            "psicologica": 2,
+            "intimidacion": 1
+          }
+        },
+        {
+          "label": "No lo reporté por miedo a represalias",
+          "nextId": "trab_11",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No he estado en esa situación",
+          "nextId": "trab_11",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_11": {
+      "text": "¿Sientes que tu vida laboral/académica está en peligro? ¿Has pensado en dejar el trabajo o cambiar de escuela?",
+      "explanation": "El impacto en tu seguridad laboral y bienestar emocional es evidencia de que estás siendo víctima de violencia en el espacio de trabajo.",
+      "source": "Salud Ocupacional - OMS",
+      "options": [
+        {
+          "label": "Sí, he pensado en abandonar mi trabajo/escuela por esto",
+          "nextId": "trab_12",
+          "scores": {
+            "psicologica": 3,
+            "intimidacion": 2
+          }
+        },
+        {
+          "label": "A veces siento que no puedo continuar",
+          "nextId": "trab_12",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, me siento segura en mi espacio laboral/académico",
+          "nextId": "trab_12",
+          "scores": {}
+        }
+      ]
+    },
+    "trab_12": {
+      "text": "¿Has experimentado síntomas de estrés, ansiedad, depresión o problemas de salud desde que empezó este acoso?",
+      "explanation": "El impacto en tu salud física y mental es una evidencia clara del daño causado por la violencia en el trabajo.",
+      "source": "Psicología Laboral Clínica - APA",
+      "options": [
+        {
+          "label": "Sí, he desarrollado problemas de salud significativos",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 3
+          }
+        },
+        {
+          "label": "He sentido algunos cambios en mi salud",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "No, mi salud no ha sido afectada",
+          "nextId": "LOCATION",
+          "scores": {}
+        }
+      ]
+    }
+  }
+}

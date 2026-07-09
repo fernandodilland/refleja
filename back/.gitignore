@@ -1,0 +1,23 @@
+# Entorno / secretos
+.env
+*.env.local
+
+# Python
+.venv/
+venv/
+venv.new/
+venv.old/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Base de datos local (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+refleja_dev.db
+
+# Sistema
+.DS_Store

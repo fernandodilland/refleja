@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Acceso · Refleja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/admin.css" />
+  </head>
+  <body>
+    <main class="login-wrap">
+      <form class="login-card" id="login-form" autocomplete="off">
+        <div class="login-brand">
+          <span class="dot">R</span>
+          <h1>Refleja · Acceso</h1>
+        </div>
+        <p class="login-sub">Panel administrativo. Ingresa tus credenciales.</p>
+
+        <div class="field">
+          <label for="username">Usuario</label>
+          <input id="username" name="username" type="text" autocomplete="username" required />
+        </div>
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+        </div>
+
+        <div id="turnstile-box" class="turnstile-box"></div>
+        <div id="dev-note" class="dev-note">Modo desarrollo: verificación anti-bot omitida (dev-bypass).</div>
+
+        <button id="submit-btn" class="btn" type="submit">Entrar</button>
+        <div id="error-msg" class="error-msg"></div>
+      </form>
+    </main>
+
+    <script src="/auth-common.js"></script>
+    <script src="/acceso.js"></script>
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=reflejaTurnstileReady"
+      async
+      defer
+    ></script>
+  </body>
+</html>

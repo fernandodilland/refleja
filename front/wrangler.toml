@@ -1,0 +1,26 @@
+# wrangler.toml
+"$schema" = "./node_modules/wrangler/config-schema.json"
+name = "refleja"
+compatibility_date = "2026-05-21"
+account_id = "5f1537aadbfc7aea5bab0a2bd956c1d2"
+
+# Rutas de dominios personalizados
+routes = [
+  { pattern = "refleja.org", custom_domain = true },
+  { pattern = "www.refleja.org", custom_domain = true }
+]
+
+[assets]
+directory = "./src"
+not_found_handling = "404-page"
+html_handling = "auto-trailing-slash"
+
+# Variables de entorno (opcional)
+[vars]
+ENVIRONMENT = "production"
+
+# Para desarrollo local
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+

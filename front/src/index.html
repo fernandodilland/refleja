@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Refleja: autoescaneo confidencial y gratuito para la identificación de violencia de género en Nuevo León. Reconoce señales de violencia psicológica y encuentra apoyo en los 51 municipios del estado."
+    />
+    <meta name="keywords" content="violencia de género, Nuevo León, identificación de violencia, apoyo a mujeres, Monterrey, ayuda violencia, Refleja" />
+    <link rel="canonical" href="https://refleja.org/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Refleja" />
+    <meta property="og:title" content="Identificación de Violencia de Género en Nuevo León  - Refleja" />
+    <meta property="og:description" content="Autoescaneo confidencial y gratuito para reconocer señales de violencia de género y encontrar apoyo en los 51 municipios de Nuevo León." />
+    <meta property="og:url" content="https://refleja.org/" />
+    <meta property="og:locale" content="es_MX" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>Identificación de Violencia de Género en Nuevo León  - Refleja</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Refleja",
+        "alternateName": "Identificación de Violencia de Género en Nuevo León",
+        "url": "https://refleja.org/",
+        "inLanguage": "es-MX",
+        "description": "Autoescaneo confidencial y gratuito para la identificación de violencia de género en Nuevo León, con directorio de apoyo en los 51 municipios del estado."
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Refleja",
+        "url": "https://refleja.org/",
+        "description": "Proyecto ciudadano para la concientización y la identificación de la violencia de género en Nuevo León.",
+        "areaServed": { "@type": "State", "name": "Nuevo León, México" }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Capa de fondo animada (Mesh Gradient Blobs) -->
+    <div class="mesh-background" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <div class="blob blob-4"></div>
+    </div>
+
+    <div id="top-control-island" class="top-island">
+      <div class="top-island__container">
+        <div class="top-island__brand">
+          <div class="muni-menu" id="muni-menu">
+            <button id="muni-menu-trigger" class="muni-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="muni-menu-panel" title="Ver directorios por municipio de Nuevo León">
+              <span class="muni-menu__trigger-icon">📍</span>
+              <span class="muni-menu__trigger-text">
+                <span class="text-long">Municipios de Nuevo León</span>
+                <span class="text-short">Municipios</span>
+              </span>
+              <span class="muni-menu__trigger-caret" aria-hidden="true">▾</span>
+            </button>
+            <div id="muni-menu-panel" class="muni-menu__panel" role="menu" aria-label="Municipios de Nuevo León" hidden>
+              <div class="muni-menu__header">
+                <p class="muni-menu__title">Municipios de Nuevo León</p>
+                <p class="muni-menu__subtitle">Medios de apoyo a la violencia de género</p>
+              </div>
+              <div class="muni-menu__search-wrap">
+                <span class="muni-menu__search-icon" aria-hidden="true">🔎</span>
+                <input id="muni-menu-search" class="muni-menu__search" type="text" placeholder="Buscar municipio…" autocomplete="off" aria-label="Buscar municipio" />
+              </div>
+              <ul id="muni-menu-list" class="muni-menu__list" role="none"></ul>
+              <a href="/municipios" class="muni-menu__all">Ver los 51 municipios →</a>
+            </div>
+          </div>
+        </div>
+        <div class="top-island__actions">
+          <button id="urgent-help-btn" class="button-urgent" type="button" title="Llamar a emergencias o buscar ayuda inmediata">
+            <span class="btn-icon">🚨</span>
+            <span class="btn-text btn-text--desktop">Ayuda Urgente</span>
+            <span class="btn-text btn-text--mobile">Urgente</span>
+          </button>
+          <button id="hide-site-btn" class="button-hide" type="button" title="Ocultar página rápidamente">
+            <span class="btn-icon">👁️‍🗨️</span>
+            <span>Ocultar</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <main id="main-content" class="page-shell">
+      <header class="hero">
+        <h1>REFLEJA</h1>
+        <p class="hero__lead">
+          Un espejo para reconocer la violencia psicológica y reencontrarte.
+        </p>
+      </header>
+
+      <!-- 1. INTRO STAGE -->
+      <section class="card card--intro" id="intro-stage" aria-labelledby="intro-title">
+        <div class="pill">Espacio íntimo</div>
+        <h2 id="intro-title">Mírate sin <span>miedo</span>.</h2>
+        <p>
+          Un test breve y confidencial para mujeres desde los 15 años. No es un diagnóstico: es una
+          invitación a escucharte con honestidad y ternura.
+        </p>
+
+        <button id="start-test" class="button button--start" type="button">Empezar</button>
+      </section>
+
+      <!-- 2. TEST STAGE -->
+      <section class="card card--test is-hidden" id="test-stage" aria-labelledby="test-title">
+        <div class="test-meta">
+          <span id="progress-label">01 / --</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress" aria-hidden="true">
+          <div id="progress-bar" class="progress__bar"></div>
+        </div>
+
+        <div class="question" id="question-panel">
+          <h2 id="test-title"></h2>
+
+          <div class="answer-grid" id="answer-grid" role="group" aria-label="Respuestas">
+            <!-- Botones dinámicos se insertan aquí -->
+          </div>
+
+          <div id="explanation-box" class="explanation-box">
+            <div class="explanation-box__header">
+              <span class="explanation-box__icon">ℹ️</span>
+              <h4 class="explanation-box__title">¿Por qué preguntamos esto?</h4>
+            </div>
+            <p id="explanation-text" class="explanation-box__text"></p>
+            <div class="explanation-box__source-wrapper">
+              <span class="explanation-box__source-label">Fuente:</span>
+              <span id="explanation-source" class="explanation-box__source"></span>
+            </div>
+          </div>
+
+          <div class="question-actions">
+            <button id="previous-question" class="button-action button-action--prev is-hidden" type="button">
+              ← Anterior
+            </button>
+            <button id="restart-test-inline" class="button-action button-action--restart" type="button">
+              Volver a empezar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. LOCATION STAGE -->
+      <section class="card card--location is-hidden" id="location-stage" aria-labelledby="location-title">
+        <div class="pill">Ubicación</div>
+        <h2 id="location-title">Tu <span>municipio</span></h2>
+        <p>
+          Para brindarte la información de contacto de los profesionales y centros de apoyo gratuitos más cercanos en Nuevo León, indícanos tu municipio:
+        </p>
+
+        <form id="location-form" class="location-form">
+          <div class="select-wrapper">
+            <select id="municipio-select" required>
+              <option value="" disabled selected>Selecciona tu municipio...</option>
+            </select>
+          </div>
+          <button id="submit-location" class="button button--primary" type="submit">Ver resultados e instituciones</button>
+        </form>
+      </section>
+
+      <!-- 4. RESULT STAGE -->
+      <section class="card card--result is-hidden" id="result-stage" aria-labelledby="result-title">
+        <h2 id="result-title" class="dynamic-risk-title">Resultados de la guía</h2>
+        <div id="result-alert-box" class="result-alert-box">
+          <p class="result-message" id="result-message"></p>
+        </div>
+
+        <div id="violence-types-container" class="is-hidden">
+          <h3 class="result-section-title">Posibles tipos de violencia identificados</h3>
+          <div id="violence-types-grid" class="violence-types-grid">
+            <!-- Bloques dinámicos de violencia -->
+          </div>
+        </div>
+
+        <!-- SECCIÓN DE RECURSOS INTEGRADA -->
+        <div class="resources-embedded is-hidden" id="resources-section">
+          <h3 class="result-section-title">📍 Directorio de Apoyo en Nuevo León</h3>
+          <p class="resources-embedded__lead">
+            Recursos gratuitos y confidenciales que pueden acompañarte hoy mismo.
+          </p>
+          
+          <div class="resources-group" id="resources-group-municipal">
+            <h3 class="resources-group-title">📍 Recursos en tu municipio</h3>
+            <div id="municipal-resources-grid" class="resources-grid"></div>
+          </div>
+
+          <div class="resources-group" id="resources-group-state">
+            <h3 class="resources-group-title">🏛️ Apoyo Estatal (Todo Nuevo León)</h3>
+            <div id="state-resources-grid" class="resources-grid"></div>
+          </div>
+
+          <div class="resources-group" id="resources-group-national">
+            <h3 class="resources-group-title">📞 Líneas Nacionales de Apoyo (24/7)</h3>
+            <div id="national-resources-grid" class="resources-grid"></div>
+          </div>
+        </div>
+
+        <div class="note">
+          <strong>Recuerda · </strong>
+          la violencia suele ser invisible al principio, pero deja huellas profundas. Reconocerla ya
+          es un acto de valentía. Lo que sientes importa.
+        </div>
+
+        <button id="restart-test" class="link-button" type="button">Repetir formulario</button>
+      </section>
+
+      <!-- 5. MINOR STAGE -->
+      <section class="card card--minor is-hidden" id="minor-stage" aria-labelledby="minor-title">
+        <div class="pill">Espacio Seguro</div>
+        <h2 id="minor-title">Gracias por tu <span>honestidad</span></h2>
+        <p>
+          Al ser menor de edad, es fundamental que compartas lo que sientes y estás viviendo con tu mamá, tu papá, tus tutores o algún adulto en quien confíes plenamente. Ellos pueden darte el acompañamiento adecuado y buscar juntos ayuda profesional especializada.
+        </p>
+        <div class="note-minor">
+          <h4 class="note-minor__title">¿Qué puedes hacer en este momento?</h4>
+          <ul class="note-minor__list">
+            <li>Habla con tu mamá, papá o tutor legal acerca de lo que te incomoda o te hace sentir insegura/o.</li>
+            <li>Si el problema está en tu hogar o con ellos, busca a un docente de confianza, orientador de tu escuela o familiar cercano.</li>
+            <li>Recuerda que puedes marcar al <strong>911</strong> (Emergencias) de forma totalmente gratuita en cualquier momento que te sientas en riesgo.</li>
+          </ul>
+        </div>
+        <button id="restart-minor" class="button button--primary" type="button">Volver al inicio</button>
+      </section>
+
+      <!-- 6. URGENT LOCATION STAGE -->
+      <section class="card card--urgent-location is-hidden" id="urgent-location-stage" aria-labelledby="urgent-location-title">
+        <div class="pill pill--urgent">🚨 Ayuda Inmediata</div>
+        <h2 id="urgent-location-title">¿Dónde te <span>encuentras</span>?</h2>
+        <p>
+          Indícanos tu municipio de Nuevo León para mostrarte los números de ayuda y emergencia inmediata de tu región.
+        </p>
+
+        <form id="urgent-location-form" class="location-form">
+          <div class="select-wrapper">
+            <select id="urgent-municipio-select" required>
+              <option value="" disabled selected>Selecciona tu municipio...</option>
+            </select>
+          </div>
+          <div class="urgent-actions">
+            <button id="submit-urgent-location" class="button button--primary" type="submit">Ver números de emergencia</button>
+            <button id="cancel-urgent-location" class="link-button" type="button">Cancelar y volver</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 7. URGENT RESULT STAGE -->
+      <section class="card card--urgent-result is-hidden" id="urgent-result-stage" aria-labelledby="urgent-result-title">
+        <p class="result-kicker result-kicker--urgent">Líneas de Emergencia</p>
+        <h2 id="urgent-result-title">Ayuda <span>Urgente</span></h2>
+        <p>No estás sola. Llama sin costo en cualquier momento a estos números de auxilio.</p>
+
+        <div class="urgent-grid">
+          <!-- Llamada al 911 Directa -->
+          <div class="urgent-panel-911">
+            <h4>Emergencia Nacional</h4>
+            <a href="tel:911" class="phone-link-911">911</a>
+            <span class="phone-desc-911">Policía • Cruz Roja • Bomberos</span>
+          </div>
+
+          <!-- Apoyo local del municipio -->
+          <div class="urgent-panel-local">
+            <h4 id="urgent-local-title">Recursos locales</h4>
+            <div id="urgent-local-list" class="urgent-local-list">
+              <!-- Cargado dinámicamente -->
+            </div>
+          </div>
+        </div>
+
+        <button id="close-urgent-results" class="button button--primary" type="button">Volver al inicio</button>
+      </section>
+
+
+
+      <footer class="footer">
+        <a class="footer-emergency" href="tel:911">
+          <span class="footer-emergency__icon" aria-hidden="true">🚨</span>
+          <span class="footer-emergency__text">Emergencias <strong>911</strong></span>
+        </a>
+        <div class="keyboard-legend">
+          <span>⌨️ Atajos:</span>
+          <kbd>1</kbd>-<kbd>4</kbd> / <kbd>↑↓</kbd> Seleccionar ·
+          <kbd>Enter</kbd> / <kbd>Espacio</kbd> Confirmar ·
+          <kbd>Retroceso</kbd> Anterior ·
+          <kbd>Esc</kbd> Reiniciar
+        </div>
+        <div class="footer-credit">
+          <a href="https://wiki.labnuevoleon.mx/index.php?title=Refleja:_Una_herramienta_para_la_concientizaci%C3%B3n_sobre_la_Violencia_de_G%C3%A9nero" target="_blank" rel="noopener noreferrer">Proyecto Ciudadano creado en LABNL</a>
+        </div>
+        <nav class="footer-nav" aria-label="Directorio de municipios">
+          <a href="/municipios">Medios de apoyo por municipio de Nuevo León</a>
+        </nav>
+      </footer>
+    </main>
+
+    <!-- FAKE BIODIVERSITY SITE (DISFRAZ) -->
+    <div id="disguised-site" class="disguised-site is-hidden">
+      <header class="disguised-header">
+        <div class="disguised-header__container">
+          <div class="disguised-header__logo">
+            <span class="disguised-header__logo-icon">🌿</span>
+            <div>
+              <span class="disguised-header__logo-text">Portal Nacional de Biodiversidad</span>
+              <span class="disguised-header__logo-subtext">Ecosistemas, conservación e investigación</span>
+            </div>
+          </div>
+          <nav class="disguised-nav">
+            <a href="#" onclick="event.preventDefault()">Inicio</a>
+            <a href="#" onclick="event.preventDefault()">Monitoreo</a>
+            <a href="#" onclick="event.preventDefault()">Ecosistemas</a>
+            <a href="#" onclick="event.preventDefault()">Investigación</a>
+            <a href="#" onclick="event.preventDefault()">Publicaciones</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="disguised-main">
+        <div class="disguised-hero">
+          <span class="disguised-tag">Artículo de Investigación</span>
+          <h2>La riqueza de los bosques templados: un ecosistema en equilibrio</h2>
+          <p>
+            Los bosques templados albergan una de las mayores concentraciones de biodiversidad del planeta. 
+            Investigadores de la Comisión Nacional han documentado más de 2,400 especies en estos ecosistemas durante la última década, enfatizando la importancia de los corredores biológicos.
+          </p>
+        </div>
+
+        <div class="disguised-grid-three">
+          <div class="disguised-card">
+            <div class="disguised-card__emoji">🌿</div>
+            <h3>Flora endémica</h3>
+            <p>Más de 800 especies de plantas vasculares documentadas en los bosques templados de la región, muchas de ellas endémicas y bajo programas especiales de protección.</p>
+          </div>
+          <div class="disguised-card">
+            <div class="disguised-card__emoji">🦅</div>
+            <h3>Fauna silvestre</h3>
+            <p>Estudios recientes han identificado 340 especies de aves, 120 de mamíferos y 85 de reptiles que habitan en los principales corredores del país.</p>
+          </div>
+          <div class="disguised-card">
+            <div class="disguised-card__emoji">💧</div>
+            <h3>Recursos hídricos</h3>
+            <p>Los bosques de niebla y templados captan y filtran aproximadamente el 40% del agua dulce que abastece a las principales comunidades urbanas y rurales.</p>
+          </div>
+        </div>
+
+        <div class="disguised-grid-two">
+          <div class="disguised-card">
+            <h3>Programas de conservación activos</h3>
+            <ul>
+              <li><strong>Reforestación comunitaria</strong> — 12,000 árboles nativos plantados en 2025 con participación activa de 45 ejidos locales.</li>
+              <li><strong>Monitoreo de fauna</strong> — Red de cámaras trampa y sensores acústicos en 8 reservas naturales para el censo de felinos y aves.</li>
+              <li><strong>Educación ambiental</strong> — Talleres en 60 escuelas rurales sobre conservación de ecosistemas y sustentabilidad del suelo.</li>
+              <li><strong>Conectividad biológica</strong> — Restauración y protección de 350 km de corredores naturales para especies migratorias.</li>
+            </ul>
+          </div>
+          <div class="disguised-card">
+            <h3>Publicaciones científicas recientes</h3>
+            <div class="disguised-publications">
+              <div class="publication-item">
+                <p class="pub-title">Distribución altitudinal de anfibios en bosques de niebla</p>
+                <p class="pub-meta">Revista de Biodiversidad Neotropical · Vol. 18, 2025</p>
+              </div>
+              <div class="publication-item">
+                <p class="pub-title">Impacto del cambio climático en la fenología de especies arbóreas</p>
+                <p class="pub-meta">Ecología Aplicada · Vol. 32, 2025</p>
+              </div>
+              <div class="publication-item">
+                <p class="pub-title">Servicios ecosistémicos en bosques templados: una revisión sistemática</p>
+                <p class="pub-meta">Conservation Biology Journal · Vol. 45, 2024</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="disguised-footer">
+        <p>© 2025 Portal Nacional de Biodiversidad. Comisión Nacional para la Conservación.</p>
+        <span id="restore-site-trigger" class="disguised-secret-trigger">——</span>
+      </footer>
+    </div>
+
+    <!-- MODAL DE DETALLE DE TIPO DE VIOLENCIA -->
+    <div id="violence-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title-detail">
+      <div id="modal-content-card" class="modal-card">
+        <button id="close-modal-btn" class="modal-close-btn" aria-label="Cerrar modal">✕</button>
+        <div class="modal-body">
+          <div class="modal-header">
+            <span class="modal-badge" id="modal-badge-type">Tipo de violencia</span>
+            <h3 id="modal-title-detail" class="modal-title"></h3>
+          </div>
+          <p id="modal-desc" class="modal-desc"></p>
+          <div class="modal-details-section">
+            <h4>Se manifiesta como:</h4>
+            <ul id="modal-examples" class="modal-list"></ul>
+          </div>
+          <div class="modal-sources-section">
+            <h4>Marco Legal y Fuentes:</h4>
+            <p id="modal-sources" class="modal-sources"></p>
+          </div>
+          <div class="modal-action-section">
+            <p class="modal-action-tip">Recuerda: no tienes que enfrentar esto sola. El directorio de abajo contiene instituciones que pueden apoyarte de manera gratuita y confidencial.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE CÓDIGO QR PARA LLAMADAS EN ESCRITORIO -->
+    <div id="qr-call-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+      <div class="modal-card modal-card--qr">
+        <button id="close-qr-modal-btn" class="modal-close-btn" aria-label="Cerrar modal">✕</button>
+        <div class="modal-body text-center" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div class="modal-header" style="margin-bottom: 1rem; width: 100%;">
+            <span class="modal-badge" style="background: var(--peach); color: var(--text-dark); margin: 0 auto 0.5rem auto; display: inline-block;">Llamar desde tu celular</span>
+            <h3 id="qr-modal-title" class="modal-title" style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">Escanear para llamar</h3>
+          </div>
+          <p class="modal-desc" style="font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-dark); opacity: 0.85; max-width: 380px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+            <span id="qr-modal-desc-text">Abre la cámara de tu celular o tu lector de códigos QR para escanear la imagen y marcar directamente al número:</span>
+            <strong id="qr-phone-number" style="display: block; font-size: 1.35rem; margin-top: 0.6rem; color: var(--wine);"></strong>
+          </p>
+          <div id="qr-code-container" style="background: white; padding: 1.25rem; border-radius: 20px; display: inline-flex; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+            <!-- El canvas del QR se generará aquí -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <template id="resource-template">
+      <article class="resource-card">
+        <h3></h3>
+        <p class="resource-card__desc"></p>
+        <div class="resource-card__details"></div>
+        <div class="resource-card__links"></div>
+      </article>
+    </template>
+
+    <script src="/analytics.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

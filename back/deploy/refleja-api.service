@@ -1,0 +1,23 @@
+# /etc/systemd/system/refleja-api.service
+# Servicio de la API de Refleja (FastAPI + uvicorn) en el puerto 20832.
+# Copia este archivo a /etc/systemd/system/ y ajusta las rutas si difieren.
+[Unit]
+Description=Refleja API (FastAPI/uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+User=refleja-api
+Group=refleja-api
+WorkingDirectory=/home/refleja-api/htdocs/api.refleja.org/back
+# La app lee .env desde el WorkingDirectory (pydantic-settings).
+ExecStart=/home/refleja-api/htdocs/api.refleja.org/back/venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 20832 --workers 2
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+# Logs a journald (journalctl -u refleja-api.service)
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

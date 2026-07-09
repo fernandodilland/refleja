@@ -1,0 +1,33 @@
+# === Secretos (NUNCA subir) ===
+.env
+**/.env
+*.env.local
+
+# === Python ===
+.venv/
+venv/
+venv.new/
+venv.old/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Bases de datos locales (SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# === Node / Cloudflare ===
+node_modules/
+**/node_modules/
+.wrangler/
+**/.wrangler/
+
+# === Editor / SO ===
+.DS_Store
+**/.DS_Store
+.claude/
+.wrangler/
+.claude/settings.local.json

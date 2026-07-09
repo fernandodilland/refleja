@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Refleja API: instalar dependencias",
+      "type": "shell",
+      "command": "python3.10 -m venv .venv && ./.venv/bin/python -m pip install --upgrade pip && ./.venv/bin/python -m pip install -r requirements.txt && ./.venv/bin/python -m app.seed",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "silent", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Refleja API: correr (uvicorn :20832)",
+      "type": "shell",
+      "command": "./.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 20832 --reload",
+      "options": { "cwd": "${workspaceFolder}" },
+      "dependsOn": ["Refleja API: instalar dependencias"],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    }
+  ]
+}

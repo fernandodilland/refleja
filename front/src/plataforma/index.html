@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Plataforma · Refleja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/admin.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><span class="dot">R</span> Refleja · Plataforma</div>
+      <span class="spacer"></span>
+      <span class="live-pill"><span class="live-dot"></span> <span id="live-count">0</span> activos ahora</span>
+      <span id="updated" class="live-pill" style="background:#f6f2f7;border-color:var(--line);color:var(--muted)">—</span>
+      <button id="logout-btn" class="btn-ghost">Salir</button>
+    </header>
+
+    <div class="shell" id="app" hidden>
+      <!-- Filtros -->
+      <div class="filters">
+        <div class="fg">
+          <label for="f-from">Desde</label>
+          <input id="f-from" type="date" />
+        </div>
+        <div class="fg">
+          <label for="f-to">Hasta</label>
+          <input id="f-to" type="date" />
+        </div>
+        <div class="fg">
+          <label for="f-flow">Tipo de relación</label>
+          <select id="f-flow">
+            <option value="">Todas</option>
+            <option value="pareja">Pareja / ex pareja</option>
+            <option value="fam">Familiar</option>
+            <option value="trab">Trabajo / escuela</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label for="f-muni">Municipio</label>
+          <select id="f-muni"><option value="">Todos</option></select>
+        </div>
+        <button id="f-apply" class="btn-apply">Aplicar</button>
+        <button id="f-reset" class="btn-ghost">Limpiar</button>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid" id="kpis"></div>
+
+      <!-- Tiempo real + Violencia -->
+      <div class="grid-2">
+        <div class="panel">
+          <h2>En tiempo real</h2>
+          <p class="hint">Visitantes activos y últimos recorridos (se actualiza solo).</p>
+          <div id="rt-summary" class="legend"></div>
+          <div id="rt-recent" class="recent" style="margin-top:12px"></div>
+        </div>
+        <div class="panel">
+          <h2>Tipos de violencia que destacan</h2>
+          <p class="hint">Sobre formularios completados.</p>
+          <div class="tabs" id="viol-tabs">
+            <button class="tab active" data-mode="dominant">Predominante</button>
+            <button class="tab" data-mode="present">Presencia</button>
+            <button class="tab" data-mode="totals">Puntaje total</button>
+          </div>
+          <div id="viol-bars" class="bars"></div>
+        </div>
+      </div>
+
+      <!-- Embudo -->
+      <div class="panel">
+        <h2>Embudo · ¿hasta qué pregunta llegan?</h2>
+        <p class="hint">Cada barra: quienes llegaron a la pregunta. En rojo, quienes la vieron pero no continuaron (abandono).</p>
+        <div class="tabs" id="funnel-tabs">
+          <button class="tab active" data-flow="pareja">Pareja</button>
+          <button class="tab" data-flow="fam">Familiar</button>
+          <button class="tab" data-flow="trab">Trabajo / escuela</button>
+        </div>
+        <div id="funnel-bars" class="bars"></div>
+        <div class="legend">
+          <span><i style="background:var(--coral)"></i> Continuaron</span>
+          <span><i style="background:var(--high)"></i> Abandonaron aquí</span>
+        </div>
+      </div>
+
+      <!-- Municipios + Preguntas frecuentes -->
+      <div class="grid-2">
+        <div class="panel">
+          <h2>Municipios más elegidos</h2>
+          <p class="hint">Al final del formulario.</p>
+          <div id="muni-bars" class="bars"></div>
+        </div>
+        <div class="panel">
+          <h2>Preguntas más frecuentes</h2>
+          <p class="hint">Las más alcanzadas por los usuarios.</p>
+          <div id="topq-bars" class="bars"></div>
+        </div>
+      </div>
+
+      <!-- Series de tiempo -->
+      <div class="panel">
+        <h2>Actividad diaria</h2>
+        <p class="hint">Vistas, inicios y compleciones por día.</p>
+        <div id="ts-chart"></div>
+        <div class="legend">
+          <span><i style="background:#b98bd0"></i> Vistas</span>
+          <span><i style="background:var(--coral)"></i> Empezaron</span>
+          <span><i style="background:var(--ok)"></i> Completaron</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shell" id="loading-view">
+      <p class="loading">Cargando panel…</p>
+    </div>
+
+    <script src="/auth-common.js"></script>
+    <script src="/platform.js"></script>
+  </body>
+</html>

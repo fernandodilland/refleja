@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "back: instalar dependencias",
+      "type": "shell",
+      "command": "python3.10 -m venv .venv && ./.venv/bin/python -m pip install --upgrade pip && ./.venv/bin/python -m pip install -r requirements.txt && ./.venv/bin/python -m app.seed",
+      "options": { "cwd": "${workspaceFolder}/back" },
+      "presentation": { "reveal": "silent", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "back: correr (uvicorn :20832)",
+      "type": "shell",
+      "command": "./.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 20832 --reload",
+      "options": { "cwd": "${workspaceFolder}/back" },
+      "dependsOn": ["back: instalar dependencias"],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "front: correr (wrangler :8788)",
+      "type": "shell",
+      "command": "npx wrangler dev -c front/wrangler.toml --port 8788",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Refleja: front + back (local)",
+      "dependsOn": ["back: correr (uvicorn :20832)", "front: correr (wrangler :8788)"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}

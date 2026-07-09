@@ -1,0 +1,454 @@
+{
+  "municipioResources": {
+    "abasolo": {
+      "name": "Abasolo",
+      "resources": []
+    },
+    "agualeguas": {
+      "name": "Agualeguas",
+      "resources": []
+    },
+    "los-aldamas": {
+      "name": "Los Aldamas",
+      "resources": []
+    },
+    "allende": {
+      "name": "Allende",
+      "resources": [
+        {
+          "name": "Coordinación del Instituto Municipal de las Mujeres (DIF)",
+          "address": "Calle Juárez #200, Col. Centro, Allende, N.L., C.P. 67350",
+          "contact": "826 268 2885",
+          "desc": "Orientación, asesoría psicológica y canalización de casos de violencia de género."
+        }
+      ]
+    },
+    "anahuac": {
+      "name": "Anáhuac",
+      "resources": []
+    },
+    "apodaca": {
+      "name": "Apodaca",
+      "resources": [
+        {
+          "name": "Secretaría de las Mujeres de Apodaca",
+          "address": "Edificio Mujeres Plenas, Antiguo Camino a Agua Fría esq. con Arco Vial, Col. Nova, Apodaca, N.L.",
+          "contact": "81 3424 3844",
+          "altContact": "81 3424 3845",
+          "whatsapp": "8180272776",
+          "desc": "Atención especializada, asesoría jurídica, psicológica y apoyo integral para mujeres en Apodaca.",
+          "link": "https://www.facebook.com/secretariadelasmujeresa/?locale=es_LA",
+          "linkLabel": "Facebook de la Secretaría"
+        }
+      ]
+    },
+    "aramberri": {
+      "name": "Aramberri",
+      "resources": []
+    },
+    "bustamante": {
+      "name": "Bustamante",
+      "resources": []
+    },
+    "cadereyta-jimenez": {
+      "name": "Cadereyta Jiménez",
+      "resources": [
+        {
+          "name": "Instituto de la Mujer Jimenense",
+          "address": "Calle Campesina s/n, Colonia Jerónimo Treviño, Cadereyta Jiménez, N.L.",
+          "contact": "82 8284 2110",
+          "altContact": "Atención 24/7: 82 8269 1900 / 82 8284 2111",
+          "desc": "Atención, asesoría psicológica, legal y acompañamiento a mujeres de la localidad."
+        }
+      ]
+    },
+    "el-carmen": {
+      "name": "El Carmen",
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer de El Carmen",
+          "address": "Calle Víctor Hugo s/n, Centro, El Carmen, N.L.",
+          "contact": "81 8236 0042",
+          "altContact": "Atención 24/7: 81 2350 2560",
+          "desc": "Orientación jurídica, psicológica y canalización especializada."
+        }
+      ]
+    },
+    "cerralvo": {
+      "name": "Cerralvo",
+      "resources": [
+        {
+          "name": "Coordinación del Instituto de la Mujer de Cerralvo",
+          "address": "Ayuntamiento de Cerralvo (Palacio Municipal), N.L.",
+          "contact": "892 975 0161",
+          "desc": "Apoyo municipal y canalización. Solicita comunicar con la Coordinación del Instituto de la Mujer al llamar al Palacio Municipal."
+        }
+      ]
+    },
+    "cienega-de-flores": {
+      "name": "Ciénega de Flores",
+      "resources": [
+        {
+          "name": "Instituto Municipal de las Mujeres Ciénega de Flores",
+          "address": "Av. Independencia 120, Centro de Ciénega de Flores, N.L., C.P. 65550",
+          "contact": "825 238 5850",
+          "email": "institutodelamujer@cienegadeflores.gob.mx",
+          "desc": "Orientación integral y asesoría jurídica local."
+        }
+      ]
+    },
+    "china": {
+      "name": "China",
+      "resources": []
+    },
+    "doctor-arroyo": {
+      "name": "Doctor Arroyo",
+      "resources": [
+        {
+          "name": "Unidad de Atención a la Violencia Familiar",
+          "address": "Padre Severiano Martínez S/N, Col. Centro, C.P. 67901, Doctor Arroyo, N.L.",
+          "contact": "488 888 0143",
+          "desc": "Servicio local de orientación y contención psicológica."
+        }
+      ]
+    },
+    "doctor-coss": {
+      "name": "Doctor Coss",
+      "resources": []
+    },
+    "doctor-gonzalez": {
+      "name": "Doctor González",
+      "resources": []
+    },
+    "galeana": {
+      "name": "Galeana",
+      "resources": [
+        {
+          "name": "Atención Municipal a la Mujer (Galeana)",
+          "address": "Calle Cuauhtémoc S/N, Centro, Galeana, N.L., C.P. 67850",
+          "contact": "81 2020 4100",
+          "desc": "Atención, asesoría y canalización para mujeres en situación de vulnerabilidad."
+        }
+      ]
+    },
+    "garcia": {
+      "name": "García",
+      "resources": [
+        {
+          "name": "Coordinación para Atender la Violencia Familiar y de Género (CAVIFG)",
+          "address": "Camino a la Estación S/N, Colonia Fray Juan Antonio de Sobrevilla, García, N.L.",
+          "contact": "81 8283 1970",
+          "desc": "Atención y contención especializada para casos de violencia familiar y de género."
+        }
+      ]
+    },
+    "san-pedro-garza-garcia": {
+      "name": "San Pedro Garza García",
+      "resources": [
+        {
+          "name": "Coordinación de las Mujeres (San Pedro)",
+          "address": "Francisco Villa #133, Col. Jesús M. Garza, San Pedro Garza García, N.L.",
+          "contact": "81 1052 4236",
+          "desc": "Asesoría psicológica y jurídica de manera confidencial y gratuita."
+        },
+        {
+          "name": "Puerta Violeta San Pedro (Atención 24/7)",
+          "contact": "81 8242 5022",
+          "altContact": "81 8242 5023 al 24",
+          "desc": "Unidad de auxilio y atención inmediata disponible las 24 horas del día."
+        }
+      ]
+    },
+    "general-bravo": {
+      "name": "General Bravo",
+      "resources": []
+    },
+    "general-escobedo": {
+      "name": "General Escobedo",
+      "resources": [
+        {
+          "name": "Secretaría de las Mujeres de Escobedo",
+          "address": "Calle Cto. de la Luz, Monte Real INFONAVIT, C.P. 66056, General Escobedo, N.L.",
+          "contact": "81 8286 9432",
+          "altContact": "81 1306 4773",
+          "email": "sriadelamujer@gmail.com",
+          "whatsapp": "8134571093",
+          "desc": "Atención psicológica y jurídica integral. Chat de asistencia inmediata por WhatsApp: 'MIA, mi amiga'."
+        }
+      ]
+    },
+    "general-teran": {
+      "name": "General Terán",
+      "resources": []
+    },
+    "general-trevino": {
+      "name": "General Treviño",
+      "resources": []
+    },
+    "general-zaragoza": {
+      "name": "General Zaragoza",
+      "resources": []
+    },
+    "general-zuazua": {
+      "name": "General Zuazua",
+      "resources": [
+        {
+          "name": "Instituto Municipal de las Mujeres Zuazua",
+          "address": "Juárez #111, Col. Centro, General Zuazua, N.L.",
+          "contact": "825 247 0318",
+          "altContact": "825 247 1206 (Ext. 124)",
+          "whatsapp": "8121042696",
+          "desc": "Asesoría, contención psicológica y acompañamiento legal. Línea 24/7 habilitada."
+        }
+      ]
+    },
+    "guadalupe": {
+      "name": "Guadalupe",
+      "resources": [
+        {
+          "name": "Centro Violeta / Secretaría de Igualdad Sustantiva de Guadalupe",
+          "address": "Sierra de la Iguana s/n, Fracc. Cerro de la Silla, Guadalupe, N.L.",
+          "contact": "81 8007 6255",
+          "altContact": "Línea Amiga: 81 4444 0000",
+          "desc": "Espacio de atención integral y multidisciplinario para mujeres en situación de violencia.",
+          "link": "https://nl.gob.mx/es/boletines/inauguran-centro-violeta-en-guadalupe",
+          "linkLabel": "Boletín Informativo"
+        }
+      ]
+    },
+    "los-herreras": {
+      "name": "Los Herreras",
+      "resources": []
+    },
+    "higueras": {
+      "name": "Higueras",
+      "resources": []
+    },
+    "hualahuises": {
+      "name": "Hualahuises",
+      "resources": []
+    },
+    "iturbide": {
+      "name": "Iturbide",
+      "resources": []
+    },
+    "juarez": {
+      "name": "Juárez",
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer en Juárez",
+          "address": "Avenida Vistas de la Primavera número 198, Colonia Vistas del Río, Juárez, N.L., C.P. 67267",
+          "contact": "81 3061 0907",
+          "desc": "Orientación, asesoría psicológica y jurídica confidencial."
+        }
+      ]
+    },
+    "lampazos-de-naranjo": {
+      "name": "Lampazos de Naranjo",
+      "resources": []
+    },
+    "linares": {
+      "name": "Linares",
+      "resources": [
+        {
+          "name": "Instancia Municipal de la Mujer",
+          "address": "Juárez #108 Poniente, Piso 3 (Torre Administrativa), Zona Centro, Linares, N.L.",
+          "contact": "821 118 1266",
+          "desc": "Atención psicológica, acompañamiento y orientación jurídica para mujeres del municipio."
+        }
+      ]
+    },
+    "marin": {
+      "name": "Marín",
+      "resources": []
+    },
+    "melchor-ocampo": {
+      "name": "Melchor Ocampo",
+      "resources": []
+    },
+    "mier-y-noriega": {
+      "name": "Mier y Noriega",
+      "resources": []
+    },
+    "mina": {
+      "name": "Mina",
+      "resources": []
+    },
+    "montemorelos": {
+      "name": "Montemorelos",
+      "resources": [
+        {
+          "name": "Dirección del Instituto de la Mujer de Montemorelos",
+          "address": "Palacio Municipal (Zaragoza e Hidalgo S/N, Centro Histórico), Montemorelos, N.L., C.P. 67500",
+          "contact": "826 263 4050",
+          "desc": "Atención integral, orientación jurídica y canalización especializada."
+        }
+      ]
+    },
+    "monterrey": {
+      "name": "Monterrey",
+      "resources": [
+        {
+          "name": "Instituto de las Mujeres Regias",
+          "address": "Av. Céntrika #110, Col. Céntrika, Monterrey, N.L.",
+          "contact": "81 2090 2828",
+          "desc": "Asesoría psicológica, jurídica y de trabajo social."
+        },
+        {
+          "name": "UAVVI Sede Alamey (Policía de Monterrey)",
+          "address": "Avenida Los Ángeles s/n, esquina con la calle Arista, Col. Del Norte, C.P. 64500, Monterrey, N.L.",
+          "contact": "81 5102 8010",
+          "desc": "Unidad de Atención a Víctimas de Violencia Intrafamiliar."
+        },
+        {
+          "name": "UAVVI Sede Norte - San Bernabé (Policía de Monterrey)",
+          "address": "Calle Ixtlixóchitl s/n, en su cruce con la calle Nezahualcóyotl, Provileón San Bernabé, C.P. 64217, Monterrey, N.L.",
+          "contact": "81 5102 6980",
+          "desc": "Unidad de Atención a Víctimas de Violencia Intrafamiliar."
+        }
+      ]
+    },
+    "paras": {
+      "name": "Parás",
+      "resources": []
+    },
+    "pesqueria": {
+      "name": "Pesquería",
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer de Pesquería",
+          "address": "Calle Ayala S/N (entre Guerrero y Matamoros), Zona Centro, Pesquería, N.L., C.P. 66650",
+          "contact": "825 688 0479",
+          "altContact": "81 3079 8232",
+          "whatsapp": "8180984221",
+          "desc": "Apoyo psicológico y jurídico. Teléfono 24/7 disponible."
+        }
+      ]
+    },
+    "los-ramones": {
+      "name": "Los Ramones",
+      "resources": []
+    },
+    "rayones": {
+      "name": "Rayones",
+      "resources": []
+    },
+    "sabinas-hidalgo": {
+      "name": "Sabinas Hidalgo",
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer",
+          "address": "Calle Niños Héroes #600, Colonia Centro, Sabinas Hidalgo, N.L.",
+          "contact": "824 242 0836",
+          "altContact": "Atención 24/7: 824 242 7878",
+          "desc": "Atención, asesoría y canalización para mujeres en situación de violencia de género."
+        }
+      ]
+    },
+    "salinas-victoria": {
+      "name": "Salinas Victoria",
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer Salinas Victoria",
+          "address": "Bosques de los Nogales, C.P. 65500, Salinas Victoria, N.L.",
+          "contact": "81 2289 5529",
+          "desc": "Atención municipal especializada y orientación jurídica o de contención."
+        }
+      ]
+    },
+    "san-nicolas-de-los-garza": {
+      "name": "San Nicolás de los Garza",
+      "resources": [
+        {
+          "name": "Dirección de la Mujer de San Nicolás",
+          "address": "Jorge González Camarena #125, Fracc. Residencial Roble, San Nicolás de los Garza, N.L.",
+          "contact": "81 8158 1391",
+          "altContact": "Ext. 3031",
+          "whatsapp": "8112289876",
+          "desc": "Asesoría integral, apoyo psicológico, canalización legal y orientación."
+        }
+      ]
+    },
+    "hidalgo": {
+      "name": "Hidalgo",
+      "resources": []
+    },
+    "santa-catarina": {
+      "name": "Santa Catarina",
+      "resources": [
+        {
+          "name": "Atención a la Mujer de Santa Catarina",
+          "address": "Manuel Ordóñez 319, Col. Centro, Santa Catarina, N.L.",
+          "contact": "81 8676 1700",
+          "altContact": "Ext. 2514",
+          "desc": "Servicio de orientación y atención psicológica en el DIF municipal."
+        }
+      ]
+    },
+    "santiago": {
+      "name": "Santiago",
+      "resources": [
+        {
+          "name": "Dirección de Atención a la Mujer de Santiago",
+          "address": "Calle Escobedo #113, Col. San Javier (Villa de Santiago), Santiago, N.L., C.P. 67322",
+          "contact": "828 284 2110",
+          "altContact": "24/7: 828 269 1900 / 828 284 2111",
+          "desc": "Atención y acompañamiento en casos de violencia familiar y de género."
+        }
+      ]
+    },
+    "vallecillo": {
+      "name": "Vallecillo",
+      "resources": []
+    },
+    "villaldama": {
+      "name": "Villaldama",
+      "resources": []
+    },
+    "otro": {
+      "name": "Otro Municipio (Fuera de Nuevo León)",
+      "resources": [
+        {
+          "name": "Apoyo en otros estados",
+          "desc": "Si vives fuera de Nuevo León, te sugerimos utilizar las líneas nacionales de apoyo detalladas abajo, las cuales tienen cobertura en todo el territorio mexicano."
+        }
+      ]
+    }
+  },
+  "estatalNLResources": [
+    {
+      "name": "Línea 070 (Informatel y Locatel)",
+      "contact": "070",
+      "desc": "Servicio gratuito de orientación, asesoría psicológica y jurídica, disponible las 24 horas, los 365 días del año en todo el estado de Nuevo León."
+    },
+    {
+      "name": "Secretaría de las Mujeres de Nuevo León",
+      "contact": "81 2020 9773",
+      "desc": "Oficina principal de atención. Dirección: Eugenio Garza Sada Sur 2145, Piso 6, Col. Roma, Monterrey, N.L."
+    },
+    {
+      "name": "Denuncia Virtual (Fiscalía General de Justicia de NL)",
+      "contact": "",
+      "desc": "Plataforma oficial para realizar denuncias a través de videollamada con un Agente del Ministerio Público de la Fiscalía.",
+      "link": "https://denuncia.fiscalia-nl.gob.mx:8443/",
+      "linkLabel": "Acceder a Video Denuncia"
+    }
+  ],
+  "nationalResources": [
+    {
+      "name": "Emergencias (Policía, Cruz Roja, Bomberos)",
+      "contact": "911",
+      "desc": "Disponible 24/7 en todo el país"
+    },
+    {
+      "name": "Red Nacional de Refugios para Mujeres",
+      "contact": "800 822 44 60",
+      "desc": "Atención confidencial 24/7. Refugios seguros en todo México"
+    },
+    {
+      "name": "Línea de la Vida - Apoyo Psicológico",
+      "contact": "800 911 2000",
+      "desc": "Orientación emocional gratuita, CONADIC"
+    }
+  ]
+}

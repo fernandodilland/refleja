@@ -1,0 +1,166 @@
+"""Lógica de agregación estadística: upserts atómicos y portables.
+
+Estrategia "pocos datos, mucha señal":
+  - Contadores agregados (question_stat, daily_metric): incrementos atómicos a
+    nivel SQL (x = x + n).
+  - 1 fila por intento de formulario (form_run): se crea y luego se actualiza.
+  - 1 fila por visitante pseudónimo (visitor).
+Compatible con SQLite (dev) y MariaDB (prod) sin dialecto específico.
+"""
+import re
+from datetime import date, datetime, timezone
+
+from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from .models import DailyMetric, FormRun, QuestionStat, Visitor
+from .security import utcnow
+
+_MOBILE_RE = re.compile(r"Mobi|Android|iPhone|iPod", re.I)
+_TABLET_RE = re.compile(r"iPad|Tablet", re.I)
+
+# IDs de pregunta válidos del cuestionario (evita inflar la tabla con basura).
+VALID_QUESTION_IDS = frozenset(
+    {"age", "start", "MINOR", "LOCATION", "RESULT"}
+    | {f"pareja_{i}" for i in range(1, 13)}
+    | {f"fam_{i}" for i in range(1, 13)}
+    | {f"trab_{i}" for i in range(1, 13)}
+)
+
+
+_MUNI_RE = re.compile(r"[^a-z0-9-]+")
+
+
+def normalize_municipio(value: str | None) -> str | None:
+    """Normaliza a slug (minúsculas, guiones) para no fragmentar el ranking por
+    variantes de mayúsculas/espacios. Devuelve None si queda vacío."""
+    if not value:
+        return None
+    s = value.strip().lower().replace(" ", "-")
+    s = _MUNI_RE.sub("", s)[:48].strip("-")
+    return s or None
+
+
+def device_from_ua(ua: str | None) -> str:
+    if not ua:
+        return "desktop"
+    if _TABLET_RE.search(ua):
+        return "tablet"
+    if _MOBILE_RE.search(ua):
+        return "mobile"
+    return "desktop"
+
+
+def _today() -> date:
+    return datetime.now(timezone.utc).date()
+
+
+# --- Visitante --------------------------------------------------------------
+def get_or_create_visitor(
+    db: Session, vid_hash: str, country: str | None, device: str | None
+) -> tuple[Visitor, bool]:
+    v = db.execute(
+        select(Visitor).where(Visitor.vid_hash == vid_hash)
+    ).scalar_one_or_none()
+    if v:
+        return v, False
+    try:
+        with db.begin_nested():
+            v = Visitor(
+                vid_hash=vid_hash,
+                country=country,
+                device=device,
+                page_views=0,
+                last_seen_at=utcnow(),
+            )
+            db.add(v)
+        return v, True
+    except IntegrityError:
+        v = db.execute(
+            select(Visitor).where(Visitor.vid_hash == vid_hash)
+        ).scalar_one()
+        return v, False
+
+
+def touch_visitor(db: Session, vid_hash: str, add_page_view: bool = False) -> None:
+    values = {"last_seen_at": utcnow()}
+    if add_page_view:
+        values["page_views"] = Visitor.page_views + 1
+    db.execute(update(Visitor).where(Visitor.vid_hash == vid_hash).values(**values))
+
+
+# --- Contadores por pregunta -----------------------------------------------
+def _ensure_question(db: Session, qid: str) -> None:
+    exists = db.execute(
+        select(QuestionStat.id).where(QuestionStat.question_id == qid)
+    ).first()
+    if exists:
+        return
+    try:
+        with db.begin_nested():
+            db.add(QuestionStat(question_id=qid, reached_count=0, answered_count=0))
+    except IntegrityError:
+        pass
+
+
+def bump_question(db: Session, qid: str, reached: int = 0, answered: int = 0) -> None:
+    if qid not in VALID_QUESTION_IDS or (reached == 0 and answered == 0):
+        return
+    _ensure_question(db, qid)
+    db.execute(
+        update(QuestionStat)
+        .where(QuestionStat.question_id == qid)
+        .values(
+            reached_count=QuestionStat.reached_count + reached,
+            answered_count=QuestionStat.answered_count + answered,
+        )
+    )
+
+
+# --- Rollup diario ----------------------------------------------------------
+def _ensure_daily(db: Session, d: date) -> None:
+    exists = db.execute(
+        select(DailyMetric.id).where(DailyMetric.metric_date == d)
+    ).first()
+    if exists:
+        return
+    try:
+        with db.begin_nested():
+            db.add(DailyMetric(metric_date=d))
+    except IntegrityError:
+        pass
+
+
+def bump_daily(db: Session, **deltas: int) -> None:
+    deltas = {k: v for k, v in deltas.items() if v}
+    if not deltas:
+        return
+    d = _today()
+    _ensure_daily(db, d)
+    col_expr = {
+        k: getattr(DailyMetric, k) + v for k, v in deltas.items()
+    }
+    db.execute(
+        update(DailyMetric).where(DailyMetric.metric_date == d).values(**col_expr)
+    )
+
+
+# --- Intento de formulario --------------------------------------------------
+def get_or_create_run(
+    db: Session, run_uid: str, visitor_id: int | None
+) -> FormRun:
+    run = db.execute(
+        select(FormRun).where(FormRun.run_uid == run_uid)
+    ).scalar_one_or_none()
+    if run:
+        return run
+    try:
+        with db.begin_nested():
+            run = FormRun(run_uid=run_uid, visitor_id=visitor_id)
+            db.add(run)
+        return run
+    except IntegrityError:
+        return db.execute(
+            select(FormRun).where(FormRun.run_uid == run_uid)
+        ).scalar_one()

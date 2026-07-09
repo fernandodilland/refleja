@@ -31,15 +31,30 @@ VALID_QUESTION_IDS = frozenset(
 
 _MUNI_RE = re.compile(r"[^a-z0-9-]+")
 
+# Municipios de Nuevo León (+ "otro"). Solo estos slugs se aceptan, para que la
+# tabla de contadores no crezca con valores basura enviados por un bot.
+VALID_MUNICIPIOS = frozenset({
+    "abasolo", "agualeguas", "los-aldamas", "allende", "anahuac", "apodaca",
+    "aramberri", "bustamante", "cadereyta-jimenez", "el-carmen", "cerralvo",
+    "cienega-de-flores", "china", "doctor-arroyo", "doctor-coss",
+    "doctor-gonzalez", "galeana", "garcia", "san-pedro-garza-garcia",
+    "general-bravo", "general-escobedo", "general-teran", "general-trevino",
+    "general-zaragoza", "general-zuazua", "guadalupe", "los-herreras",
+    "higueras", "hualahuises", "iturbide", "juarez", "lampazos-de-naranjo",
+    "linares", "marin", "melchor-ocampo", "mier-y-noriega", "mina",
+    "montemorelos", "monterrey", "paras", "pesqueria", "los-ramones", "rayones",
+    "sabinas-hidalgo", "salinas-victoria", "san-nicolas-de-los-garza", "hidalgo",
+    "santa-catarina", "santiago", "vallecillo", "villaldama", "otro",
+})
+
 
 def normalize_municipio(value: str | None) -> str | None:
-    """Normaliza a slug (minúsculas, guiones) para no fragmentar el ranking por
-    variantes de mayúsculas/espacios. Devuelve None si queda vacío."""
+    """Normaliza a slug y valida contra la lista real. None si no es válido."""
     if not value:
         return None
     s = value.strip().lower().replace(" ", "-")
     s = _MUNI_RE.sub("", s)[:48].strip("-")
-    return s or None
+    return s if s in VALID_MUNICIPIOS else None
 
 
 def device_from_ua(ua: str | None) -> str:
@@ -120,6 +135,24 @@ def touch_visitor(db: Session, vid_hash: str, add_page_view: bool = False) -> No
     if add_page_view:
         values["page_views"] = Visitor.page_views + 1
     db.execute(update(Visitor).where(Visitor.vid_hash == vid_hash).values(**values))
+
+
+def bump_visitor_quota(
+    db: Session, vid_hash: str, events: int = 0, runs: int = 0,
+    completions: int = 0, page_views: int = 0,
+) -> None:
+    """Persiste (incrementos atómicos) las cuotas del visitante + last_seen."""
+    db.execute(
+        update(Visitor)
+        .where(Visitor.vid_hash == vid_hash)
+        .values(
+            events_count=Visitor.events_count + events,
+            run_count=Visitor.run_count + runs,
+            completed_count=Visitor.completed_count + completions,
+            page_views=Visitor.page_views + page_views,
+            last_seen_at=utcnow(),
+        )
+    )
 
 
 # --- Contadores por pregunta -----------------------------------------------
@@ -205,14 +238,13 @@ def bump_daily(db: Session, **deltas: int) -> None:
 
 
 # --- Intento de formulario --------------------------------------------------
-def get_or_create_run(
-    db: Session, run_uid: str, visitor_id: int | None
-) -> FormRun:
-    run = db.execute(
+def get_run(db: Session, run_uid: str) -> FormRun | None:
+    return db.execute(
         select(FormRun).where(FormRun.run_uid == run_uid)
     ).scalar_one_or_none()
-    if run:
-        return run
+
+
+def create_run(db: Session, run_uid: str, visitor_id: int | None) -> FormRun:
     try:
         with db.begin_nested():
             run = FormRun(run_uid=run_uid, visitor_id=visitor_id)
@@ -222,3 +254,8 @@ def get_or_create_run(
         return db.execute(
             select(FormRun).where(FormRun.run_uid == run_uid)
         ).scalar_one()
+
+
+def get_or_create_run(db: Session, run_uid: str, visitor_id: int | None) -> FormRun:
+    run = get_run(db, run_uid)
+    return run if run else create_run(db, run_uid, visitor_id)

@@ -84,6 +84,10 @@ class Visitor(TimestampMixin, Base):
     last_seen_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now()
     )
+    # Cuotas de por vida (anti-abuso por token). Ver PUBLIC_MAX_* en config.
+    events_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    run_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    completed_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class FormRun(TimestampMixin, Base):

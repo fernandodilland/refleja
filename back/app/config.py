@@ -66,8 +66,13 @@ class Settings(BaseSettings):
     ORIGIN_SECRET_HEADER: str = "X-Origin-Secret"
 
     # --- Anti-abuso ---
-    COLLECT_RATE_PER_MIN: int = 120  # eventos/min por token estadístico
+    COLLECT_RATE_PER_MIN: int = 120  # peticiones/min por token estadístico (ráfaga)
     SESSION_RATE_PER_MIN: int = 30   # emisiones de token/min por IP
+    # Cuotas de POR VIDA por token/visitante (persistidas). Acotan el impacto de
+    # un token válido abusivo sin saturar la BD.
+    PUBLIC_MAX_EVENTS: int = 2000       # eventos totales aceptados por token
+    PUBLIC_MAX_RUNS: int = 20           # intentos de formulario creados por token
+    PUBLIC_MAX_COMPLETIONS: int = 3     # completaciones contadas por token
 
     @property
     def is_prod(self) -> bool:

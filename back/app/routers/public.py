@@ -95,26 +95,79 @@ def create_session(
     return SessionResponse(token=token, expires_in_days=settings.PUBLIC_TOKEN_TTL_DAYS)
 
 
+class _Quota:
+    """Cuotas de por vida del visitante (anti-abuso). Se comprueba contra el
+    valor cargado al inicio del lote + lo acumulado dentro del lote."""
+
+    __slots__ = ("_events", "_runs", "_completions",
+                 "d_events", "d_runs", "d_completions", "d_page_views")
+
+    def __init__(self, visitor) -> None:
+        self._events = visitor.events_count
+        self._runs = visitor.run_count
+        self._completions = visitor.completed_count
+        self.d_events = self.d_runs = self.d_completions = self.d_page_views = 0
+
+    def events_left(self) -> bool:
+        return (self._events + self.d_events) < settings.PUBLIC_MAX_EVENTS
+
+    def can_create_run(self) -> bool:
+        return (self._runs + self.d_runs) < settings.PUBLIC_MAX_RUNS
+
+    def can_complete(self) -> bool:
+        return (self._completions + self.d_completions) < settings.PUBLIC_MAX_COMPLETIONS
+
+
+def _run_for(db: Session, event: CollectEvent, visitor_id: int, q: _Quota):
+    """Run del evento; lo crea si hace falta y la cuota de runs lo permite.
+    Devuelve None si no hay run_uid o se alcanzó la cuota de runs."""
+    if not event.run_uid:
+        return None
+    run = analytics.get_run(db, event.run_uid)
+    if run is None:
+        if not q.can_create_run():
+            return None
+        run = analytics.create_run(db, event.run_uid, visitor_id)
+        q.d_runs += 1
+    return run
+
+
 def _process_event(
-    db: Session, event: CollectEvent, vid_h: str, visitor_id: int
+    db: Session, event: CollectEvent, vid_h: str, visitor_id: int, q: _Quota
 ) -> None:
     et = event.type
 
+    # Eventos globales (no ligados a un run del formulario).
     if et == "page_view":
-        analytics.touch_visitor(db, vid_h, add_page_view=True)
+        q.d_page_views += 1
         analytics.bump_daily(db, page_views=1)
+        return
+    if et == "urgent_click":
+        analytics.bump_counter(db, "urgent_click")
+        return
+    if et == "hide_click":
+        analytics.bump_counter(db, "hide_click")
+        return
+    if et == "restart":
+        analytics.bump_counter(db, "restart")
+        return
+    if et == "directory_municipio":
+        muni = analytics.normalize_municipio(event.municipio)
+        if muni:
+            analytics.bump_counter(db, "dir_muni:" + muni)
+        return
 
-    elif et == "run_start":
-        # 'age' se cuenta como alcanzada una sola vez por run (idempotente ante
-        # recargas/reintentos que reenvían run_start).
-        first_start = True
-        if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
-            first_start = not run.started
-            run.started = True
-            if run.max_step < 1:
-                run.max_step = 1
-            run.last_question_id = "age"
+    # Eventos del formulario: requieren un run (acotado por la cuota de runs).
+    run = _run_for(db, event, visitor_id, q)
+    if run is None:
+        return
+
+    if et == "run_start":
+        first_start = not run.started
+        run.started = True
+        if run.max_step < 1:
+            run.max_step = 1
+        run.last_question_id = "age"
         if first_start:
             analytics.bump_question(db, "age", reached=1)
 
@@ -123,77 +176,55 @@ def _process_event(
             analytics.bump_question(db, event.question_id, answered=1)
         if event.next_id:
             analytics.bump_question(db, event.next_id, reached=1)
-        if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
-            run.started = True
-            if event.flow_type:
-                # Entrar a un flujo por primera vez = "empezar el formulario"
-                # (idempotente: si ya había flow_type, no se recuenta).
-                if run.flow_type is None and not run.completed:
-                    analytics.bump_daily(db, form_starts=1)
-                run.flow_type = event.flow_type
-            if event.age_bucket:
-                run.age_bucket = event.age_bucket
-            if event.step is not None and event.step > run.max_step:
-                run.max_step = event.step
-            run.last_question_id = event.next_id or event.question_id
+        run.started = True
+        if event.flow_type:
+            if run.flow_type is None and not run.completed:
+                analytics.bump_daily(db, form_starts=1)
+            run.flow_type = event.flow_type
+        if event.age_bucket:
+            run.age_bucket = event.age_bucket
+        if event.step is not None and event.step > run.max_step:
+            run.max_step = event.step
+        run.last_question_id = event.next_id or event.question_id
 
     elif et == "minor":
-        # Menor de edad: cuenta como formulario COMPLETADO (aunque sin preguntas).
-        if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
-            run.started = True
-            run.age_bucket = "minor"
-            run.last_question_id = "MINOR"
-            if not run.completed:
-                run.completed = True
-                analytics.bump_daily(db, form_completes=1)
+        # Menor de edad: cuenta como COMPLETADO (aunque sin preguntas).
+        run.started = True
+        run.age_bucket = "minor"
+        run.last_question_id = "MINOR"
         analytics.bump_daily(db, minors=1)
+        if not run.completed and q.can_complete():
+            run.completed = True
+            q.d_completions += 1
+            analytics.bump_daily(db, form_completes=1)
 
     elif et == "municipio":
         muni = analytics.normalize_municipio(event.municipio)
-        if event.run_uid and muni:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
+        if muni:
             run.municipio = muni
             run.last_question_id = "LOCATION"
 
     elif et == "result":
-        if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
-            already = run.completed
-            # 'completed' implica 'started' (evita completion_rate > 1).
-            run.started = True
-            run.completed = True
-            run.last_question_id = "RESULT"
-            if event.risk_level:
-                run.risk_level = event.risk_level
-            muni = analytics.normalize_municipio(event.municipio)
-            if muni:
-                run.municipio = muni
-            if event.scores:
-                s = event.scores
-                run.score_psicologica = s.psicologica
-                run.score_fisica = s.fisica
-                run.score_economica = s.economica
-                run.score_patrimonial = s.patrimonial
-                run.score_sexual = s.sexual
-                run.score_intimidacion = s.intimidacion
-            if not already:
-                analytics.bump_daily(db, form_completes=1)
-
-    elif et == "urgent_click":
-        analytics.bump_counter(db, "urgent_click")
-
-    elif et == "hide_click":
-        analytics.bump_counter(db, "hide_click")
-
-    elif et == "restart":
-        analytics.bump_counter(db, "restart")
-
-    elif et == "directory_municipio":
+        run.started = True
+        run.last_question_id = "RESULT"
+        if event.risk_level:
+            run.risk_level = event.risk_level
         muni = analytics.normalize_municipio(event.municipio)
         if muni:
-            analytics.bump_counter(db, "dir_muni:" + muni)
+            run.municipio = muni
+        if event.scores:
+            s = event.scores
+            run.score_psicologica = s.psicologica
+            run.score_fisica = s.fisica
+            run.score_economica = s.economica
+            run.score_patrimonial = s.patrimonial
+            run.score_sexual = s.sexual
+            run.score_intimidacion = s.intimidacion
+        # Solo cuenta como completado si no lo estaba y hay cuota disponible.
+        if not run.completed and q.can_complete():
+            run.completed = True
+            q.d_completions += 1
+            analytics.bump_daily(db, form_completes=1)
 
 
 @router.post("/collect", response_model=CollectResponse)
@@ -219,9 +250,19 @@ def collect(
             break
     visitor, _ = analytics.get_or_create_visitor(db, vid_h, country, device)
 
+    q = _Quota(visitor)
+    accepted = 0
     for event in batch.events:
-        _process_event(db, event, vid_h, visitor.id)
+        if not q.events_left():
+            break  # cuota de por vida alcanzada: se ignora el resto
+        _process_event(db, event, vid_h, visitor.id, q)
+        q.d_events += 1
+        accepted += 1
 
-    analytics.touch_visitor(db, vid_h)
+    # Persiste cuotas (incrementos atómicos) + last_seen en un solo UPDATE.
+    analytics.bump_visitor_quota(
+        db, vid_h, events=q.d_events, runs=q.d_runs,
+        completions=q.d_completions, page_views=q.d_page_views,
+    )
     db.commit()
-    return CollectResponse(ok=True, accepted=len(batch.events))
+    return CollectResponse(ok=True, accepted=accepted)

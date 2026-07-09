@@ -1,7 +1,7 @@
 """Motor de base de datos y sesión (SQLAlchemy 2.0, síncrono)."""
 from collections.abc import Iterator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from .config import settings
@@ -44,7 +44,29 @@ def get_db() -> Iterator[Session]:
 
 
 def init_db() -> None:
-    """Crea las tablas si no existen (uso en dev/local con SQLite)."""
+    """Crea las tablas que falten y aplica migraciones ligeras idempotentes."""
     from . import models  # noqa: F401  (registra los modelos en Base.metadata)
 
     Base.metadata.create_all(bind=engine)
+    _apply_light_migrations()
+
+
+# Columnas añadidas a tablas ya existentes (create_all NO altera tablas).
+# Idempotente: ADD COLUMN IF NOT EXISTS (MariaDB 10.0+). En SQLite no hace falta
+# porque create_all ya crea la tabla con las columnas nuevas.
+_MYSQL_MIGRATIONS = [
+    "ALTER TABLE visitor ADD COLUMN IF NOT EXISTS events_count INT NOT NULL DEFAULT 0",
+    "ALTER TABLE visitor ADD COLUMN IF NOT EXISTS run_count INT NOT NULL DEFAULT 0",
+    "ALTER TABLE visitor ADD COLUMN IF NOT EXISTS completed_count INT NOT NULL DEFAULT 0",
+]
+
+
+def _apply_light_migrations() -> None:
+    if not engine.url.get_backend_name().startswith("mysql"):
+        return
+    for stmt in _MYSQL_MIGRATIONS:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(stmt))
+        except Exception:  # noqa: BLE001 (si falta privilegio ALTER, se ignora)
+            pass

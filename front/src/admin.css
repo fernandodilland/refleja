@@ -76,6 +76,18 @@ a { color: var(--warm); }
   box-shadow: 0 0 0 3px rgba(229, 86, 122, 0.15); background: #fff;
 }
 
+/* Campo de contraseña con botón de "ojito" */
+.pw-wrap { position: relative; }
+.pw-wrap input { padding-right: 44px; }
+.pw-toggle {
+  position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+  width: 32px; height: 32px; border: none; background: transparent;
+  cursor: pointer; color: var(--muted); display: grid; place-items: center;
+  border-radius: 8px; padding: 0;
+}
+.pw-toggle:hover { color: var(--wine-2); background: #f0eaf2; }
+.pw-toggle svg { width: 20px; height: 20px; display: block; }
+
 .btn {
   width: 100%; padding: 12px 16px; border: none; border-radius: 12px;
   background: linear-gradient(135deg, var(--coral), var(--wine));

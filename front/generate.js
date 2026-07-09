@@ -241,6 +241,7 @@ function municipioPage(slug) {
 ${headCommon(title, description, canonical, ldScript)}
 </head>
 <body class="stage-municipio">
+<script>window.__REFLEJA_MUNI__=${JSON.stringify(slug)};</script>
 ${meshBg()}
 ${header()}
 <main class="page-shell">

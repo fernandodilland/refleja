@@ -153,3 +153,15 @@ class AdminLogin(TimestampMixin, Base):
     device: Mapped[str | None] = mapped_column(String(16), nullable=True)
     country: Mapped[str | None] = mapped_column(String(2), nullable=True)
     user_agent: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
+
+class EventCounter(TimestampMixin, Base):
+    """Contadores agregados con nombre: clics de ayuda urgente, ocultar,
+    reinicios del formulario y municipios elegidos en el directorio
+    (name='dir_muni:<slug>'). Pocos datos, mucha señal."""
+
+    __tablename__ = "event_counter"
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    count: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)

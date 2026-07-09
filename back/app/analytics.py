@@ -14,7 +14,7 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from .models import DailyMetric, FormRun, QuestionStat, Visitor
+from .models import DailyMetric, EventCounter, FormRun, QuestionStat, Visitor
 from .security import utcnow
 
 _MOBILE_RE = re.compile(r"Mobi|Android|iPhone|iPod", re.I)
@@ -147,6 +147,32 @@ def bump_question(db: Session, qid: str, reached: int = 0, answered: int = 0) ->
             reached_count=QuestionStat.reached_count + reached,
             answered_count=QuestionStat.answered_count + answered,
         )
+    )
+
+
+# --- Contadores con nombre (urgente/ocultar/reinicio/directorio) -----------
+def _ensure_counter(db: Session, name: str) -> None:
+    exists = db.execute(
+        select(EventCounter.id).where(EventCounter.name == name)
+    ).first()
+    if exists:
+        return
+    try:
+        with db.begin_nested():
+            db.add(EventCounter(name=name, count=0))
+    except IntegrityError:
+        pass
+
+
+def bump_counter(db: Session, name: str, n: int = 1) -> None:
+    if not name or n == 0:
+        return
+    name = name[:64]
+    _ensure_counter(db, name)
+    db.execute(
+        update(EventCounter)
+        .where(EventCounter.name == name)
+        .values(count=EventCounter.count + n)
     )
 
 

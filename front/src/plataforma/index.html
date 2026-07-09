@@ -71,13 +71,13 @@
       <!-- Tiempo real + Violencia -->
       <div class="grid-2">
         <div class="panel">
-          <h2>En tiempo real</h2>
+          <div class="panel-head"><h2>En tiempo real</h2><button class="info-i" data-info="realtime" aria-label="¿De dónde sale?">i</button></div>
           <p class="hint">Visitantes activos y últimos recorridos (se actualiza solo).</p>
           <div id="rt-summary" class="legend"></div>
           <div id="rt-recent" class="recent" style="margin-top:12px"></div>
         </div>
         <div class="panel">
-          <h2>Tipos de violencia que destacan</h2>
+          <div class="panel-head"><h2>Tipos de violencia que destacan</h2><button class="info-i" data-info="violence" aria-label="¿De dónde sale?">i</button></div>
           <p class="hint">Sobre formularios completados.</p>
           <div class="tabs" id="viol-tabs">
             <button class="tab active" data-mode="dominant">Predominante</button>
@@ -90,7 +90,7 @@
 
       <!-- Embudo -->
       <div class="panel">
-        <h2>Embudo · ¿hasta qué pregunta llegan?</h2>
+        <div class="panel-head"><h2>Embudo · ¿hasta qué pregunta llegan?</h2><button class="info-i" data-info="funnel" aria-label="¿De dónde sale?">i</button></div>
         <p class="hint">Cada barra: quienes llegaron a la pregunta. En rojo, quienes la vieron pero no continuaron (abandono).</p>
         <div class="tabs" id="funnel-tabs">
           <button class="tab active" data-flow="pareja">Pareja</button>
@@ -101,18 +101,22 @@
         <div class="legend">
           <span><i style="background:var(--coral)"></i> Continuaron</span>
           <span><i style="background:var(--high)"></i> Abandonaron aquí</span>
+          <span><i style="background:var(--ok)"></i> Completaron</span>
         </div>
       </div>
 
       <!-- Municipios + Preguntas frecuentes -->
       <div class="grid-2">
         <div class="panel">
-          <h2>Municipios más elegidos</h2>
+          <div class="panel-head"><h2>Municipios más elegidos</h2><button class="info-i" data-info="muni_form" aria-label="¿De dónde sale?">i</button></div>
           <p class="hint">Al final del formulario.</p>
           <div id="muni-bars" class="bars"></div>
+          <div class="panel-head" style="margin-top:18px"><h3 class="subhead">En el directorio estatal</h3><button class="info-i" data-info="muni_dir" aria-label="¿De dónde sale?">i</button></div>
+          <p class="hint">Páginas /municipios y /&lt;municipio&gt;.</p>
+          <div id="dir-bars" class="bars"></div>
         </div>
         <div class="panel">
-          <h2>Preguntas más frecuentes</h2>
+          <div class="panel-head"><h2>Preguntas más frecuentes</h2><button class="info-i" data-info="topq" aria-label="¿De dónde sale?">i</button></div>
           <p class="hint">Las más alcanzadas por los usuarios.</p>
           <div id="topq-bars" class="bars"></div>
         </div>
@@ -120,7 +124,7 @@
 
       <!-- Series de tiempo -->
       <div class="panel">
-        <h2>Actividad diaria</h2>
+        <div class="panel-head"><h2>Actividad diaria</h2><button class="info-i" data-info="timeseries" aria-label="¿De dónde sale?">i</button></div>
         <p class="hint">Vistas, inicios y compleciones por día.</p>
         <div id="ts-chart"></div>
         <div class="legend">
@@ -128,6 +132,17 @@
           <span><i style="background:var(--coral)"></i> Empezaron</span>
           <span><i style="background:var(--ok)"></i> Completaron</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal: info de cada estadística -->
+    <div id="info-modal" class="modal-overlay" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" style="max-width:520px">
+        <div class="modal-head">
+          <h2 id="info-title">—</h2>
+          <button id="info-close" class="modal-close" aria-label="Cerrar">×</button>
+        </div>
+        <p id="info-text" class="info-text"></p>
       </div>
     </div>
 

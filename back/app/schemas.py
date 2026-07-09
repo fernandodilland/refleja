@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 # --- Público: emisión de token estadístico -----------------------------------
 class SessionRequest(BaseModel):
@@ -22,6 +22,10 @@ EventType = Literal[
     "minor",
     "municipio",
     "result",
+    "urgent_click",
+    "hide_click",
+    "restart",
+    "directory_municipio",
 ]
 
 
@@ -48,8 +52,24 @@ class CollectEvent(BaseModel):
     device: Literal["mobile", "desktop", "tablet"] | None = None
 
 
+class CollectBatch(BaseModel):
+    """Lote de eventos: el front acumula y envía en bloque para no gastar el
+    token/Turnstile a cada rato ni perder datos. Tolera también un evento
+    suelto ({"type": ...}) por compatibilidad con versiones anteriores del front."""
+
+    events: list[CollectEvent] = Field(..., max_length=50)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _accept_single_event(cls, data):
+        if isinstance(data, dict) and "events" not in data and "type" in data:
+            return {"events": [data]}
+        return data
+
+
 class CollectResponse(BaseModel):
     ok: bool = True
+    accepted: int = 0
 
 
 # --- Auth admin --------------------------------------------------------------

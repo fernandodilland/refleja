@@ -11,7 +11,14 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..deps import require_admin
-from ..models import AdminLogin, DailyMetric, FormRun, QuestionStat, Visitor
+from ..models import (
+    AdminLogin,
+    DailyMetric,
+    EventCounter,
+    FormRun,
+    QuestionStat,
+    Visitor,
+)
 from ..security import utcnow
 
 router = APIRouter(
@@ -93,6 +100,19 @@ def overview(
     )
     entered_not_started = max(total_visitors - started_visitors, 0)
 
+    # Visitantes que repitieron el formulario (>1 intento empezado).
+    repeat_sub = (
+        select(FormRun.visitor_id)
+        .where(FormRun.started.is_(True), FormRun.visitor_id.is_not(None))
+        .group_by(FormRun.visitor_id)
+        .having(func.count(FormRun.id) > 1)
+        .subquery()
+    )
+    repeat_visitors = count(select(func.count()).select_from(repeat_sub))
+
+    # Contadores con nombre (clics de ayuda urgente, ocultar, reinicios).
+    counters = dict(db.execute(select(EventCounter.name, EventCounter.count)).all())
+
     return {
         "total_visitors": total_visitors,
         "active_now": active_now,
@@ -101,6 +121,10 @@ def overview(
         "completed": completed,
         "minors": minors,
         "entered_not_started": entered_not_started,
+        "repeat_visitors": repeat_visitors,
+        "urgent_clicks": counters.get("urgent_click", 0),
+        "hide_clicks": counters.get("hide_click", 0),
+        "restarts": counters.get("restart", 0),
         # % de intentos empezados que se completan.
         "completion_rate": round(completed / started, 4) if started else 0.0,
         # % de visitantes que empiezan el formulario (por visitante único).
@@ -197,14 +221,29 @@ def funnel(db: Session = Depends(get_db)) -> dict:
     }
     intro = [step("age"), step("start")]
 
-    # Preguntas más "frecuentes" (más alcanzadas).
+    # Completaron el formulario, por tipo de flujo (para el nodo final del embudo).
+    completed_by_flow = dict(
+        db.execute(
+            select(FormRun.flow_type, func.count(FormRun.id))
+            .where(FormRun.completed.is_(True), FormRun.flow_type.is_not(None))
+            .group_by(FormRun.flow_type)
+        ).all()
+    )
+
+    # Preguntas más frecuentes: solo preguntas reales (sin estados de ruteo).
+    not_questions = {"MINOR", "LOCATION", "RESULT"}
     top = sorted(
-        (step(q) for q in rows),
+        (step(q) for q in rows if q not in not_questions),
         key=lambda x: x["reached"],
         reverse=True,
     )[:10]
 
-    return {"intro": intro, "flows": flows, "top_reached": top}
+    return {
+        "intro": intro,
+        "flows": flows,
+        "completed_by_flow": completed_by_flow,
+        "top_reached": top,
+    }
 
 
 @router.get("/violence")
@@ -272,7 +311,19 @@ def municipios(
     ).group_by(FormRun.municipio).order_by(func.count(FormRun.id).desc()).limit(limit)
 
     items = [{"municipio": m, "count": n} for m, n in db.execute(stmt).all()]
-    return {"items": items}
+
+    # Municipios más elegidos en el directorio estatal (/municipios y páginas /<slug>).
+    dir_rows = db.execute(
+        select(EventCounter.name, EventCounter.count)
+        .where(EventCounter.name.like("dir_muni:%"))
+        .order_by(EventCounter.count.desc())
+        .limit(limit)
+    ).all()
+    directory = [
+        {"municipio": name.split(":", 1)[1], "count": cnt} for name, cnt in dir_rows
+    ]
+
+    return {"items": items, "directory": directory}
 
 
 @router.get("/logins")

@@ -18,6 +18,7 @@ from ..config import settings
 from ..database import get_db
 from ..deps import client_country, client_ip, require_public_vid
 from ..schemas import (
+    CollectBatch,
     CollectEvent,
     CollectResponse,
     SessionRequest,
@@ -94,26 +95,9 @@ def create_session(
     return SessionResponse(token=token, expires_in_days=settings.PUBLIC_TOKEN_TTL_DAYS)
 
 
-@router.post("/collect", response_model=CollectResponse)
-def collect(
-    event: CollectEvent,
-    request: Request,
-    vid: str = Depends(require_public_vid),
-    db: Session = Depends(get_db),
-) -> CollectResponse:
-    """Ingesta de un evento estadístico. Requiere token en X-Refleja-Token."""
-    vid_h = hmac_vid(vid)
-    if not _rate_ok("coll:" + vid_h, settings.COLLECT_RATE_PER_MIN):
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Demasiadas peticiones.",
-        )
-
-    # Aseguramos que el visitante exista (por si el token sobrevive a un reinicio de BD).
-    country = client_country(request)
-    device = event.device or analytics.device_from_ua(request.headers.get("user-agent"))
-    visitor, _ = analytics.get_or_create_visitor(db, vid_h, country, device)
-
+def _process_event(
+    db: Session, event: CollectEvent, vid_h: str, visitor_id: int
+) -> None:
     et = event.type
 
     if et == "page_view":
@@ -121,12 +105,11 @@ def collect(
         analytics.bump_daily(db, page_views=1)
 
     elif et == "run_start":
-        analytics.touch_visitor(db, vid_h)
         # 'age' se cuenta como alcanzada una sola vez por run (idempotente ante
         # recargas/reintentos que reenvían run_start).
         first_start = True
         if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor.id)
+            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
             first_start = not run.started
             run.started = True
             if run.max_step < 1:
@@ -136,13 +119,12 @@ def collect(
             analytics.bump_question(db, "age", reached=1)
 
     elif et == "answer":
-        analytics.touch_visitor(db, vid_h)
         if event.question_id:
             analytics.bump_question(db, event.question_id, answered=1)
         if event.next_id:
             analytics.bump_question(db, event.next_id, reached=1)
         if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor.id)
+            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
             run.started = True
             if event.flow_type:
                 # Entrar a un flujo por primera vez = "empezar el formulario"
@@ -157,25 +139,28 @@ def collect(
             run.last_question_id = event.next_id or event.question_id
 
     elif et == "minor":
-        analytics.touch_visitor(db, vid_h)
+        # Menor de edad: cuenta como formulario COMPLETADO (aunque sin preguntas).
         if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor.id)
+            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
+            run.started = True
             run.age_bucket = "minor"
             run.last_question_id = "MINOR"
+            if not run.completed:
+                run.completed = True
+                analytics.bump_daily(db, form_completes=1)
         analytics.bump_daily(db, minors=1)
 
     elif et == "municipio":
-        analytics.touch_visitor(db, vid_h)
         muni = analytics.normalize_municipio(event.municipio)
         if event.run_uid and muni:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor.id)
+            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
             run.municipio = muni
             run.last_question_id = "LOCATION"
 
     elif et == "result":
-        analytics.touch_visitor(db, vid_h)
         if event.run_uid:
-            run = analytics.get_or_create_run(db, event.run_uid, visitor.id)
+            run = analytics.get_or_create_run(db, event.run_uid, visitor_id)
+            already = run.completed
             # 'completed' implica 'started' (evita completion_rate > 1).
             run.started = True
             run.completed = True
@@ -193,7 +178,50 @@ def collect(
                 run.score_patrimonial = s.patrimonial
                 run.score_sexual = s.sexual
                 run.score_intimidacion = s.intimidacion
-            analytics.bump_daily(db, form_completes=1)
+            if not already:
+                analytics.bump_daily(db, form_completes=1)
 
+    elif et == "urgent_click":
+        analytics.bump_counter(db, "urgent_click")
+
+    elif et == "hide_click":
+        analytics.bump_counter(db, "hide_click")
+
+    elif et == "restart":
+        analytics.bump_counter(db, "restart")
+
+    elif et == "directory_municipio":
+        muni = analytics.normalize_municipio(event.municipio)
+        if muni:
+            analytics.bump_counter(db, "dir_muni:" + muni)
+
+
+@router.post("/collect", response_model=CollectResponse)
+def collect(
+    batch: CollectBatch,
+    request: Request,
+    vid: str = Depends(require_public_vid),
+    db: Session = Depends(get_db),
+) -> CollectResponse:
+    """Ingesta de un LOTE de eventos. Requiere token en X-Refleja-Token."""
+    vid_h = hmac_vid(vid)
+    if not _rate_ok("coll:" + vid_h, settings.COLLECT_RATE_PER_MIN):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Demasiadas peticiones.",
+        )
+
+    country = client_country(request)
+    device = analytics.device_from_ua(request.headers.get("user-agent"))
+    for ev in batch.events:
+        if ev.device:
+            device = ev.device
+            break
+    visitor, _ = analytics.get_or_create_visitor(db, vid_h, country, device)
+
+    for event in batch.events:
+        _process_event(db, event, vid_h, visitor.id)
+
+    analytics.touch_visitor(db, vid_h)
     db.commit()
-    return CollectResponse(ok=True)
+    return CollectResponse(ok=True, accepted=len(batch.events))

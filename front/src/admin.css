@@ -163,6 +163,21 @@ a { color: var(--warm); }
 .panel h2 { font-size: 1rem; margin: 0 0 4px; letter-spacing: -0.01em; }
 .panel .hint { font-size: 0.8rem; color: var(--muted); margin: 0 0 14px; }
 
+.panel-head { display: flex; align-items: center; gap: 8px; }
+.panel-head h2, .panel-head h3 { margin: 0; }
+.subhead { font-size: 0.92rem; color: var(--wine-2); }
+
+/* ícono "i" de información */
+.info-i {
+  width: 18px; height: 18px; border-radius: 50%; flex: none;
+  border: 1px solid var(--line); background: #faf7fb; color: var(--warm);
+  font-size: 0.72rem; font-weight: 800; font-style: italic; line-height: 1;
+  cursor: pointer; display: inline-grid; place-items: center; padding: 0;
+}
+.info-i:hover { border-color: var(--coral); color: var(--coral); background: #fff; }
+.info-text { font-size: 0.9rem; line-height: 1.5; color: var(--ink); margin: 8px 0 0; }
+.kpi .label-row { display: flex; align-items: center; gap: 6px; }
+
 .tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
 .tab {
   padding: 6px 13px; border-radius: 999px; border: 1px solid var(--line);

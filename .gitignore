@@ -2,6 +2,8 @@
 .env
 **/.env
 *.env.local
+back/seed.sql
+back/migration.sql
 
 # === Python ===
 .venv/

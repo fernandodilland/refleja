@@ -12,6 +12,7 @@
     try {
       widgetId = window.turnstile.render("#turnstile-box", {
         sitekey: LOGIN_SITEKEY,
+        theme: "light",
         callback: function (t) { tsToken = t; },
         "error-callback": function () { tsToken = null; },
         "expired-callback": function () { tsToken = null; },

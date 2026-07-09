@@ -126,16 +126,20 @@
   // ---------- KPIs ----------
   function renderKpis(o) {
     var cards = [
-      { label: "Visitantes", value: o.total_visitors, sub: pct(o.start_rate) + " empieza el test" },
-      { label: "Activos ahora", value: o.active_now, live: true, sub: "últimos 60 s" },
-      { label: "Empezaron", value: o.started, sub: o.total_runs + " intentos" },
-      { label: "Completaron", value: o.completed, sub: pct(o.completion_rate) + " de compleción" },
-      { label: "Entraron sin empezar", value: o.entered_not_started, sub: "no inician el test" },
-      { label: "Menores de edad", value: o.minors, sub: "derivados a apoyo" },
+      { label: "Visitantes", value: o.total_visitors, sub: pct(o.start_rate) + " empieza el test", info: "visitors" },
+      { label: "Activos ahora", value: o.active_now, live: true, sub: "últimos 60 s", info: "active_now" },
+      { label: "Empezaron", value: o.started, sub: o.total_runs + " intentos", info: "started" },
+      { label: "Completaron", value: o.completed, sub: pct(o.completion_rate) + " de compleción", info: "completed" },
+      { label: "Entraron sin empezar", value: o.entered_not_started, sub: "no inician el test", info: "entered_not_started" },
+      { label: "Menores de edad", value: o.minors, sub: "se completa igual", info: "minors" },
+      { label: "Repitieron", value: o.repeat_visitors, sub: "volvieron a empezar", info: "repeat" },
+      { label: "Ayuda urgente", value: o.urgent_clicks, sub: "clics en urgente/911", info: "urgent" },
+      { label: "Ocultar sitio", value: o.hide_clicks, sub: "salidas rápidas", info: "hide" },
     ];
     $("kpis").innerHTML = cards.map(function (c) {
       return (
-        '<div class="kpi"><div class="label">' + c.label + "</div>" +
+        '<div class="kpi"><div class="label-row"><span class="label">' + c.label + "</span>" +
+        '<button class="info-i" data-info="' + c.info + '" aria-label="¿De dónde sale?">i</button></div>' +
         '<div class="value' + (c.live ? " live" : "") + '">' + c.value + "</div>" +
         '<div class="sub">' + c.sub + "</div></div>"
       );
@@ -157,36 +161,53 @@
 
   // ---------- Embudo ----------
   function renderFunnel(f) {
-    var steps = (f.flows[funnelFlow] || []).map(function (s) {
-      return {
-        label: qLabels[s.question_id] || s.question_id,
-        title: qLabels[s.question_id] || s.question_id,
-        reached: s.reached, answered: s.answered, drop: s.drop,
-      };
-    });
-    // Incluir intro (age/start) al inicio.
-    var intro = (f.intro || []).map(function (s) {
-      return {
-        label: qLabels[s.question_id] || s.question_id,
-        title: qLabels[s.question_id] || s.question_id,
-        reached: s.reached, answered: s.answered, drop: s.drop,
-      };
-    });
-    funnelBars("funnel-bars", intro.concat(steps));
+    var mk = function (s) {
+      return { label: qLabel(s.question_id), title: qLabel(s.question_id),
+               reached: s.reached, answered: s.answered, drop: s.drop };
+    };
+    var all = (f.intro || []).map(mk).concat((f.flows[funnelFlow] || []).map(mk));
+    // Nodo final: completó el formulario (todo en verde).
+    var completed = (f.completed_by_flow || {})[funnelFlow] || 0;
+    all.push({ label: "✓ Completó el formulario", title: "Completó el formulario",
+               reached: completed, answered: completed, drop: 0 });
+    funnelBars("funnel-bars", all);
   }
 
   // ---------- Municipios / preguntas frecuentes ----------
   function renderMunicipios(m) {
-    var items = m.items.map(function (i) {
+    simpleBars("muni-bars", (m.items || []).map(function (i) {
       return { name: muniNames[i.municipio] || i.municipio, value: i.count, title: i.municipio };
-    });
-    simpleBars("muni-bars", items);
+    }));
+    simpleBars("dir-bars", (m.directory || []).map(function (i) {
+      return { name: muniNames[i.municipio] || i.municipio, value: i.count, title: i.municipio };
+    }));
   }
   function renderTopQuestions(f) {
     var items = (f.top_reached || []).slice(0, 10).map(function (s) {
-      return { name: qLabels[s.question_id] || s.question_id, value: s.reached, title: s.question_id };
+      return { name: qLabel(s.question_id), value: s.reached, title: s.question_id };
     });
     simpleBars("topq-bars", items);
+  }
+
+  // ---------- helpers de etiquetas y tiempo ----------
+  var SPECIAL_LABELS = {
+    age: "¿Qué edad tienes?", start: "Relación",
+    MINOR: "Menor de edad", LOCATION: "Municipio", RESULT: "Resultado", inicio: "Inicio",
+  };
+  function qLabel(id) {
+    if (!id) return "Inicio";
+    return qLabels[id] || SPECIAL_LABELS[id] || id;
+  }
+  function fmtAgo(s) {
+    s = Math.max(0, Math.floor(s || 0));
+    if (s < 60) return s + "s";
+    if (s < 3600) return Math.floor(s / 60) + "m";
+    if (s < 86400) {
+      var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+      return h + "h" + (m ? " " + m + "m" : "");
+    }
+    var d = Math.floor(s / 86400), hh = Math.floor((s % 86400) / 3600);
+    return d + "d" + (hh ? " " + hh + "h" : "");
   }
 
   // ---------- Tiempo real ----------
@@ -204,14 +225,14 @@
       var flowChip = r.flow_type
         ? '<span class="chip ' + r.flow_type + '">' + { pareja: "Pareja", fam: "Familiar", trab: "Trabajo" }[r.flow_type] + "</span>"
         : (r.age_bucket === "minor" ? '<span class="chip">Menor</span>' : '<span class="chip">—</span>');
-      var q = qLabels[r.last_question_id] || r.last_question_id || "inicio";
+      var q = qLabel(r.last_question_id);
       var state = r.completed
         ? '<span class="chip ' + (r.risk_level || "low") + '">' + (r.risk_level || "fin") + "</span>"
         : "";
       return (
         '<div class="recent-item">' + flowChip +
         '<span class="grow">' + esc(q) + "</span>" + state +
-        '<span class="ago">' + r.seconds_ago + "s</span></div>"
+        '<span class="ago">' + fmtAgo(r.seconds_ago) + "</span></div>"
       );
     });
     $("rt-recent").innerHTML = rows.length ? rows.join("") : '<p class="empty">Sin actividad reciente.</p>';
@@ -291,6 +312,34 @@
   }
   function closeHistory() { $("history-modal").hidden = true; }
 
+  // ---------- Info de cada estadística (modal) ----------
+  var INFO = {
+    visitors: ["Visitantes", "Personas reales (humanas) que abrieron el sitio público y superaron el Cloudflare Turnstile invisible. Cada visitante es un identificador aleatorio anónimo (no se guarda IP ni datos personales) y se cuenta una sola vez por navegador durante la vida del token (30 días)."],
+    active_now: ["Activos ahora", "Visitantes con actividad en los últimos 60 segundos (según la última señal recibida). Es la aproximación a 'en tiempo real'."],
+    started: ["Empezaron", "Intentos de formulario que iniciaron (se eligió edad y tipo de relación). Un mismo visitante puede tener varios intentos."],
+    completed: ["Completaron", "Formularios completados: llegaron a la pantalla de resultado. También cuenta cuando la persona indica ser menor de 18 años (se considera completado aunque no responda preguntas). El % es sobre los que empezaron."],
+    entered_not_started: ["Entraron sin empezar", "Visitantes que abrieron el sitio pero nunca iniciaron el formulario (solo navegaron)."],
+    minors: ["Menores de edad", "Personas que indicaron tener menos de 18 años. Se les deriva a apoyo y su intento se cuenta como completado."],
+    repeat: ["Repitieron", "Visitantes que hicieron el formulario más de una vez (usaron 'volver a empezar' o lo repitieron en otra visita)."],
+    urgent: ["Ayuda urgente", "Clics en los botones de 'Ayuda urgente' y de emergencia (911) del sitio público (inicio y páginas de municipio)."],
+    hide: ["Ocultar sitio", "Clics en el botón 'Ocultar' que sale rápidamente a un sitio neutral (salida de seguridad)."],
+    realtime: ["En tiempo real", "Visitantes activos en los últimos 60 s y los últimos recorridos del formulario (tipo de relación, hasta qué pregunta llegaron y hace cuánto)."],
+    violence: ["Tipos de violencia", "Se calcula solo sobre formularios completados con respuestas. 'Puntaje total' suma los puntos por tipo según las respuestas; 'Presencia' cuenta en cuántos formularios aparece cada tipo; 'Predominante' cuenta en cuántos es el tipo con mayor puntaje. Los menores de edad completan sin puntajes, así que no afectan esta gráfica."],
+    funnel: ["Embudo", "Cada barra muestra cuántas personas llegaron a esa pregunta. En rojo, quienes la vieron pero no continuaron (abandono). La última barra verde es cuántas completaron el formulario en ese flujo."],
+    muni_form: ["Municipios (formulario)", "Municipio que la persona elige al final del formulario para ver recursos de apoyo. Se normaliza para no duplicar por mayúsculas/acentos."],
+    muni_dir: ["Municipios (directorio)", "Municipios más consultados en el directorio estatal: visitas a las páginas /municipios y a cada página de municipio (/&lt;municipio&gt;)."],
+    topq: ["Preguntas más frecuentes", "Las preguntas del cuestionario a las que más personas llegaron. No incluye estados de ruteo (menor de edad, municipio, resultado)."],
+    timeseries: ["Actividad diaria", "Por día: vistas de página, formularios empezados y formularios completados."],
+  };
+  function openInfo(key) {
+    var d = INFO[key];
+    if (!d) return;
+    $("info-title").textContent = d[0];
+    $("info-text").innerHTML = d[1];
+    $("info-modal").hidden = false;
+  }
+  function closeInfo() { $("info-modal").hidden = true; }
+
   // ---------- init ----------
   function wireControls() {
     $("f-apply").addEventListener("click", loadAll);
@@ -307,8 +356,19 @@
     $("history-modal").addEventListener("click", function (e) {
       if (e.target.id === "history-modal") closeHistory();
     });
+    $("info-close").addEventListener("click", closeInfo);
+    $("info-modal").addEventListener("click", function (e) {
+      if (e.target.id === "info-modal") closeInfo();
+    });
+    // Delegado: clic en cualquier ícono "i" abre su explicación.
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest(".info-i") : null;
+      if (b) { e.preventDefault(); openInfo(b.getAttribute("data-info")); }
+    });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !$("history-modal").hidden) closeHistory();
+      if (e.key !== "Escape") return;
+      if (!$("history-modal").hidden) closeHistory();
+      if (!$("info-modal").hidden) closeInfo();
     });
     Array.prototype.forEach.call(document.querySelectorAll("#viol-tabs .tab"), function (t) {
       t.addEventListener("click", function () {

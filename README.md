@@ -98,16 +98,21 @@ GitHub → pestaña **Issues** → **New issue** → describe con detalle (munic
 
 ---
 
-## Créditos y licencia
+## Agradecimientos
 
-Proyecto ciudadano creado en **[LABNL – Lab Cultural Ciudadano](https://wiki.labnuevoleon.mx/index.php?title=Refleja:_Una_herramienta_para_la_concientizaci%C3%B3n_sobre_la_Violencia_de_G%C3%A9nero)**.
+Agradecemos al **[LABNL - Lab Cultural Ciudadano](https://www.labnuevoleon.mx/)** por su impulso y colaboración en este proyecto.
+
+Ubicado en Calle Washington #648, Centro, C.P. 64000 Monterrey, Nuevo León.
+
+Redes sociales:
+
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/labnuevoleon)
+[![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/labnuevoleon)
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/labnuevoleon/)
+[![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@labnuevoleon)
+[![Flickr](https://img.shields.io/badge/Flickr-0063DC?style=for-the-badge&logo=flickr&logoColor=white)](https://flickr.com/photos/labnl)
 
 ## License
 
 Refleja is released under the [MIT License](https://github.com/fernandodilland/refleja/blob/main/LICENSE).
 
----
-
-### 🚨 ¿Necesitas ayuda ahora?
-
-Si tú o alguien está en peligro, llama al **911**. Consulta también el directorio de apoyo por municipio en [refleja.org](https://refleja.org).

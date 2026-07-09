@@ -15,8 +15,13 @@ def _engine_kwargs(url: str) -> dict:
     if url.startswith("sqlite"):
         # SQLite: permitir uso desde el threadpool de FastAPI.
         return {"connect_args": {"check_same_thread": False}}
-    # MariaDB/MySQL: reciclar conexiones y verificar antes de usar.
-    return {"pool_pre_ping": True, "pool_recycle": 1800}
+    # MariaDB/MySQL: reciclar conexiones, verificar antes de usar y forzar UTC
+    # para que created_at/updated_at (server_default) coincidan con utcnow().
+    return {
+        "pool_pre_ping": True,
+        "pool_recycle": 1800,
+        "connect_args": {"init_command": "SET time_zone='+00:00'"},
+    }
 
 
 engine = create_engine(

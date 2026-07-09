@@ -2,6 +2,10 @@
 .env
 *.env.local
 
+# SQL con credenciales (usa seed.example.sql como plantilla pública)
+seed.sql
+migration.sql
+
 # Python
 .venv/
 venv/

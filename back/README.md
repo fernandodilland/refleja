@@ -34,7 +34,7 @@ Requiere **Python 3.10**. Desde la raíz del repo:
 cd back
 python3.10 -m venv .venv
 ./.venv/bin/python -m pip install -r requirements.txt
-./.venv/bin/python -m app.seed            # crea SQLite + usuario fernando
+./.venv/bin/python -m app.seed            # crea SQLite + admin de dev (admin/admin)
 ./.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 20832 --reload
 ```
 
@@ -49,14 +49,18 @@ siembra automáticamente). En dev se usa **SQLite** y `DEV_BYPASS_TURNSTILE=true
 ## Despliegue en producción (CloudPanel)
 
 ### 1. Base de datos (MariaDB)
-En CloudPanel crea una base `refleja` y un usuario. Luego:
+En CloudPanel crea una base `refleja` y un usuario. Luego carga el esquema y los
+usuarios del panel con los archivos **confidenciales** (no versionados):
 
 ```bash
-mysql -u refleja -p refleja < seed.sql
+mysql -u refleja -p refleja < seed.sql        # esquema + primer admin
+mysql -u refleja -p refleja < migration.sql   # tabla admin_login + usuarios del panel
 ```
 
-Esto crea las 6 tablas y el admin **fernando** (contraseña `REDACTED`,
-guardada como Argon2id). **Cambia la contraseña tras el primer acceso.**
+Los hashes de contraseña se guardan como **Argon2id**. `seed.sql` y `migration.sql`
+están en `.gitignore` (contienen credenciales); usa `seed.example.sql` como
+plantilla pública del esquema. La app también crea las tablas faltantes al
+arrancar (`create_all`), así que basta con reiniciar el servicio tras desplegar.
 
 ### 2. Configuración
 Copia `.env.example` a `.env` y ajusta (valores de producción):

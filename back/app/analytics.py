@@ -52,6 +52,38 @@ def device_from_ua(ua: str | None) -> str:
     return "desktop"
 
 
+def browser_from_ua(ua: str | None) -> str | None:
+    if not ua:
+        return None
+    if "Edg" in ua:
+        return "Edge"
+    if "OPR" in ua or "Opera" in ua:
+        return "Opera"
+    if "Chrome" in ua and "Chromium" not in ua:
+        return "Chrome"
+    if "Firefox" in ua:
+        return "Firefox"
+    if "Safari" in ua:
+        return "Safari"
+    return "Otro"
+
+
+def os_from_ua(ua: str | None) -> str | None:
+    if not ua:
+        return None
+    if "Windows" in ua:
+        return "Windows"
+    if "iPhone" in ua or "iPad" in ua or "iOS" in ua:
+        return "iOS"
+    if "Mac OS X" in ua or "Macintosh" in ua:
+        return "macOS"
+    if "Android" in ua:
+        return "Android"
+    if "Linux" in ua:
+        return "Linux"
+    return "Otro"
+
+
 def _today() -> date:
     return datetime.now(timezone.utc).date()
 

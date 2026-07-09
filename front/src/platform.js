@@ -256,6 +256,41 @@
     }).catch(function () {});
   }
 
+  // ---------- Historial de inicios de sesión (modal) ----------
+  function fmtDate(iso) {
+    return iso ? String(iso).slice(0, 16).replace("T", " ") : "—";
+  }
+  function openHistory() {
+    $("history-modal").hidden = false;
+    $("history-body").innerHTML = '<p class="loading">Cargando…</p>';
+    getJSON("/platform/logins?limit=200")
+      .then(function (data) {
+        var items = (data && data.items) || [];
+        if (!items.length) {
+          $("history-body").innerHTML = '<p class="empty">Sin inicios de sesión todavía.</p>';
+          return;
+        }
+        var rows = items.map(function (r) {
+          return "<tr>" +
+            "<td class='user'>" + esc(r.username) + "</td>" +
+            "<td>" + esc(r.browser || "—") + "</td>" +
+            "<td>" + esc(r.os || "—") + "</td>" +
+            "<td>" + esc(r.device || "—") + "</td>" +
+            "<td>" + esc(r.country || "—") + "</td>" +
+            "<td>" + fmtDate(r.created_at) + "</td>" +
+            "</tr>";
+        }).join("");
+        $("history-body").innerHTML =
+          "<table class='hist'><thead><tr>" +
+          "<th>Usuario</th><th>Navegador</th><th>SO</th><th>Dispositivo</th><th>País</th><th>Fecha (UTC)</th>" +
+          "</tr></thead><tbody>" + rows + "</tbody></table>";
+      })
+      .catch(function () {
+        $("history-body").innerHTML = '<p class="empty">No se pudo cargar el historial.</p>';
+      });
+  }
+  function closeHistory() { $("history-modal").hidden = true; }
+
   // ---------- init ----------
   function wireControls() {
     $("f-apply").addEventListener("click", loadAll);
@@ -266,6 +301,14 @@
     });
     $("logout-btn").addEventListener("click", function () {
       A.logout().then(function () { location.replace("/acceso"); });
+    });
+    $("history-btn").addEventListener("click", openHistory);
+    $("history-close").addEventListener("click", closeHistory);
+    $("history-modal").addEventListener("click", function (e) {
+      if (e.target.id === "history-modal") closeHistory();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !$("history-modal").hidden) closeHistory();
     });
     Array.prototype.forEach.call(document.querySelectorAll("#viol-tabs .tab"), function (t) {
       t.addEventListener("click", function () {

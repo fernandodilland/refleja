@@ -19,8 +19,23 @@
       <span class="spacer"></span>
       <span class="live-pill"><span class="live-dot"></span> <span id="live-count">0</span> activos ahora</span>
       <span id="updated" class="live-pill" style="background:#f6f2f7;border-color:var(--line);color:var(--muted)">—</span>
+      <button id="history-btn" class="btn-ghost">Historial</button>
       <button id="logout-btn" class="btn-ghost">Salir</button>
     </header>
+
+    <!-- Modal: historial de inicios de sesión -->
+    <div id="history-modal" class="modal-overlay" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="history-title">
+        <div class="modal-head">
+          <h2 id="history-title">Historial de inicios de sesión</h2>
+          <button id="history-close" class="modal-close" aria-label="Cerrar">×</button>
+        </div>
+        <p class="hint">Accesos al panel por usuario (datos generales, sin IP).</p>
+        <div id="history-body" class="modal-body">
+          <p class="loading">Cargando…</p>
+        </div>
+      </div>
+    </div>
 
     <div class="shell" id="app" hidden>
       <!-- Filtros -->

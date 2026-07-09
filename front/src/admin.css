@@ -205,3 +205,38 @@ a { color: var(--warm); }
 svg.line { width: 100%; height: auto; display: block; }
 .empty { color: var(--muted); font-size: 0.86rem; padding: 14px 0; }
 .loading { color: var(--muted); font-size: 0.86rem; }
+
+/* ---------- Modal (historial) ---------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(36, 16, 38, 0.45); backdrop-filter: blur(3px);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 6vh 16px 16px; overflow-y: auto;
+}
+.modal-overlay[hidden] { display: none; }
+.modal-card {
+  width: 100%; max-width: 860px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: 0 24px 60px rgba(48,16,52,0.28); padding: 20px 22px;
+}
+.modal-head { display: flex; align-items: center; gap: 12px; }
+.modal-head h2 { font-size: 1.05rem; margin: 0; flex: 1; }
+.modal-close {
+  border: none; background: #f0eaf2; color: var(--wine-2);
+  width: 32px; height: 32px; border-radius: 9px; font-size: 1.2rem;
+  line-height: 1; cursor: pointer;
+}
+.modal-close:hover { background: #e6dbe9; }
+.modal-body { margin-top: 12px; max-height: 62vh; overflow: auto; }
+
+table.hist { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+table.hist th, table.hist td {
+  text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+table.hist th {
+  position: sticky; top: 0; background: var(--card); color: var(--muted);
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: .03em;
+}
+table.hist td.user { font-weight: 700; color: var(--wine); }
+table.hist tr:hover td { background: #faf7fb; }

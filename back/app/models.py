@@ -136,3 +136,20 @@ class DailyMetric(TimestampMixin, Base):
     form_completes: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
     minors: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
     new_visitors: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
+
+
+class AdminLogin(TimestampMixin, Base):
+    """Historial de inicios de sesión del panel. Datos generales, sin IP."""
+
+    __tablename__ = "admin_login"
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True, autoincrement=True)
+    admin_user_id: Mapped[int | None] = mapped_column(
+        BigInteger, ForeignKey("admin_user.id", ondelete="SET NULL"), nullable=True
+    )
+    username: Mapped[str] = mapped_column(String(64), nullable=False)
+    browser: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    os: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    device: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    country: Mapped[str | None] = mapped_column(String(2), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(String(255), nullable=True)

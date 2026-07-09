@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..deps import require_admin
-from ..models import DailyMetric, FormRun, QuestionStat, Visitor
+from ..models import AdminLogin, DailyMetric, FormRun, QuestionStat, Visitor
 from ..security import utcnow
 
 router = APIRouter(
@@ -273,6 +273,30 @@ def municipios(
 
     items = [{"municipio": m, "count": n} for m, n in db.execute(stmt).all()]
     return {"items": items}
+
+
+@router.get("/logins")
+def logins(
+    db: Session = Depends(get_db),
+    limit: int = Query(default=100, ge=1, le=500),
+) -> dict:
+    rows = db.execute(
+        select(AdminLogin).order_by(AdminLogin.created_at.desc()).limit(limit)
+    ).scalars().all()
+    return {
+        "items": [
+            {
+                "username": r.username,
+                "browser": r.browser,
+                "os": r.os,
+                "device": r.device,
+                "country": r.country,
+                "user_agent": r.user_agent,
+                "created_at": r.created_at.isoformat(),
+            }
+            for r in rows
+        ]
+    }
 
 
 @router.get("/timeseries")

@@ -10,10 +10,11 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
+from ..analytics import browser_from_ua, device_from_ua, os_from_ua
 from ..config import settings
 from ..database import get_db
-from ..deps import client_ip, require_admin
-from ..models import AdminSession, AdminUser
+from ..deps import client_country, client_ip, require_admin
+from ..models import AdminLogin, AdminSession, AdminUser
 from ..schemas import LoginRequest, MeResponse, TokenResponse
 from ..security import (
     create_access_token,
@@ -113,6 +114,20 @@ def login(
     if needs_rehash(user.password_hash):
         user.password_hash = hash_password(body.password)
     user.last_login_at = utcnow()
+
+    # Historial de inicio de sesión (datos generales, sin IP).
+    ua = request.headers.get("user-agent")
+    db.add(
+        AdminLogin(
+            admin_user_id=user.id,
+            username=user.username,
+            browser=browser_from_ua(ua),
+            os=os_from_ua(ua),
+            device=device_from_ua(ua),
+            country=client_country(request),
+            user_agent=(ua or "")[:255] or None,
+        )
+    )
 
     access = _issue_session(db, user, response, request)
     db.commit()

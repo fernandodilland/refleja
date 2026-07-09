@@ -4,14 +4,19 @@ Crea las tablas y el usuario administrador inicial de forma idempotente.
 Uso:  python -m app.seed
 En producción (MariaDB) se usa seed.sql en su lugar.
 """
+import os
+
 from sqlalchemy import select
 
 from .database import SessionLocal, init_db
 from .models import AdminUser
 from .security import hash_password
 
-ADMIN_USERNAME = "fernando"
-ADMIN_PASSWORD = "REDACTED"  # solo para bootstrap local
+# Solo para bootstrap en DEV local (SQLite). En producción los usuarios se dan
+# de alta con seed.sql / migration.sql (confidenciales). Sobrescribe con:
+#   SEED_ADMIN_USERNAME=... SEED_ADMIN_PASSWORD=... python -m app.seed
+ADMIN_USERNAME = os.environ.get("SEED_ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.environ.get("SEED_ADMIN_PASSWORD", "admin")
 
 
 def run() -> None:

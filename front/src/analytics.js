@@ -244,27 +244,44 @@
   // sigue contando. No hace falta espaciarla a mano: el navegador ya
   // ralentiza los timers de pestañas ocultas (~1 disparo/min), y la ventana
   // de 90 s del backend absorbe ese ritmo.
+  var PING_MIN_SPACING = 10000; // no repetir señal si la última fue hace <10 s (evita ráfagas al alternar pestañas)
+  var PING_ERR_BACKOFF = 5000;  // tras un fallo de red: reintentar pronto (< intervalo, para no saltarse un tick)
+  var PING_429_BACKOFF = 60000; // tras un 429: esperar, pero por DEBAJO de la ventana de 90 s (no desaparecer del conteo)
   var pingBusy = false;
   var pingBackoffUntil = 0;
+  var pingLastAt = 0;
   function ping(token) {
-    return fetch(API + "/public/ping", { method: "POST", headers: { "X-Refleja-Token": token } });
+    // Timeout duro: un fetch colgado (red móvil inestable) no debe dejar
+    // pingBusy bloqueado indefinidamente y matar los siguientes ticks.
+    var opts = { method: "POST", headers: { "X-Refleja-Token": token } };
+    var ctl = window.AbortController ? new AbortController() : null;
+    if (!ctl) return fetch(API + "/public/ping", opts);
+    opts.signal = ctl.signal;
+    var timer = setTimeout(function () { ctl.abort(); }, 10000);
+    return fetch(API + "/public/ping", opts).then(
+      function (r) { clearTimeout(timer); return r; },
+      function (e) { clearTimeout(timer); throw e; }
+    );
   }
   function sendPing() {
     if (pingBusy || Date.now() < pingBackoffUntil) return;
-    var token = storedToken();
-    if (!token) return; // el primer flush (page_view) emitirá el token
+    if (Date.now() - pingLastAt < PING_MIN_SPACING) return;
     pingBusy = true;
-    ping(token)
+    // ensureToken() (no forzado) devuelve el token cacheado o, si falta o está
+    // por caducar, lo renueva respetando `inflight` y el backoff de Turnstile.
+    // Así la señal no muere aunque el token de 30 días expire con la pestaña
+    // abierta e inactiva (caso exacto que este ping busca cubrir).
+    ensureToken()
+      .then(ping)
       .then(function (r) {
-        if (r.status === 401) {
-          // Token caducado en una sesión larga sin eventos en cola: renovarlo
-          // aquí para que la señal de vida no muera.
-          return ensureToken(true).then(ping);
-        }
-        if (r.status === 429) pingBackoffUntil = Date.now() + 120000;
+        if (r && r.status === 401) return ensureToken(true).then(ping);
         return r;
       })
-      .catch(function () { pingBackoffUntil = Date.now() + PING_INTERVAL; })
+      .then(function (r) {
+        pingLastAt = Date.now();
+        if (r && r.status === 429) pingBackoffUntil = Date.now() + PING_429_BACKOFF;
+      })
+      .catch(function () { pingBackoffUntil = Date.now() + PING_ERR_BACKOFF; })
       .then(function () { pingBusy = false; });
   }
   setInterval(sendPing, PING_INTERVAL);

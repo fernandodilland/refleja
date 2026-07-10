@@ -1,6 +1,6 @@
 {
   "flowLengths": {
-    "pareja": 12,
+    "pareja": 13,
     "fam": 12,
     "trab": 12
   },
@@ -110,47 +110,55 @@
         {
           "label": "Mi pareja o ex pareja",
           "nextId": "pareja_1",
-          "scores": {}
+          "scores": {},
+          "rel": "tu pareja",
+          "relMine": "mi pareja"
         },
         {
           "label": "Un familiar (madre, padre, etc.)",
           "nextId": "fam_1",
-          "scores": {}
+          "scores": {},
+          "rel": "tu familiar",
+          "relMine": "mi familiar"
         },
         {
           "label": "Alguien de mi trabajo o escuela",
           "nextId": "trab_1",
-          "scores": {}
+          "scores": {},
+          "rel": "esta persona",
+          "relMine": "esta persona"
         },
         {
           "label": "Otra persona",
           "nextId": "pareja_1",
-          "scores": {}
+          "scores": {},
+          "rel": "esta persona",
+          "relMine": "esta persona"
         }
       ]
     },
     "pareja_1": {
       "qid": "pareja_1",
-      "text": "Después de una discusión fuerte o un episodio difícil, ¿esa persona se vuelve especialmente cariñosa, te da regalos, te promete que todo cambiará y actúa como la pareja perfecta?",
+      "text": "Después de que {persona} se enoja, ¿se vuelve muy cariñosa, te da regalos o promete cambiar?",
       "explanation": "Esta es la fase de 'Luna de miel' del Ciclo de la Violencia. La persona agresora se muestra encantadora, romántica y llena de atenciones para que bajes la guardia. Esta fase crea una falsa esperanza de que la relación mejorará, pero es parte del patrón de control.",
       "source": "Ciclo de la Violencia - Leonore Walker (1979)",
       "options": [
         {
-          "label": "Sí, siempre después de una pelea es muy cariñoso/a",
+          "label": "Sí, después se porta muy cariñosa",
           "nextId": "pareja_2",
           "scores": {
             "psicologica": 2
           }
         },
         {
-          "label": "A veces intenta compensar con detalles",
+          "label": "A veces lo compensa con detalles",
           "nextId": "pareja_2",
           "scores": {
             "psicologica": 1
           }
         },
         {
-          "label": "No, no hay cambios después de las discusiones",
+          "label": "No, no cambia después",
           "nextId": "pareja_2",
           "scores": {
             "psicologica": 0
@@ -160,26 +168,26 @@
     },
     "pareja_2": {
       "qid": "pareja_2",
-      "text": "¿Sientes que 'caminas sobre cáscaras de huevo'? Es decir, ¿hay temporadas en las que tienes miedo constante de que algo que digas o hagas provoque una discusión explosiva?",
-      "explanation": "La fase de 'Acumulación de tensión' se caracteriza por una ansiedad creciente y un ambiente de miedo. La víctima modifica su comportamiento intentando evitar el conflicto, pero la tensión sigue escalando hasta volverse insostenible.",
+      "text": "¿Sientes que ‘caminas sobre cáscaras de huevo’ con {persona}? ¿Mides lo que dices para no provocarla?",
+      "explanation": "Modificar tu comportamiento por miedo a la reacción de la otra persona es señal de la fase de acumulación de tensión del ciclo de la violencia.",
       "source": "Ciclo de la Violencia - Leonore Walker (1979)",
       "options": [
         {
-          "label": "Sí, evito ciertos temas y situaciones por miedo a su reacción",
+          "label": "Sí, mido lo que digo o hago",
           "nextId": "pareja_3",
           "scores": {
-            "psicologica": 3
+            "psicologica": 2
           }
         },
         {
-          "label": "A veces noto que hay tensión acumulándose",
+          "label": "A veces tengo que cuidarme",
           "nextId": "pareja_3",
           "scores": {
             "psicologica": 1
           }
         },
         {
-          "label": "No, me siento libre de expresarme",
+          "label": "Siento que sí me expreso con libertad",
           "nextId": "pareja_3",
           "scores": {
             "psicologica": 0
@@ -189,12 +197,12 @@
     },
     "pareja_3": {
       "qid": "pareja_3",
-      "text": "¿Cómo reacciona cuando hay una discusión fuerte?",
+      "text": "¿Cómo reacciona {persona} cuando se enoja?",
       "explanation": "La fase de 'Explosión violenta' es cuando la violencia se manifiesta de forma visible. Puede ser psicológica (insultos, humillaciones), física (golpes, empujones), sexual, económica o patrimonial. Es el punto más peligroso y donde la integridad corre mayor riesgo.",
       "source": "Ciclo de la Violencia - Leonore Walker (1979)",
       "options": [
         {
-          "label": "Me ha llegado a golpear, empujar o arañar.",
+          "label": "Me ha golpeado, empujado o arañado",
           "nextId": "pareja_4",
           "scores": {
             "fisica": 3,
@@ -203,14 +211,14 @@
           }
         },
         {
-          "label": "Grita, insulta y a veces me hace la ley del hielo.",
+          "label": "Grita, insulta o me hace la ley del hielo",
           "nextId": "pareja_4",
           "scores": {
             "psicologica": 2
           }
         },
         {
-          "label": "Discutimos pero al final hacemos acuerdos",
+          "label": "Discutimos pero llegamos a acuerdos",
           "nextId": "pareja_4",
           "scores": {
             "psicologica": 0
@@ -220,27 +228,26 @@
     },
     "pareja_4": {
       "qid": "pareja_4",
-      "text": "Después del episodio de explosión, ¿te promete que nunca volverá a pasar, te llena de regalos, te busca intensamente para tener relaciones y te dice que no puede vivir sin ti?",
-      "explanation": "La fase de 'Reconciliación' o 'Promesa de cambio' es una táctica de manipulación para mantener el control. Los regalos, la intimidad forzada y las promesas buscan que olvides la agresión. Sin intervención profesional, el ciclo inevitablemente se repetirá con más intensidad.",
+      "text": "¿{Persona} te echa la culpa cuando se enoja o pierde el control?",
+      "explanation": "Culparte de su enojo o pérdida de control es manipulación emocional: te hace sentir responsable de la violencia que ejerce.",
       "source": "Ciclo de la Violencia - Leonore Walker (1979)",
       "options": [
         {
-          "label": "Sí, promete cambiar, da regalos y me busca sexualmente",
+          "label": "Sí, me dice que yo lo provoqué",
           "nextId": "pareja_5",
           "scores": {
-            "psicologica": 2,
-            "sexual": 2
+            "psicologica": 3
           }
         },
         {
-          "label": "Se disculpa pero no hay grandes promesas ni regalos",
+          "label": "Me queda la duda de si fue mi culpa",
           "nextId": "pareja_5",
           "scores": {
-            "psicologica": 1
+            "psicologica": 2
           }
         },
         {
-          "label": "No, no hay fase de reconciliación",
+          "label": "No siento que me eche la culpa",
           "nextId": "pareja_5",
           "scores": {
             "psicologica": 0
@@ -250,28 +257,26 @@
     },
     "pareja_5": {
       "qid": "pareja_5",
-      "text": "¿Has notado que este patrón —tensión, explosión, reconciliación, calma— se repite una y otra vez, y cada vez la situación es peor o más intensa?",
-      "explanation": "Reconocer que existe un ciclo es el primer paso para romperlo. La violencia tiende a escalar: los periodos de calma se acortan y los episodios violentos se vuelven más frecuentes y graves. Sin ayuda profesional, el ciclo no se detiene por sí solo.",
+      "text": "¿Has notado en tu relación que antes la pasaban bien y ahora casi siempre están peleados?",
+      "explanation": "Que los momentos buenos disminuyan y los conflictos aumenten es una señal de que la relación se está deteriorando.",
       "source": "Ciclo de la Violencia - Leonore Walker (1979)",
       "options": [
         {
-          "label": "Sí, es un ciclo que se repite y cada vez es peor",
-          "nextId": "pareja_6",
-          "scores": {
-            "psicologica": 3,
-            "fisica": 2,
-            "sexual": 2
-          }
-        },
-        {
-          "label": "Ha pasado más de una vez, pero no sabía que era un ciclo",
+          "label": "Sí, últimamente discutimos todos los días",
           "nextId": "pareja_6",
           "scores": {
             "psicologica": 2
           }
         },
         {
-          "label": "No, esto solo ha pasado una vez",
+          "label": "Creo que han aumentado los días malos",
+          "nextId": "pareja_6",
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "La mayoría de los días son felices",
           "nextId": "pareja_6",
           "scores": {
             "psicologica": 0
@@ -281,12 +286,12 @@
     },
     "pareja_6": {
       "qid": "pareja_6",
-      "text": "¿Controla tu dinero, te prohíbe trabajar, o exige saber en qué gastas cada peso que tienes?",
+      "text": "¿{Persona} controla tu dinero o te prohíbe trabajar?",
       "explanation": "El control económico es una forma de violencia que te atrapa en la relación. Al quitarte la independencia financiera, te hace más difícil salir de la situación y profundiza tu dependencia.",
       "source": "Organización de Naciones Unidas (ONU) - Definición de Violencia Económica",
       "options": [
         {
-          "label": "Sí, tengo que pedirle permiso o dar explicaciones",
+          "label": "Sí, debo pedir permiso o dar explicaciones",
           "nextId": "pareja_7",
           "scores": {
             "economica": 3,
@@ -301,7 +306,7 @@
           }
         },
         {
-          "label": "No, manejamos nuestro dinero de forma independiente",
+          "label": "Manejo mi dinero con libertad",
           "nextId": "pareja_7",
           "scores": {}
         }
@@ -309,26 +314,26 @@
     },
     "pareja_7": {
       "qid": "pareja_7",
-      "text": "¿Te ha aislado de tu familia y amigos? ¿Tiene problemas si quieres verlos o hablar con ellos?",
+      "text": "¿{Persona} te aleja de tu familia o amigos?",
       "explanation": "El aislamiento es una táctica de control que te deja sin red de apoyo. Al cortarte de otros, hace que dependas más emocionalmente de él y dificulta que busques ayuda.",
       "source": "Power and Control Wheel - Duluth Model (1981)",
       "options": [
         {
-          "label": "Sí, me ha alejado de mis seres queridos o lo presiona constantemente",
+          "label": "Sí, me ha alejado de mis seres queridos",
           "nextId": "pareja_8",
           "scores": {
             "psicologica": 3
           }
         },
         {
-          "label": "A veces pone mala cara cuando veo a mi familia",
+          "label": "Cambia su actitud cuando veo a mis seres queridos",
           "nextId": "pareja_8",
           "scores": {
             "psicologica": 1
           }
         },
         {
-          "label": "No, apoya mis relaciones con otros",
+          "label": "Apoya mis relaciones",
           "nextId": "pareja_8",
           "scores": {}
         }
@@ -336,12 +341,12 @@
     },
     "pareja_8": {
       "qid": "pareja_8",
-      "text": "¿Te ha amenazado con hacer daño a tu familia, mascotas, o con quitarte a tus hijos si intentas dejarlo?",
+      "text": "¿{Persona} te ha amenazado con dañar a tu familia, mascotas o quitarte a tus hijos?",
       "explanation": "Las amenazas a personas que amas son una forma extrema de control y manipulación. Buscan mantener el poder mediante el miedo a consecuencias devastadoras.",
       "source": "Red Nacional de Refugios - Indicadores de Riesgo Severo",
       "options": [
         {
-          "label": "Sí, ha hecho amenazas directas o veladas",
+          "label": "Sí, me ha amenazado directamente",
           "nextId": "pareja_9",
           "scores": {
             "psicologica": 3,
@@ -349,14 +354,14 @@
           }
         },
         {
-          "label": "Ha mencionado algo similar pero de broma",
+          "label": "Lo ha dicho como ‘broma’",
           "nextId": "pareja_9",
           "scores": {
             "psicologica": 1
           }
         },
         {
-          "label": "No, nunca ha hecho amenazas así",
+          "label": "No, nunca",
           "nextId": "pareja_9",
           "scores": {}
         }
@@ -364,12 +369,12 @@
     },
     "pareja_9": {
       "qid": "pareja_9",
-      "text": "¿Ha destruido cosas tuyas (ropa, documentos, objetos que amas) cuando se enoja?",
+      "text": "¿{Persona} ha roto cosas tuyas (ropa, documentos, objetos preciados) cuando se enoja?",
       "explanation": "Romper tus pertenencias es violencia patrimonial. Busca intimidarte, controlar tu comportamiento y demostrar poder. Es un indicador de violencia física inminente.",
       "source": "Ley General de Acceso de las Mujeres a una Vida Libre de Violencia (México)",
       "options": [
         {
-          "label": "Sí, ha roto cosas de valor o importancia para mí",
+          "label": "Sí, ha roto cosas importantes para mí",
           "nextId": "pareja_10",
           "scores": {
             "patrimonial": 3,
@@ -377,14 +382,14 @@
           }
         },
         {
-          "label": "Ha roto cosas pero dice que fue accidental",
+          "label": "Ha roto cosas pero dice que fue sin querer",
           "nextId": "pareja_10",
           "scores": {
             "patrimonial": 1
           }
         },
         {
-          "label": "No, respeta mis pertenencias",
+          "label": "Respeta mis cosas",
           "nextId": "pareja_10",
           "scores": {}
         }
@@ -392,26 +397,26 @@
     },
     "pareja_10": {
       "qid": "pareja_10",
-      "text": "¿Controla dónde estás todo el tiempo? ¿Te pide que le envíes tu ubicación, o revisa tu historial de ubicación?",
+      "text": "¿{Persona} controla dónde estás o revisa tu ubicación?",
       "explanation": "El control de ubicación es vigilancia obsesiva que denota desconfianza extrema y necesidad de control. Es síntoma de celos enfermizos y posesión.",
       "source": "Instituto Nacional de las Mujeres (INMUJERES)",
       "options": [
         {
-          "label": "Sí, monitorea constantemente dónde estoy",
+          "label": "Sí, monitorea dónde estoy",
           "nextId": "pareja_11",
           "scores": {
             "psicologica": 3
           }
         },
         {
-          "label": "A veces pregunta dónde estoy o qué hago",
+          "label": "A veces pregunta dónde estoy",
           "nextId": "pareja_11",
           "scores": {
             "psicologica": 1
           }
         },
         {
-          "label": "No, respeta mi privacidad",
+          "label": "{Mipersona} respeta mi privacidad",
           "nextId": "pareja_11",
           "scores": {}
         }
@@ -419,12 +424,12 @@
     },
     "pareja_11": {
       "qid": "pareja_11",
-      "text": "¿Te obliga, presiona o manipula para tener relaciones sexuales cuando no quieres?",
+      "text": "¿{Persona} te presiona o manipula para tener intimidad cuando no quieres?",
       "explanation": "Cualquier presión para la actividad sexual sin tu consentimiento es violencia sexual. El consentimiento libre, voluntario e informado es esencial en toda relación.",
       "source": "Código Penal Federal - Delitos Sexuales",
       "options": [
         {
-          "label": "Sí, frecuentemente me presiona o ignora mis negativas",
+          "label": "Sí, me presiona o ignora mi negativa",
           "nextId": "pareja_12",
           "scores": {
             "sexual": 3,
@@ -432,14 +437,14 @@
           }
         },
         {
-          "label": "A veces insiste después de que digo no",
+          "label": "A veces insiste después de un no",
           "nextId": "pareja_12",
           "scores": {
             "sexual": 1
           }
         },
         {
-          "label": "No, respeta mi cuerpo y decisiones",
+          "label": "Nunca insiste ni me presiona",
           "nextId": "pareja_12",
           "scores": {}
         }
@@ -447,29 +452,58 @@
     },
     "pareja_12": {
       "qid": "pareja_12",
-      "text": "¿Has pensado en dejarle pero sientes que no puedes? ¿Tienes miedo a lo que pasará si intentas irte?",
+      "text": "¿Has pensado en dejar a {persona} pero sientes que no puedes o tienes miedo?",
       "explanation": "El miedo a intentar salir es un indicador crítico de atrapamiento. Muchas mujeres no dejan relaciones violentas por temor a represalias que pueden ser graves o letales.",
       "source": "Red Nacional de Refugios - Factores de Riesgo",
       "options": [
         {
-          "label": "Sí, siento que estoy atrapada o tengo mucho miedo",
-          "nextId": "LOCATION",
+          "label": "Sí, me siento atrapada o con miedo",
+          "nextId": "pareja_13",
           "scores": {
             "psicologica": 3,
             "intimidacion": 3
           }
         },
         {
-          "label": "A veces lo pienso pero no me atrevo",
+          "label": "Lo he pensado pero no me atrevo",
+          "nextId": "pareja_13",
+          "scores": {
+            "psicologica": 2
+          }
+        },
+        {
+          "label": "Puedo dejarla si lo decido",
+          "nextId": "pareja_13",
+          "scores": {}
+        }
+      ]
+    },
+    "pareja_13": {
+      "qid": "pareja_13",
+      "text": "¿Sientes que en el día a día las cosas de {persona} (dinero, tiempo, gustos o placer) van antes que las tuyas?",
+      "explanation": "Que las necesidades y deseos de la otra persona tengan siempre prioridad sobre los tuyos refleja un desequilibrio de poder y control.",
+      "source": "Power and Control Wheel - Duluth Model (1981)",
+      "options": [
+        {
+          "label": "Sí, siempre se hace lo que {mipersona} quiere",
           "nextId": "LOCATION",
           "scores": {
             "psicologica": 2
           }
         },
         {
-          "label": "No, siento que puedo dejarle si lo decido",
+          "label": "A veces también me toma en cuenta",
           "nextId": "LOCATION",
-          "scores": {}
+          "scores": {
+            "psicologica": 1
+          }
+        },
+        {
+          "label": "Las cosas de ambos son igual de importantes",
+          "nextId": "LOCATION",
+          "scores": {
+            "psicologica": 0
+          }
         }
       ]
     },

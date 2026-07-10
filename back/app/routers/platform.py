@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from .. import form_meta
 from ..database import get_db
 from ..deps import require_admin
 from ..models import (
@@ -34,12 +35,13 @@ SCORE_COLS = {
     "intimidacion": FormRun.score_intimidacion,
 }
 
-# Orden canónico del cuestionario para el embudo.
-FLOW_ORDER = {
-    "pareja": [f"pareja_{i}" for i in range(1, 13)],
-    "fam": [f"fam_{i}" for i in range(1, 13)],
-    "trab": [f"trab_{i}" for i in range(1, 13)],
-}
+# El orden del embudo se deriva de formulario.json (form_meta.FLOW_ORDER), así
+# se actualiza solo si el formulario cambia (p.ej. al separar una pregunta).
+
+# "Activos ahora": el front manda señal de vida cada 25 s con la pestaña
+# visible, pero el navegador espacia los timers de pestañas ocultas a ~1/min;
+# 90 s absorbe ese ritmo sin que una sesión abierta parpadee como inactiva.
+ACTIVE_WINDOW_SECONDS = 90
 
 
 def _run_filters(stmt, date_from, date_to, flow_type, municipio):
@@ -68,7 +70,7 @@ def overview(
     total_visitors = count(select(func.count(Visitor.id)))
     active_now = count(
         select(func.count(Visitor.id)).where(
-            Visitor.last_seen_at >= utcnow() - timedelta(seconds=60)
+            Visitor.last_seen_at >= utcnow() - timedelta(seconds=ACTIVE_WINDOW_SECONDS)
         )
     )
 
@@ -135,7 +137,7 @@ def overview(
 @router.get("/realtime")
 def realtime(
     db: Session = Depends(get_db),
-    window_seconds: int = Query(default=60, ge=5, le=900),
+    window_seconds: int = Query(default=ACTIVE_WINDOW_SECONDS, ge=5, le=900),
     limit: int = Query(default=20, ge=1, le=100),
 ) -> dict:
     now = utcnow()
@@ -217,9 +219,10 @@ def funnel(db: Session = Depends(get_db)) -> dict:
         }
 
     flows = {
-        name: [step(qid) for qid in order] for name, order in FLOW_ORDER.items()
+        name: [step(qid) for qid in order]
+        for name, order in form_meta.FLOW_ORDER.items()
     }
-    intro = [step("age"), step("start")]
+    intro = [step(qid) for qid in form_meta.INTRO_ORDER]
 
     # Completaron el formulario, por tipo de flujo (para el nodo final del embudo).
     completed_by_flow = dict(

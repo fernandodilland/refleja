@@ -7,6 +7,9 @@
  * - Los eventos se ACUMULAN en una cola persistida en localStorage y se envían
  *   en LOTE a /api/public/collect (menos peticiones, sin perder datos aunque se
  *   recargue o cierre la pestaña).
+ * - Señal de vida: ping ligero a /api/public/ping cada 25 s con la pestaña
+ *   visible, para que "Activos ahora" en /plataforma cuente sesiones abiertas.
+ *   No consume cuotas ni pasa por la cola de eventos.
  * - No se ejecuta en /acceso ni /plataforma.
  * ===================================================================== */
 (function () {
@@ -25,6 +28,7 @@
   var BATCH_SIZE = 40;         // eventos por request
   var FLUSH_DEBOUNCE = 1500;   // ms tras la última interacción
   var FLUSH_INTERVAL = 10000;  // ms: reintento periódico
+  var PING_INTERVAL = 25000;   // ms: señal de vida (ventana de "activos": 90 s; oculta, el navegador la espacia a ~1/min)
 
   // ---- utilidades ----------------------------------------------------
   function deviceType() {
@@ -54,13 +58,19 @@
   function clearRunUid() { try { localStorage.removeItem(RUN_KEY); } catch (e) {} }
 
   // ---- cola persistente ----------------------------------------------
+  // Cada evento lleva un id local (_cid) para depurar la cola por IDENTIDAD
+  // tras un envío exitoso: dos flushes solapados (p.ej. el de cierre sobre
+  // uno en vuelo) nunca descuentan eventos que aún no se enviaron.
   var queue = [];
+  var cidSeq = 0;
   try { queue = JSON.parse(localStorage.getItem(QUEUE_KEY) || "[]") || []; } catch (e) { queue = []; }
+  queue.forEach(function (e) { if (typeof e._cid === "number" && e._cid > cidSeq) cidSeq = e._cid; });
+  queue.forEach(function (e) { if (typeof e._cid !== "number") e._cid = ++cidSeq; });
   function persistQueue() {
     if (queue.length > MAX_QUEUE) queue = queue.slice(queue.length - MAX_QUEUE);
     try { localStorage.setItem(QUEUE_KEY, JSON.stringify(queue)); } catch (e) {}
   }
-  function enqueue(ev) { queue.push(ev); persistQueue(); scheduleFlush(); }
+  function enqueue(ev) { ev._cid = ++cidSeq; queue.push(ev); persistQueue(); scheduleFlush(); }
 
   // ---- Cloudflare Turnstile invisible --------------------------------
   var tsLoading = null;
@@ -98,6 +108,7 @@
 
   // ---- token estadístico (cacheado 30 días) --------------------------
   var inflight = null;
+  var tokenFailUntil = 0; // backoff: si Turnstile/red falla, no relanzarlo en cada reintento
   function storedToken() {
     try {
       var o = JSON.parse(localStorage.getItem(TOKEN_KEY) || "null");
@@ -108,6 +119,7 @@
   function ensureToken(force) {
     if (!force) { var t = storedToken(); if (t) return Promise.resolve(t); }
     if (inflight) return inflight;
+    if (Date.now() < tokenFailUntil) return Promise.reject(new Error("token-backoff"));
     inflight = getCloudflareToken()
       .then(function (cf) {
         return fetch(API + "/public/session", {
@@ -121,9 +133,10 @@
         var exp = parseJwtExp(d.token) || Date.now() / 1000 + d.expires_in_days * 86400;
         try { localStorage.setItem(TOKEN_KEY, JSON.stringify({ token: d.token, exp: exp })); } catch (e) {}
         inflight = null;
+        tokenFailUntil = 0;
         return d.token;
       })
-      .catch(function (e) { inflight = null; throw e; });
+      .catch(function (e) { inflight = null; tokenFailUntil = Date.now() + 30000; throw e; });
     return inflight;
   }
 
@@ -135,15 +148,25 @@
     flushTimer = setTimeout(function () { flushTimer = null; flush(false); }, FLUSH_DEBOUNCE);
   }
   function sendBatch(token, events, keepalive) {
+    // _cid es solo bookkeeping local: no viaja al servidor.
+    var payload = events.map(function (e) {
+      var c = {};
+      for (var k in e) { if (k !== "_cid") c[k] = e[k]; }
+      return c;
+    });
     return fetch(API + "/public/collect", {
       method: "POST",
       keepalive: !!keepalive,
       headers: { "Content-Type": "application/json", "X-Refleja-Token": token },
-      body: JSON.stringify({ events: events }),
+      body: JSON.stringify({ events: payload }),
     });
   }
   function flush(sync) {
-    if (flushing || !queue.length) return Promise.resolve();
+    // El flush síncrono (ocultar/cerrar pestaña) NO respeta el candado: si hay
+    // uno en vuelo puede morir con la página, y es preferible arriesgar un
+    // duplicado (los eventos de run son idempotentes en el servidor) a perder
+    // un resultado por no reenviarlo con keepalive antes de cerrar.
+    if ((flushing && !sync) || !queue.length) return Promise.resolve();
     flushing = true;
     var batch = queue.slice(0, BATCH_SIZE);
     return ensureToken()
@@ -156,7 +179,12 @@
         });
       })
       .then(function (r) {
-        if (r && r.ok) { queue.splice(0, batch.length); persistQueue(); }
+        if (r && r.ok) {
+          var sent = {};
+          batch.forEach(function (e) { sent[e._cid] = true; });
+          queue = queue.filter(function (e) { return !sent[e._cid]; });
+          persistQueue();
+        }
       })
       .catch(function () { /* los eventos siguen en cola; se reintenta luego */ })
       .then(function () {
@@ -209,10 +237,43 @@
     if (el.closest("#restart-test, #restart-test-inline, #restart-minor")) { window.ReflejaStats.restart(); return; }
   }, true);
 
+  // ---- señal de vida ("Activos ahora" en /plataforma) -----------------
+  // El backend cuenta como activo a quien dio señal en los últimos 90 s; sin
+  // esto, una pestaña abierta pero sin interacción deja de contar en segundos.
+  // Se envía también con la pestaña en segundo plano: una sesión abierta
+  // sigue contando. No hace falta espaciarla a mano: el navegador ya
+  // ralentiza los timers de pestañas ocultas (~1 disparo/min), y la ventana
+  // de 90 s del backend absorbe ese ritmo.
+  var pingBusy = false;
+  var pingBackoffUntil = 0;
+  function ping(token) {
+    return fetch(API + "/public/ping", { method: "POST", headers: { "X-Refleja-Token": token } });
+  }
+  function sendPing() {
+    if (pingBusy || Date.now() < pingBackoffUntil) return;
+    var token = storedToken();
+    if (!token) return; // el primer flush (page_view) emitirá el token
+    pingBusy = true;
+    ping(token)
+      .then(function (r) {
+        if (r.status === 401) {
+          // Token caducado en una sesión larga sin eventos en cola: renovarlo
+          // aquí para que la señal de vida no muera.
+          return ensureToken(true).then(ping);
+        }
+        if (r.status === 429) pingBackoffUntil = Date.now() + 120000;
+        return r;
+      })
+      .catch(function () { pingBackoffUntil = Date.now() + PING_INTERVAL; })
+      .then(function () { pingBusy = false; });
+  }
+  setInterval(sendPing, PING_INTERVAL);
+
   // Reintento periódico y vaciado al ocultar/cerrar (sin perder datos).
   setInterval(function () { flush(false); }, FLUSH_INTERVAL);
   document.addEventListener("visibilitychange", function () {
     if (document.visibilityState === "hidden") flush(true);
+    else { sendPing(); flush(false); } // al volver: señal inmediata + reintento de la cola
   });
   window.addEventListener("pagehide", function () { flush(true); });
 })();

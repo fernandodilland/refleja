@@ -26,15 +26,17 @@ def _flow_of_key(key: str) -> str | None:
     return None
 
 
-def _fallback() -> tuple[set[str], dict[str, str]]:
+def _fallback() -> tuple[set[str], dict[str, str], dict[str, list[str]], list[str]]:
     qids: set[str] = set(INTRO)
     flow: dict[str, str] = {}
+    order: dict[str, list[str]] = {f: [] for f in FLOWS}
     for f in FLOWS:
         for i in range(1, 13):
             qid = f"{f}_{i}"
             qids.add(qid)
             flow[qid] = f
-    return qids, flow
+            order[f].append(qid)
+    return qids, flow, order, ["age", "start"]
 
 
 def _formulario_path() -> Path:
@@ -44,7 +46,7 @@ def _formulario_path() -> Path:
     return Path(__file__).resolve().parents[2] / "front" / "src" / "formulario.json"
 
 
-def _load() -> tuple[frozenset[str], dict[str, str]]:
+def _load() -> tuple[frozenset[str], dict[str, str], dict[str, list[str]], list[str]]:
     try:
         data = json.loads(_formulario_path().read_text(encoding="utf-8"))
         questions = data.get("questions", {})
@@ -52,19 +54,26 @@ def _load() -> tuple[frozenset[str], dict[str, str]]:
             raise ValueError("sin preguntas")
         qids: set[str] = set(INTRO)
         flow: dict[str, str] = {}
+        order: dict[str, list[str]] = {f: [] for f in FLOWS}
+        intro_order: list[str] = []
         for key, q in questions.items():
             qid = (q or {}).get("qid") or key
             qids.add(qid)
             f = _flow_of_key(key)
             if f:
                 flow[qid] = f
-        return frozenset(qids), flow
+                order[f].append(qid)  # orden del JSON = orden del flujo
+            elif key in INTRO:
+                intro_order.append(qid)
+        if not intro_order:
+            intro_order = ["age", "start"]
+        return frozenset(qids), flow, order, intro_order
     except Exception:
-        qids, flow = _fallback()
-        return frozenset(qids), flow
+        qids, flow, order, intro_order = _fallback()
+        return frozenset(qids), flow, order, intro_order
 
 
-VALID_QIDS, QID_FLOW = _load()
+VALID_QIDS, QID_FLOW, FLOW_ORDER, INTRO_ORDER = _load()
 # Ids aceptados por bump_question (preguntas + estados de ruteo).
 VALID_QUESTION_IDS = VALID_QIDS | TERMINALS
 

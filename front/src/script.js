@@ -13,6 +13,18 @@ let totalSteps = 0;
 let scores = { psicologica: 0, fisica: 0, economica: 0, patrimonial: 0, sexual: 0, intimidacion: 0 };
 let answerHistory = []; // Para dar soporte a "Anterior"
 let selectedMunicipio = "";
+let personaLabel = "esta persona"; // forma "tu pareja" (para el enunciado)
+let personaMine = "esta persona";  // forma "mi pareja" (para las respuestas)
+
+// Reemplaza {persona}/{Persona} ("tu pareja") y {mipersona}/{Mipersona} ("mi pareja")
+function personalize(text) {
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+    return String(text || "")
+        .replace(/\{Persona\}/g, cap(personaLabel))
+        .replace(/\{persona\}/g, personaLabel)
+        .replace(/\{Mipersona\}/g, cap(personaMine))
+        .replace(/\{mipersona\}/g, personaMine);
+}
 
 // --- MANEJO DE HISTORIAL EN LOCALSTORAGE (MÁX 15 MINUTOS) ---
 const SESSION_KEY = "refleja_session";
@@ -27,7 +39,9 @@ function saveSession() {
             totalSteps,
             scores,
             answerHistory,
-            selectedMunicipio
+            selectedMunicipio,
+            personaLabel,
+            personaMine
         };
         localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     } catch (e) {
@@ -63,6 +77,8 @@ function restoreSession() {
         scores = session.scores || { psicologica: 0, fisica: 0, economica: 0, patrimonial: 0, sexual: 0, intimidacion: 0 };
         answerHistory = session.answerHistory || [];
         selectedMunicipio = session.selectedMunicipio || "";
+        personaLabel = session.personaLabel || "esta persona";
+        personaMine = session.personaMine || "esta persona";
         
         return true;
     } catch (e) {
@@ -174,7 +190,9 @@ function resetTest(skipScroll = false) {
     scores = { psicologica: 0, fisica: 0, economica: 0, patrimonial: 0, sexual: 0, intimidacion: 0 };
     answerHistory = [];
     selectedMunicipio = "";
-    
+    personaLabel = "esta persona";
+    personaMine = "esta persona";
+
     if (municipioSelect) {
         municipioSelect.value = "";
         municipioSelect.dispatchEvent(new Event("change"));
@@ -195,17 +213,8 @@ function renderQuestion() {
     const q = questions[currentQuestionId];
     if (!q) return;
 
-    // Actualizar Título
-    testTitle.textContent = q.text;
-
-    // Actualizar Caja de Explicación
-    if (q.explanation) {
-        explanationText.textContent = q.explanation;
-        explanationSource.textContent = q.source || "Secretaría de las Mujeres (N.L.)";
-        explanationBox.classList.remove("is-hidden");
-    } else {
-        explanationBox.classList.add("is-hidden");
-    }
+    // Actualizar Título (personalizado según la relación)
+    testTitle.textContent = personalize(q.text);
 
     // Actualizar Barra de Progreso e Indicadores
     if (totalSteps > 0 && currentStep > 0) {
@@ -231,43 +240,26 @@ function renderQuestion() {
         previousBtn.classList.add("is-hidden");
     }
 
-    // Limpiar y Generar Botones de Respuesta de forma Dinámica
+    // Limpiar y Generar Botones de Respuesta de forma Dinámica.
     answerGrid.innerHTML = "";
-    q.options.forEach((opt, index) => {
+
+    // Orden ALEATORIO de las opciones (excepto edad/relación, que van naturales)
+    // para que no se note el gradiente de severidad.
+    let opts = q.options;
+    if (currentQuestionId !== 'age' && currentQuestionId !== 'start') {
+        opts = q.options.slice();
+        for (let i = opts.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [opts[i], opts[j]] = [opts[j], opts[i]];
+        }
+    }
+
+    opts.forEach((opt) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "answer-card";
-        
-        // Asignar colores temáticos suaves basados en el nivel de severidad de los puntajes
-        let maxScore = 0;
-        if (opt.scores) {
-            const values = Object.values(opt.scores);
-            if (values.length > 0) {
-                maxScore = Math.max(...values);
-            }
-        }
-
-        // Estilizar botón basándose en el tipo de respuesta (o puntaje de riesgo)
-        if (currentQuestionId === 'age' || currentQuestionId === 'start') {
-            button.classList.add("answer-card--neutral");
-        } else if (maxScore >= 2) {
-            button.style.background = "oklch(0.96 0.025 20 / 60%)";
-            button.style.borderColor = "oklch(0.91 0.03 20)";
-            button.style.color = "oklch(0.25 0.05 20)";
-        } else if (maxScore === 1) {
-            button.style.background = "oklch(0.97 0.025 75 / 60%)";
-            button.style.borderColor = "oklch(0.92 0.03 75)";
-            button.style.color = "oklch(0.28 0.05 75)";
-        } else {
-            button.style.background = "oklch(0.97 0.015 140 / 60%)";
-            button.style.borderColor = "oklch(0.92 0.02 140)";
-            button.style.color = "oklch(0.25 0.04 140)";
-        }
-
-        // Estructura interna del botón
-        button.innerHTML = `<span>${opt.label}</span>`;
-        
-        // Evento click para avanzar
+        // Todas las opciones con fondo neutro (blanco), sin colores por severidad.
+        button.className = "answer-card answer-card--neutral";
+        button.innerHTML = `<span>${personalize(opt.label)}</span>`;
         button.addEventListener("click", () => handleAnswerSelect(opt));
         answerGrid.appendChild(button);
     });
@@ -356,6 +348,9 @@ function handleAnswerSelect(option) {
         if (nextId.startsWith("trab")) flow = "trab";
         totalSteps = flowLengths[flow];
         currentStep = 1; // Reiniciar contador para el flujo de preguntas
+        // Personalización: guardar cómo referirnos a la persona.
+        personaLabel = option.rel || "esta persona";
+        personaMine = option.relMine || "esta persona";
     } else if (currentQuestionId !== "age") {
         // Para preguntas del flujo, incrementar el contador
         currentStep++;

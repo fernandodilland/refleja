@@ -561,6 +561,11 @@ a {
   text-align: left;
 }
 
+/* Todas las opciones con fondo blanco sólido (sin colores por severidad). */
+.answer-card--neutral {
+  background: #ffffff;
+}
+
 .answer-card span {
   display: block;
   font-family: var(--font-display);
@@ -1762,13 +1767,13 @@ button:focus-visible,
   box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* --- EFECTOS ACTIVOS DE TECLADO --- */
+/* --- EFECTOS ACTIVOS DE TECLADO (sin color, solo un "press" sutil) --- */
 .answer-card--active,
 .answer-card:active {
-  transform: scale(0.97) !important;
-  background: color-mix(in oklab, var(--peach) 20%, white) !important;
-  border-color: var(--magenta) !important;
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--magenta) 25%, transparent) !important;
+  transform: scale(0.98) !important;
+  background: #ffffff !important;
+  border-color: color-mix(in oklab, var(--wine) 22%, transparent) !important;
+  box-shadow: none !important;
 }
 
 .button-action--active,

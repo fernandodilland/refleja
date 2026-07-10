@@ -1,0 +1,49 @@
+# Refleja · refleja.org
+# Proyecto ciudadano de LABNL para la identificación de violencia de género
+# en los 51 municipios de Nuevo León, México.
+#
+# Contenido público y abierto: se permite el rastreo por buscadores y por
+# modelos de IA. Solo se excluyen las áreas privadas de administración.
+
+# --- Regla general (todos los rastreadores) ---
+User-agent: *
+Allow: /
+Disallow: /acceso
+Disallow: /acceso/
+Disallow: /plataforma
+Disallow: /plataforma/
+
+# --- Rastreadores de IA (explícitamente bienvenidos) ---
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: anthropic-ai
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+User-agent: Bytespider
+Allow: /
+User-agent: Amazonbot
+Allow: /
+User-agent: cohere-ai
+Allow: /
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# --- Recursos para IA y buscadores ---
+Sitemap: https://refleja.org/sitemap.xml
+# Guía para modelos de lenguaje (estándar llmstxt.org):
+# https://refleja.org/llms.txt

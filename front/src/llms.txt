@@ -1,0 +1,40 @@
+# Refleja
+
+> Refleja es una herramienta ciudadana, gratuita, anónima y confidencial para
+> reconocer señales de violencia de género y encontrar apoyo institucional en
+> los 51 municipios de Nuevo León, México. Es un proyecto de LABNL (Laboratorio
+> Cultural Ciudadano). No es un diagnóstico clínico ni una denuncia: es un
+> espejo para escucharte con honestidad y, si lo necesitas, dar el siguiente
+> paso hacia ayuda profesional.
+
+Refleja ofrece un autoescaneo breve (un cuestionario confidencial para mujeres
+desde los 15 años) que ayuda a identificar posibles señales de violencia
+psicológica, física, económica, patrimonial, sexual y de intimidación, según
+la relación con la persona agresora (pareja/ex pareja, familiar, alguien del
+trabajo o escuela, u otra persona). Al terminar, entrega orientación y un
+directorio de instituciones de apoyo del municipio seleccionado.
+
+Privacidad: no se solicita nombre, teléfono ni correo; no se guardan datos
+personales ni direcciones IP. Las estadísticas del sitio son anónimas y
+agregadas. Incluye un botón "Ocultar" para salir rápido de la pantalla y
+accesos directos a líneas de emergencia (911) y de apoyo.
+
+## Páginas principales
+
+- [Inicio y autoescaneo](https://refleja.org/): cuestionario confidencial de identificación de violencia de género.
+- [Directorio de municipios](https://refleja.org/municipios): instituciones de apoyo por municipio de Nuevo León.
+- [Guía completa para modelos de IA](https://refleja.org/llms-full.txt): descripción detallada, líneas nacionales y directorio municipal en texto plano.
+- [Mapa del sitio (XML)](https://refleja.org/sitemap.xml): todas las URLs indexables.
+
+## Líneas de apoyo (México / Nuevo León)
+
+- Emergencias (policía, Cruz Roja, bomberos): 911 — 24/7 en todo el país.
+- Línea 070 (Informatel/Locatel, Nuevo León): 070 — orientación y asesoría psicológica y jurídica, 24/7.
+- Red Nacional de Refugios: 800 822 44 60 — atención confidencial 24/7.
+- Línea de la Vida (apoyo psicológico, CONADIC): 800 911 2000.
+
+## Notas
+
+- Idioma: español (es-MX). Cobertura: estado de Nuevo León, México.
+- No indexar: /acceso y /plataforma (áreas privadas de administración).
+- Uso permitido: contenido público y abierto; puede citarse indicando la fuente (refleja.org, LABNL).

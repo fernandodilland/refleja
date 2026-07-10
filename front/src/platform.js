@@ -127,7 +127,7 @@
   function renderKpis(o) {
     var cards = [
       { label: "Visitantes", value: o.total_visitors, sub: pct(o.start_rate) + " empieza el test", info: "visitors" },
-      { label: "Activos ahora", value: o.active_now, live: true, sub: "últimos 60 s", info: "active_now" },
+      { label: "Activos ahora", value: o.active_now, live: true, sub: "últimos 90 s", info: "active_now" },
       { label: "Empezaron", value: o.started, sub: o.total_runs + " intentos", info: "started" },
       { label: "Completaron", value: o.completed, sub: pct(o.completion_rate) + " de compleción", info: "completed" },
       { label: "Entraron sin empezar", value: o.entered_not_started, sub: "no inician el test", info: "entered_not_started" },
@@ -276,6 +276,8 @@
       stamp();
     }).catch(function () {});
   }
+  function startRt() { if (!rtTimer) rtTimer = setInterval(loadRealtime, 5000); }
+  function stopRt() { if (rtTimer) { clearInterval(rtTimer); rtTimer = null; } }
 
   // ---------- Historial de inicios de sesión (modal) ----------
   function fmtDate(iso) {
@@ -315,7 +317,7 @@
   // ---------- Info de cada estadística (modal) ----------
   var INFO = {
     visitors: ["Visitantes", "Personas reales (humanas) que abrieron el sitio público y superaron el Cloudflare Turnstile invisible. Cada visitante es un identificador aleatorio anónimo (no se guarda IP ni datos personales) y se cuenta una sola vez por navegador durante la vida del token (30 días)."],
-    active_now: ["Activos ahora", "Visitantes con actividad en los últimos 60 segundos (según la última señal recibida). Es la aproximación a 'en tiempo real'."],
+    active_now: ["Activos ahora", "Visitantes con el sitio abierto: señal de vida en los últimos 90 segundos. Cada navegador con una pestaña del sitio envía una señal ligera cada 25 s (aprox. 1 por minuto si la pestaña está en segundo plano), además de cada interacción. Varias pestañas del mismo navegador cuentan como 1 visitante."],
     started: ["Empezaron", "Intentos de formulario que iniciaron (se eligió edad y tipo de relación). Un mismo visitante puede tener varios intentos."],
     completed: ["Completaron", "Formularios completados: llegaron a la pantalla de resultado. También cuenta cuando la persona indica ser menor de 18 años (se considera completado aunque no responda preguntas). El % es sobre los que empezaron."],
     entered_not_started: ["Entraron sin empezar", "Visitantes que abrieron el sitio pero nunca iniciaron el formulario (solo navegaron)."],
@@ -323,7 +325,7 @@
     repeat: ["Repitieron", "Visitantes que hicieron el formulario más de una vez (usaron 'volver a empezar' o lo repitieron en otra visita)."],
     urgent: ["Ayuda urgente", "Clics en los botones de 'Ayuda urgente' y de emergencia (911) del sitio público (inicio y páginas de municipio)."],
     hide: ["Ocultar sitio", "Clics en el botón 'Ocultar' que sale rápidamente a un sitio neutral (salida de seguridad)."],
-    realtime: ["En tiempo real", "Visitantes activos en los últimos 60 s y los últimos recorridos del formulario (tipo de relación, hasta qué pregunta llegaron y hace cuánto)."],
+    realtime: ["En tiempo real", "Visitantes activos en los últimos 90 s y los últimos recorridos del formulario (tipo de relación, hasta qué pregunta llegaron y hace cuánto)."],
     violence: ["Tipos de violencia", "Se calcula solo sobre formularios completados con respuestas. 'Puntaje total' suma los puntos por tipo según las respuestas; 'Presencia' cuenta en cuántos formularios aparece cada tipo; 'Predominante' cuenta en cuántos es el tipo con mayor puntaje. Los menores de edad completan sin puntajes, así que no afectan esta gráfica."],
     funnel: ["Embudo", "Cada barra muestra cuántas personas llegaron a esa pregunta. En rojo, quienes la vieron pero no continuaron (abandono). La última barra verde es cuántas completaron el formulario en ese flujo."],
     muni_form: ["Municipios (formulario)", "Municipio que la persona elige al final del formulario para ver recursos de apoyo. Se normaliza para no duplicar por mayúsculas/acentos."],
@@ -425,7 +427,13 @@
         $("app").hidden = false;
         wireControls();
         return loadStatic().then(loadAll).then(function () {
-          rtTimer = setInterval(loadRealtime, 5000);
+          startRt();
+          // Con el panel oculto no tiene caso consultar; al volver, un
+          // refresco inmediato deja "Activos ahora" al día al instante.
+          document.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "hidden") stopRt();
+            else { loadRealtime(); startRt(); }
+          });
         });
       })
       .catch(function () { location.replace("/acceso"); });

@@ -1,10 +1,12 @@
 """Endpoints públicos.
 
-Solo DOS rutas alcanzables sin sesión admin:
+Solo TRES rutas alcanzables sin sesión admin:
   - POST /api/public/session : único endpoint sin token. Valida el Turnstile
     invisible y emite el token estadístico de 30 días.
   - POST /api/public/collect : requiere el token estadístico en el header
     X-Refleja-Token. Ingiere eventos y actualiza agregados.
+  - POST /api/public/ping    : requiere el token. Señal de vida: solo
+    actualiza last_seen_at ("Activos ahora"), sin consumir cuotas.
 """
 import threading
 import time
@@ -93,6 +95,33 @@ def create_session(
 
     token = create_public_token(vid)
     return SessionResponse(token=token, expires_in_days=settings.PUBLIC_TOKEN_TTL_DAYS)
+
+
+@router.post("/ping")
+def ping(
+    request: Request,
+    vid: str = Depends(require_public_vid),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Señal de vida para "Activos ahora": solo actualiza last_seen_at.
+
+    Deliberadamente NO pasa por /collect: una pestaña abierta horas mandaría
+    cientos de heartbeats que agotarían PUBLIC_MAX_EVENTS y desplazarían
+    respuestas reales de la cola del front. Aquí el costo es 1 UPDATE por
+    señal, acotado por su propio rate-limit y sin tocar cuotas ni eventos.
+    """
+    vid_h = hmac_vid(vid)
+    if not _rate_ok("ping:" + vid_h, settings.PING_RATE_PER_MIN):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Demasiadas señales.",
+        )
+    country = client_country(request)
+    device = analytics.device_from_ua(request.headers.get("user-agent"))
+    analytics.get_or_create_visitor(db, vid_h, country, device)
+    analytics.touch_visitor(db, vid_h)
+    db.commit()
+    return {"ok": True}
 
 
 _ACTION_EVENTS = frozenset(

@@ -1,0 +1,287 @@
+# Refleja — Guía completa para modelos de IA
+
+Refleja (https://refleja.org) es una herramienta ciudadana, gratuita, anónima y confidencial para reconocer señales de violencia de género y encontrar apoyo institucional en los 51 municipios de Nuevo León, México. Proyecto de LABNL (Laboratorio Cultural Ciudadano).
+
+Este documento está en texto plano/Markdown para facilitar su lectura por modelos de lenguaje. Última actualización de datos: 2026-07-09.
+
+## Qué es y qué NO es
+
+- Es un autoescaneo confidencial (cuestionario breve) para mujeres desde los 15 años.
+- Ayuda a identificar posibles señales de violencia psicológica, física, económica, patrimonial, sexual y de intimidación.
+- NO es un diagnóstico clínico, NO es una denuncia y NO sustituye la atención de un profesional.
+- Es una invitación a la autorreflexión y un puente hacia el directorio de apoyo.
+
+## Cómo funciona
+
+1. La persona indica su rango de edad (menores de 18 reciben orientación específica).
+2. Elige el tipo de relación con quien pudiera estar ejerciendo violencia: pareja o ex pareja, un familiar, alguien del trabajo o la escuela, u otra persona. Las preguntas se personalizan según esa relación.
+3. Responde un cuestionario breve con opciones cortas.
+4. Selecciona su municipio de Nuevo León.
+5. Recibe una orientación de riesgo (sin señales / riesgo medio / alto riesgo) y el directorio de instituciones de apoyo de su municipio.
+
+## Privacidad y seguridad
+
+- No se solicita nombre, teléfono ni correo electrónico.
+- No se almacenan datos personales ni direcciones IP.
+- Las estadísticas de uso son anónimas y agregadas.
+- Incluye un botón "Ocultar" para abandonar rápidamente la pantalla y accesos directos a líneas de emergencia.
+
+## Líneas de emergencia (todo México)
+
+- **Emergencias (Policía, Cruz Roja, Bomberos)** — 911: Disponible 24/7 en todo el país
+- **Red Nacional de Refugios para Mujeres** — 800 822 44 60: Atención confidencial 24/7. Refugios seguros en todo México
+- **Línea de la Vida - Apoyo Psicológico** — 800 911 2000: Orientación emocional gratuita, CONADIC
+
+## Líneas y recursos estatales (Nuevo León)
+
+- **Línea 070 (Informatel y Locatel)** — 070: Servicio gratuito de orientación, asesoría psicológica y jurídica, disponible las 24 horas, los 365 días del año en todo el estado de Nuevo León.
+- **Secretaría de las Mujeres de Nuevo León** — 81 2020 9773: Oficina principal de atención. Dirección: Eugenio Garza Sada Sur 2145, Piso 6, Col. Roma, Monterrey, N.L.
+- **Denuncia Virtual (Fiscalía General de Justicia de NL)**: Plataforma oficial para realizar denuncias a través de videollamada con un Agente del Ministerio Público de la Fiscalía. (https://denuncia.fiscalia-nl.gob.mx:8443/)
+
+## Directorio de apoyo por municipio
+
+Cada municipio tiene su página en https://refleja.org/<slug>
+
+### Abasolo (https://refleja.org/abasolo)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Agualeguas (https://refleja.org/agualeguas)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Los Aldamas (https://refleja.org/los-aldamas)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Allende (https://refleja.org/allende)
+
+- **Coordinación del Instituto Municipal de las Mujeres (DIF)** — Tel: 826 268 2885 · Dirección: Calle Juárez #200, Col. Centro, Allende, N.L., C.P. 67350
+  Orientación, asesoría psicológica y canalización de casos de violencia de género.
+
+### Anáhuac (https://refleja.org/anahuac)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Apodaca (https://refleja.org/apodaca)
+
+- **Secretaría de las Mujeres de Apodaca** — Tel: 81 3424 3844 · 81 3424 3845 · WhatsApp: 8180272776 · Dirección: Edificio Mujeres Plenas, Antiguo Camino a Agua Fría esq. con Arco Vial, Col. Nova, Apodaca, N.L.
+  Atención especializada, asesoría jurídica, psicológica y apoyo integral para mujeres en Apodaca.
+  Enlace: https://www.facebook.com/secretariadelasmujeresa/?locale=es_LA
+
+### Aramberri (https://refleja.org/aramberri)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Bustamante (https://refleja.org/bustamante)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Cadereyta Jiménez (https://refleja.org/cadereyta-jimenez)
+
+- **Instituto de la Mujer Jimenense** — Tel: 82 8284 2110 · Atención 24/7: 82 8269 1900 / 82 8284 2111 · Dirección: Calle Campesina s/n, Colonia Jerónimo Treviño, Cadereyta Jiménez, N.L.
+  Atención, asesoría psicológica, legal y acompañamiento a mujeres de la localidad.
+
+### El Carmen (https://refleja.org/el-carmen)
+
+- **Instituto Municipal de la Mujer de El Carmen** — Tel: 81 8236 0042 · Atención 24/7: 81 2350 2560 · Dirección: Calle Víctor Hugo s/n, Centro, El Carmen, N.L.
+  Orientación jurídica, psicológica y canalización especializada.
+
+### Cerralvo (https://refleja.org/cerralvo)
+
+- **Coordinación del Instituto de la Mujer de Cerralvo** — Tel: 892 975 0161 · Dirección: Ayuntamiento de Cerralvo (Palacio Municipal), N.L.
+  Apoyo municipal y canalización. Solicita comunicar con la Coordinación del Instituto de la Mujer al llamar al Palacio Municipal.
+
+### Ciénega de Flores (https://refleja.org/cienega-de-flores)
+
+- **Instituto Municipal de las Mujeres Ciénega de Flores** — Tel: 825 238 5850 · Email: institutodelamujer@cienegadeflores.gob.mx · Dirección: Av. Independencia 120, Centro de Ciénega de Flores, N.L., C.P. 65550
+  Orientación integral y asesoría jurídica local.
+
+### China (https://refleja.org/china)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Doctor Arroyo (https://refleja.org/doctor-arroyo)
+
+- **Unidad de Atención a la Violencia Familiar** — Tel: 488 888 0143 · Dirección: Padre Severiano Martínez S/N, Col. Centro, C.P. 67901, Doctor Arroyo, N.L.
+  Servicio local de orientación y contención psicológica.
+
+### Doctor Coss (https://refleja.org/doctor-coss)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Doctor González (https://refleja.org/doctor-gonzalez)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Galeana (https://refleja.org/galeana)
+
+- **Atención Municipal a la Mujer (Galeana)** — Tel: 81 2020 4100 · Dirección: Calle Cuauhtémoc S/N, Centro, Galeana, N.L., C.P. 67850
+  Atención, asesoría y canalización para mujeres en situación de vulnerabilidad.
+
+### García (https://refleja.org/garcia)
+
+- **Coordinación para Atender la Violencia Familiar y de Género (CAVIFG)** — Tel: 81 8283 1970 · Dirección: Camino a la Estación S/N, Colonia Fray Juan Antonio de Sobrevilla, García, N.L.
+  Atención y contención especializada para casos de violencia familiar y de género.
+
+### San Pedro Garza García (https://refleja.org/san-pedro-garza-garcia)
+
+- **Coordinación de las Mujeres (San Pedro)** — Tel: 81 1052 4236 · Dirección: Francisco Villa #133, Col. Jesús M. Garza, San Pedro Garza García, N.L.
+  Asesoría psicológica y jurídica de manera confidencial y gratuita.
+- **Puerta Violeta San Pedro (Atención 24/7)** — Tel: 81 8242 5022 · 81 8242 5023 al 24
+  Unidad de auxilio y atención inmediata disponible las 24 horas del día.
+
+### General Bravo (https://refleja.org/general-bravo)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### General Escobedo (https://refleja.org/general-escobedo)
+
+- **Secretaría de las Mujeres de Escobedo** — Tel: 81 8286 9432 · 81 1306 4773 · WhatsApp: 8134571093 · Email: sriadelamujer@gmail.com · Dirección: Calle Cto. de la Luz, Monte Real INFONAVIT, C.P. 66056, General Escobedo, N.L.
+  Atención psicológica y jurídica integral. Chat de asistencia inmediata por WhatsApp: 'MIA, mi amiga'.
+
+### General Terán (https://refleja.org/general-teran)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### General Treviño (https://refleja.org/general-trevino)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### General Zaragoza (https://refleja.org/general-zaragoza)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### General Zuazua (https://refleja.org/general-zuazua)
+
+- **Instituto Municipal de las Mujeres Zuazua** — Tel: 825 247 0318 · 825 247 1206 (Ext. 124) · WhatsApp: 8121042696 · Dirección: Juárez #111, Col. Centro, General Zuazua, N.L.
+  Asesoría, contención psicológica y acompañamiento legal. Línea 24/7 habilitada.
+
+### Guadalupe (https://refleja.org/guadalupe)
+
+- **Centro Violeta / Secretaría de Igualdad Sustantiva de Guadalupe** — Tel: 81 8007 6255 · Línea Amiga: 81 4444 0000 · Dirección: Sierra de la Iguana s/n, Fracc. Cerro de la Silla, Guadalupe, N.L.
+  Espacio de atención integral y multidisciplinario para mujeres en situación de violencia.
+  Enlace: https://nl.gob.mx/es/boletines/inauguran-centro-violeta-en-guadalupe
+
+### Los Herreras (https://refleja.org/los-herreras)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Higueras (https://refleja.org/higueras)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Hualahuises (https://refleja.org/hualahuises)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Iturbide (https://refleja.org/iturbide)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Juárez (https://refleja.org/juarez)
+
+- **Instituto Municipal de la Mujer en Juárez** — Tel: 81 3061 0907 · Dirección: Avenida Vistas de la Primavera número 198, Colonia Vistas del Río, Juárez, N.L., C.P. 67267
+  Orientación, asesoría psicológica y jurídica confidencial.
+
+### Lampazos de Naranjo (https://refleja.org/lampazos-de-naranjo)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Linares (https://refleja.org/linares)
+
+- **Instancia Municipal de la Mujer** — Tel: 821 118 1266 · Dirección: Juárez #108 Poniente, Piso 3 (Torre Administrativa), Zona Centro, Linares, N.L.
+  Atención psicológica, acompañamiento y orientación jurídica para mujeres del municipio.
+
+### Marín (https://refleja.org/marin)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Melchor Ocampo (https://refleja.org/melchor-ocampo)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Mier y Noriega (https://refleja.org/mier-y-noriega)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Mina (https://refleja.org/mina)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Montemorelos (https://refleja.org/montemorelos)
+
+- **Dirección del Instituto de la Mujer de Montemorelos** — Tel: 826 263 4050 · Dirección: Palacio Municipal (Zaragoza e Hidalgo S/N, Centro Histórico), Montemorelos, N.L., C.P. 67500
+  Atención integral, orientación jurídica y canalización especializada.
+
+### Monterrey (https://refleja.org/monterrey)
+
+- **Instituto de las Mujeres Regias** — Tel: 81 2090 2828 · Dirección: Av. Céntrika #110, Col. Céntrika, Monterrey, N.L.
+  Asesoría psicológica, jurídica y de trabajo social.
+- **UAVVI Sede Alamey (Policía de Monterrey)** — Tel: 81 5102 8010 · Dirección: Avenida Los Ángeles s/n, esquina con la calle Arista, Col. Del Norte, C.P. 64500, Monterrey, N.L.
+  Unidad de Atención a Víctimas de Violencia Intrafamiliar.
+- **UAVVI Sede Norte - San Bernabé (Policía de Monterrey)** — Tel: 81 5102 6980 · Dirección: Calle Ixtlixóchitl s/n, en su cruce con la calle Nezahualcóyotl, Provileón San Bernabé, C.P. 64217, Monterrey, N.L.
+  Unidad de Atención a Víctimas de Violencia Intrafamiliar.
+
+### Parás (https://refleja.org/paras)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Pesquería (https://refleja.org/pesqueria)
+
+- **Instituto Municipal de la Mujer de Pesquería** — Tel: 825 688 0479 · 81 3079 8232 · WhatsApp: 8180984221 · Dirección: Calle Ayala S/N (entre Guerrero y Matamoros), Zona Centro, Pesquería, N.L., C.P. 66650
+  Apoyo psicológico y jurídico. Teléfono 24/7 disponible.
+
+### Los Ramones (https://refleja.org/los-ramones)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Rayones (https://refleja.org/rayones)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Sabinas Hidalgo (https://refleja.org/sabinas-hidalgo)
+
+- **Instituto Municipal de la Mujer** — Tel: 824 242 0836 · Atención 24/7: 824 242 7878 · Dirección: Calle Niños Héroes #600, Colonia Centro, Sabinas Hidalgo, N.L.
+  Atención, asesoría y canalización para mujeres en situación de violencia de género.
+
+### Salinas Victoria (https://refleja.org/salinas-victoria)
+
+- **Instituto Municipal de la Mujer Salinas Victoria** — Tel: 81 2289 5529 · Dirección: Bosques de los Nogales, C.P. 65500, Salinas Victoria, N.L.
+  Atención municipal especializada y orientación jurídica o de contención.
+
+### San Nicolás de los Garza (https://refleja.org/san-nicolas-de-los-garza)
+
+- **Dirección de la Mujer de San Nicolás** — Tel: 81 8158 1391 · Ext. 3031 · WhatsApp: 8112289876 · Dirección: Jorge González Camarena #125, Fracc. Residencial Roble, San Nicolás de los Garza, N.L.
+  Asesoría integral, apoyo psicológico, canalización legal y orientación.
+
+### Hidalgo (https://refleja.org/hidalgo)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Santa Catarina (https://refleja.org/santa-catarina)
+
+- **Atención a la Mujer de Santa Catarina** — Tel: 81 8676 1700 · Ext. 2514 · Dirección: Manuel Ordóñez 319, Col. Centro, Santa Catarina, N.L.
+  Servicio de orientación y atención psicológica en el DIF municipal.
+
+### Santiago (https://refleja.org/santiago)
+
+- **Dirección de Atención a la Mujer de Santiago** — Tel: 828 284 2110 · 24/7: 828 269 1900 / 828 284 2111 · Dirección: Calle Escobedo #113, Col. San Javier (Villa de Santiago), Santiago, N.L., C.P. 67322
+  Atención y acompañamiento en casos de violencia familiar y de género.
+
+### Vallecillo (https://refleja.org/vallecillo)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Villaldama (https://refleja.org/villaldama)
+
+Sin institución municipal registrada aún. Usa las líneas estatales y nacionales de apoyo listadas arriba.
+
+### Otro Municipio (Fuera de Nuevo León) (https://refleja.org/otro)
+
+- **Apoyo en otros estados**
+  Si vives fuera de Nuevo León, te sugerimos utilizar las líneas nacionales de apoyo detalladas abajo, las cuales tienen cobertura en todo el territorio mexicano.
+
+## Fuente y uso
+
+Contenido público y abierto. Puede citarse indicando la fuente: Refleja (refleja.org), proyecto ciudadano de LABNL. Idioma: español (es-MX).

@@ -90,7 +90,14 @@
             <span class="btn-text btn-text--mobile">Urgente</span>
           </button>
           <button id="hide-site-btn" class="button-hide" type="button" title="Ocultar página rápidamente">
-            <span class="btn-icon">👁️‍🗨️</span>
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 10 8 10 8a13.16 13.16 0 0 1-1.67 2.68" />
+                <path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 8 10 8a9.74 9.74 0 0 0 5.39-1.61" />
+                <path d="M14.12 14.12A3 3 0 1 1 9.88 9.88" />
+                <line x1="2" y1="2" x2="22" y2="22" />
+              </svg>
+            </span>
             <span>Ocultar</span>
           </button>
         </div>
@@ -297,90 +304,10 @@
       </footer>
     </main>
 
-    <!-- FAKE BIODIVERSITY SITE (DISFRAZ) -->
-    <div id="disguised-site" class="disguised-site is-hidden">
-      <header class="disguised-header">
-        <div class="disguised-header__container">
-          <div class="disguised-header__logo">
-            <span class="disguised-header__logo-icon">🌿</span>
-            <div>
-              <span class="disguised-header__logo-text">Portal Nacional de Biodiversidad</span>
-              <span class="disguised-header__logo-subtext">Ecosistemas, conservación e investigación</span>
-            </div>
-          </div>
-          <nav class="disguised-nav">
-            <a href="#" onclick="event.preventDefault()">Inicio</a>
-            <a href="#" onclick="event.preventDefault()">Monitoreo</a>
-            <a href="#" onclick="event.preventDefault()">Ecosistemas</a>
-            <a href="#" onclick="event.preventDefault()">Investigación</a>
-            <a href="#" onclick="event.preventDefault()">Publicaciones</a>
-          </nav>
-        </div>
-      </header>
-
-      <main class="disguised-main">
-        <div class="disguised-hero">
-          <span class="disguised-tag">Artículo de Investigación</span>
-          <h2>La riqueza de los bosques templados: un ecosistema en equilibrio</h2>
-          <p>
-            Los bosques templados albergan una de las mayores concentraciones de biodiversidad del planeta. 
-            Investigadores de la Comisión Nacional han documentado más de 2,400 especies en estos ecosistemas durante la última década, enfatizando la importancia de los corredores biológicos.
-          </p>
-        </div>
-
-        <div class="disguised-grid-three">
-          <div class="disguised-card">
-            <div class="disguised-card__emoji">🌿</div>
-            <h3>Flora endémica</h3>
-            <p>Más de 800 especies de plantas vasculares documentadas en los bosques templados de la región, muchas de ellas endémicas y bajo programas especiales de protección.</p>
-          </div>
-          <div class="disguised-card">
-            <div class="disguised-card__emoji">🦅</div>
-            <h3>Fauna silvestre</h3>
-            <p>Estudios recientes han identificado 340 especies de aves, 120 de mamíferos y 85 de reptiles que habitan en los principales corredores del país.</p>
-          </div>
-          <div class="disguised-card">
-            <div class="disguised-card__emoji">💧</div>
-            <h3>Recursos hídricos</h3>
-            <p>Los bosques de niebla y templados captan y filtran aproximadamente el 40% del agua dulce que abastece a las principales comunidades urbanas y rurales.</p>
-          </div>
-        </div>
-
-        <div class="disguised-grid-two">
-          <div class="disguised-card">
-            <h3>Programas de conservación activos</h3>
-            <ul>
-              <li><strong>Reforestación comunitaria</strong> — 12,000 árboles nativos plantados en 2025 con participación activa de 45 ejidos locales.</li>
-              <li><strong>Monitoreo de fauna</strong> — Red de cámaras trampa y sensores acústicos en 8 reservas naturales para el censo de felinos y aves.</li>
-              <li><strong>Educación ambiental</strong> — Talleres en 60 escuelas rurales sobre conservación de ecosistemas y sustentabilidad del suelo.</li>
-              <li><strong>Conectividad biológica</strong> — Restauración y protección de 350 km de corredores naturales para especies migratorias.</li>
-            </ul>
-          </div>
-          <div class="disguised-card">
-            <h3>Publicaciones científicas recientes</h3>
-            <div class="disguised-publications">
-              <div class="publication-item">
-                <p class="pub-title">Distribución altitudinal de anfibios en bosques de niebla</p>
-                <p class="pub-meta">Revista de Biodiversidad Neotropical · Vol. 18, 2025</p>
-              </div>
-              <div class="publication-item">
-                <p class="pub-title">Impacto del cambio climático en la fenología de especies arbóreas</p>
-                <p class="pub-meta">Ecología Aplicada · Vol. 32, 2025</p>
-              </div>
-              <div class="publication-item">
-                <p class="pub-title">Servicios ecosistémicos en bosques templados: una revisión sistemática</p>
-                <p class="pub-meta">Conservation Biology Journal · Vol. 45, 2024</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <footer class="disguised-footer">
-        <p>© 2025 Portal Nacional de Biodiversidad. Comisión Nacional para la Conservación.</p>
-        <span id="restore-site-trigger" class="disguised-secret-trigger">——</span>
-      </footer>
-    </div>
+    <!-- SITIO DE DISFRAZ (SALIDA RÁPIDA) — el contenido se genera por JS con un
+         tema aleatorio (belleza, recetas, moda, bienestar) en tonos cálidos
+         similares al sitio para que el cambio no se note. -->
+    <div id="disguised-site" class="disguised-site is-hidden"></div>
 
     <!-- MODAL DE DETALLE DE TIPO DE VIOLENCIA -->
     <div id="violence-modal" class="modal-overlay is-hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title-detail">

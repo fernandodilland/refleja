@@ -30,6 +30,34 @@ Es un proceso **participativo y colectivo**: personas colaboradoras de diversas 
 
 ---
 
+## Enlaces personalizados (preguntas pre-contestadas)
+
+Si ya conoces la respuesta de alguna pregunta inicial, puedes enviar un enlace
+que **la salta por completo** (ni siquiera se muestra): la respuesta se aplica
+sola y el cuestionario continúa en la siguiente pregunta. Útil para compartir
+la herramienta con alguien de quien ya sabes, por ejemplo, que va a responder
+sobre su pareja.
+
+| Parámetro | Valores | Pregunta que salta |
+|---|---|---|
+| `persona` | `pareja` · `familiar` · `trabajo` · `otro` | "Para comenzar, piensa en esa persona…" |
+| `edad` | `18-25` · `26-40` · `41-mas` | "¿Qué edad tienes?" |
+
+Los valores no reconocidos se ignoran y la pregunta se muestra normal. La
+pantalla de menores de edad nunca se salta. Las respuestas pre-contestadas
+cuentan en la estadística anónima igual que una respuesta normal.
+
+**Enlaces demo:**
+
+- Sobre su pareja: <https://refleja.org/?persona=pareja>
+- Sobre un familiar: <https://refleja.org/?persona=familiar>
+- Sobre trabajo/escuela: <https://refleja.org/?persona=trabajo>
+- Sobre otra persona: <https://refleja.org/?persona=otro>
+- Edad conocida: <https://refleja.org/?edad=26-40>
+- Ambas (entra directo al cuestionario): <https://refleja.org/?persona=pareja&edad=18-25>
+
+---
+
 ## Estructura del proyecto
 
 ```

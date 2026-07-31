@@ -33,3 +33,8 @@ node_modules/
 .claude/
 .wrangler/
 .claude/settings.local.json
+
+# === Documentos de trabajo (no se publican) ===
+# Respuestas de transparencia, oficios y archivos de análisis temporales.
+tmp/
+

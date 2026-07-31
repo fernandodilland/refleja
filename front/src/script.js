@@ -26,6 +26,47 @@ function personalize(text) {
         .replace(/\{mipersona\}/g, personaMine);
 }
 
+// --- PREGUNTAS PRE-CONTESTADAS POR URL ---
+// Permite enviar enlaces personalizados que saltan preguntas cuya respuesta ya
+// se conoce. La pregunta ni se muestra: se responde sola (y se registra en las
+// estadísticas igual que una respuesta normal, para que el embudo cuadre).
+//   ?persona=pareja|familiar|trabajo|otro   -> salta "Para comenzar, piensa en…"
+//   ?edad=18-25|26-40|41-mas                -> salta "¿Qué edad tienes?"
+// Valores no reconocidos se ignoran (la pregunta se muestra normal).
+const PREFILL = (() => {
+    const p = new URLSearchParams(location.search);
+    const norm = v => (v || "").trim().toLowerCase();
+    return { edad: norm(p.get("edad")), persona: norm(p.get("persona")) };
+})();
+
+function prefilledOption(qid) {
+    const q = questions[qid];
+    if (!q || !q.options) return null;
+    if (qid === "age" && PREFILL.edad) {
+        // "41+" llega como "41 " (el + es espacio en la URL); se aceptan variantes.
+        const v = PREFILL.edad.replace(/[^0-9a-z-]/g, "");
+        const re = v === "18-25" ? /18 a 25/
+            : v === "26-40" ? /26 a 40/
+            : (v === "41" || v === "41-mas" || v === "41mas") ? /41/
+            : null; // "menor" no se pre-contesta: esa pantalla debe verse siempre
+        if (re) return q.options.find(o => re.test(o.label)) || null;
+    }
+    if (qid === "start" && PREFILL.persona) {
+        const match = {
+            pareja: o => o.nextId === "pareja_1" && /pareja/i.test(o.label),
+            familiar: o => o.nextId === "fam_1",
+            fam: o => o.nextId === "fam_1",
+            trabajo: o => o.nextId === "trab_1",
+            trab: o => o.nextId === "trab_1",
+            escuela: o => o.nextId === "trab_1",
+            otro: o => o.nextId === "pareja_1" && !/pareja/i.test(o.label),
+            otra: o => o.nextId === "pareja_1" && !/pareja/i.test(o.label),
+        }[PREFILL.persona];
+        if (match) return q.options.find(match) || null;
+    }
+    return null;
+}
+
 // --- MANEJO DE HISTORIAL EN LOCALSTORAGE (MÁX 15 MINUTOS) ---
 const SESSION_KEY = "refleja_session";
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutos
@@ -97,7 +138,6 @@ const topIsland = document.getElementById("top-control-island");
 // Botones de la isla superior
 const urgentHelpBtn = document.getElementById("urgent-help-btn");
 const hideSiteBtn = document.getElementById("hide-site-btn");
-const restoreSiteTrigger = document.getElementById("restore-site-trigger");
 const headerLogo = document.getElementById("header-logo");
 
 // Etapas
@@ -213,6 +253,14 @@ function renderQuestion() {
     const q = questions[currentQuestionId];
     if (!q) return;
 
+    // Pre-contestada por URL: se responde sola sin mostrarse y se sigue a la
+    // siguiente pregunta (no entra al historial de "Anterior").
+    const pre = prefilledOption(currentQuestionId);
+    if (pre) {
+        handleAnswerSelect(pre, true);
+        return;
+    }
+
     // Actualizar Título (personalizado según la relación)
     testTitle.textContent = personalize(q.text);
 
@@ -278,15 +326,18 @@ function renderQuestion() {
     }, 100);
 }
 
-function handleAnswerSelect(option) {
+function handleAnswerSelect(option, prefilled) {
     const answeredId = currentQuestionId;
-    // Registrar paso actual en el historial para permitir regresar
-    answerHistory.push({
-        questionId: currentQuestionId,
-        step: currentStep,
-        totalSteps: totalSteps,
-        scores: { ...scores }
-    });
+    // Registrar paso actual en el historial para permitir regresar. Las
+    // pre-contestadas por URL no entran: "Anterior" nunca debe mostrarlas.
+    if (!prefilled) {
+        answerHistory.push({
+            questionId: currentQuestionId,
+            step: currentStep,
+            totalSteps: totalSteps,
+            scores: { ...scores }
+        });
+    }
 
     // Sumar puntajes si existen
     if (option.scores) {
@@ -379,7 +430,8 @@ previousBtn.addEventListener("click", () => {
 });
 
 // --- UTILIDADES DE MUNICIPIOS ---
-// Devuelve la lista de municipios ordenada alfabéticamente (ignorando acentos)
+// Devuelve la lista de municipios ordenada alfabéticamente (ignorando acentos).
+// "otro" ("No vivo en Nuevo León") no es un municipio: siempre va al final.
 function getMuniList() {
     return Object.keys(municipioResources)
         .map(slug => ({
@@ -387,7 +439,11 @@ function getMuniList() {
             name: municipioResources[slug].name,
             hasMunicipal: Array.isArray(municipioResources[slug].resources) && municipioResources[slug].resources.length > 0
         }))
-        .sort((a, b) => a.name.localeCompare(b.name, "es", { sensitivity: "base" }));
+        .sort((a, b) => {
+            if (a.slug === "otro") return 1;
+            if (b.slug === "otro") return -1;
+            return a.name.localeCompare(b.name, "es", { sensitivity: "base" });
+        });
 }
 
 // Obtiene los datos de un municipio de forma segura
@@ -745,8 +801,11 @@ function renderResources() {
     sGrid.innerHTML = "";
     nGrid.innerHTML = "";
 
-    // Actualizar Título del Grupo Municipal
-    document.querySelector("#resources-group-municipal .resources-group-title").textContent = `📍 Recursos en el municipio de ${munData.name}`;
+    // Actualizar Título del Grupo Municipal. "otro" no es un municipio: quien
+    // vive fuera del estado recibe directamente las líneas nacionales.
+    const fueraDeNL = selectedMunicipio === "otro";
+    document.querySelector("#resources-group-municipal .resources-group-title").textContent =
+        fueraDeNL ? "🇲🇽 Apoyo en todo México" : `📍 Recursos en el municipio de ${munData.name}`;
 
     // Helper para poblar un recurso
     function populateResourceCard(res, container) {
@@ -833,8 +892,14 @@ function renderResources() {
         }, mGrid);
     }
 
-    // Poblar Recursos Estatales
-    estatalNLResources.forEach(res => populateResourceCard(res, sGrid));
+    // Poblar Recursos Estatales (solo aplican dentro de Nuevo León)
+    const stateGroup = document.getElementById("resources-group-state");
+    if (fueraDeNL) {
+        if (stateGroup) stateGroup.classList.add("is-hidden");
+    } else {
+        if (stateGroup) stateGroup.classList.remove("is-hidden");
+        estatalNLResources.forEach(res => populateResourceCard(res, sGrid));
+    }
 
     // Poblar Recursos Nacionales
     nationalResources.forEach(res => populateResourceCard(res, nGrid));
@@ -942,16 +1007,209 @@ function processResults() {
 }
 
 // --- GESTIÓN DEL BOTÓN DE SALIDA RÁPIDA (DISFRAZ) ---
+// Temas de disfraz en tonos cálidos (crema + vino/coral) parecidos al sitio,
+// para que al pulsar "Ocultar" el cambio se note lo menos posible. Se elige uno
+// al azar en cada salida.
+const DISGUISE_THEMES = [
+    {
+        key: "belleza",
+        bg: "#faf3ec", accent: "#c02a63", accentSoft: "#fbe4ee",
+        heroFrom: "#3d2438", heroTo: "#c02a63",
+        icon: "💄", title: "Estudio Bella", subtitle: "Belleza, maquillaje y estilo personal",
+        nav: ["Inicio", "Maquillaje", "Peinados", "Cuidado de piel", "Tendencias"],
+        tag: "Guía de belleza",
+        heroTitle: "Maquillaje natural: realza tu rostro en 10 minutos",
+        heroText: "Un maquillaje sencillo puede transformar tu día. Te compartimos una rutina rápida, ideal para el trabajo o una salida casual, con productos que probablemente ya tienes en casa.",
+        cards: [
+            { emoji: "💄", title: "Base y rubor", text: "Elige una base ligera del tono de tu piel y difumina un rubor durazno hacia los pómulos para un acabado fresco y luminoso." },
+            { emoji: "💇‍♀️", title: "Peinados fáciles", text: "Coleta pulida, ondas suaves o trenza lateral: tres peinados rápidos para verte arreglada en menos de cinco minutos." },
+            { emoji: "✨", title: "Cuidado de la piel", text: "Limpieza, hidratación y protector solar: la rutina mínima de tres pasos que mantiene tu piel sana todo el año." },
+        ],
+        listTitle: "Tips de la semana",
+        list: [
+            ["Labios duraderos", "aplica el labial en dos capas y sella con un polvo traslúcido para que dure toda la jornada."],
+            ["Cejas definidas", "peina las cejas hacia arriba y rellena los huecos con trazos finos siguiendo su forma natural."],
+            ["Ondas sin calor", "trenza el cabello húmedo antes de dormir y tendrás ondas suaves al despertar, sin dañarlo."],
+            ["Piel luminosa", "un toque de iluminador en el arco de la ceja y el lagrimal aporta frescura al instante."],
+        ],
+        sideTitle: "Lo más leído",
+        side: [
+            ["Tendencias de maquillaje para esta temporada", "Revista Estilo · Edición 42"],
+            ["Cómo elegir el tono de base correcto", "Guía de Belleza · 2025"],
+            ["Rutina de noche para un cabello más sano", "Cuidado y Estilo · Vol. 12"],
+        ],
+        footer: "© 2025 Estudio Bella · Revista de belleza, maquillaje y estilo.",
+    },
+    {
+        key: "recetas",
+        bg: "#fbf3ea", accent: "#c2571f", accentSoft: "#fdeadd",
+        heroFrom: "#3a2620", heroTo: "#c2571f",
+        icon: "🍲", title: "Cocina Casera", subtitle: "Recetas fáciles para todos los días",
+        nav: ["Inicio", "Recetas", "Postres", "Saludable", "Temporada"],
+        tag: "Receta destacada",
+        heroTitle: "Pasta cremosa en 20 minutos con ingredientes de despensa",
+        heroText: "Una cena rápida, económica y reconfortante. Esta receta usa ingredientes básicos que casi siempre tienes en casa y queda lista en el tiempo que tardas en poner la mesa.",
+        cards: [
+            { emoji: "🍅", title: "Salsa de tomate casera", text: "Sofríe ajo, agrega tomate maduro y una pizca de azúcar; en 15 minutos tienes una salsa versátil para pastas y guisos." },
+            { emoji: "🥗", title: "Ensaladas frescas", text: "Combina hojas verdes, fruta de temporada y una vinagreta simple de limón y aceite de oliva para un platillo ligero." },
+            { emoji: "🍰", title: "Postres sencillos", text: "Un pan de plátano esponjoso con lo que tengas en la alacena: ideal para aprovechar la fruta muy madura." },
+        ],
+        listTitle: "Consejos de cocina",
+        list: [
+            ["Pasta al dente", "cocínala un minuto menos de lo que indica el paquete y termínala en la salsa."],
+            ["Verduras crujientes", "saltéalas a fuego alto y por poco tiempo para conservar color y textura."],
+            ["Arroz suelto", "enjuágalo antes de cocinar y déjalo reposar tapado cinco minutos al final."],
+            ["Aprovecha las sobras", "convierte el pollo de ayer en tacos, ensalada o relleno de sándwich."],
+        ],
+        sideTitle: "Recetas populares",
+        side: [
+            ["Sopa de verduras reconfortante para días fríos", "Cocina Casera · Edición 30"],
+            ["Galletas de avena con tres ingredientes", "Repostería Fácil · 2025"],
+            ["El guisado de la abuela, paso a paso", "Sabores de Casa · Vol. 8"],
+        ],
+        footer: "© 2025 Cocina Casera · Recetas y consejos para el hogar.",
+    },
+    {
+        key: "moda",
+        bg: "#f8f2ef", accent: "#9d3b6c", accentSoft: "#f6e4ee",
+        heroFrom: "#33223a", heroTo: "#9d3b6c",
+        icon: "👗", title: "Vestir Bien", subtitle: "Moda, tendencias y estilo",
+        nav: ["Inicio", "Tendencias", "Outfits", "Accesorios", "Temporada"],
+        tag: "Guía de estilo",
+        heroTitle: "Cómo armar un guardarropa básico y combinarlo todo",
+        heroText: "Con unas cuantas prendas versátiles puedes crear muchos conjuntos distintos. Te mostramos las piezas clave y cómo mezclarlas para cada ocasión.",
+        cards: [
+            { emoji: "👖", title: "Prendas básicas", text: "Un jean de buen corte, una camisa blanca y una chaqueta neutra son la base de incontables combinaciones." },
+            { emoji: "🧣", title: "Accesorios", text: "Una mascada, un cinturón o unos aretes cambian por completo un mismo conjunto según la ocasión." },
+            { emoji: "👟", title: "Comodidad y estilo", text: "Zapatos cómodos que combinan con casi todo: el equilibrio entre verte bien y sentirte a gusto." },
+        ],
+        listTitle: "Claves de temporada",
+        list: [
+            ["Colores neutros", "beige, gris y blanco se combinan entre sí y facilitan armar conjuntos."],
+            ["Capas ligeras", "superpón prendas finas para adaptarte a los cambios de clima del día."],
+            ["Una prenda protagonista", "un solo elemento llamativo basta; el resto, sencillo."],
+            ["Cuida tus prendas", "lava en frío y cuelga la ropa para que dure más tiempo."],
+        ],
+        sideTitle: "Lo más visto",
+        side: [
+            ["Diez formas de usar una camisa blanca", "Revista Estilo · Edición 19"],
+            ["Tendencias de color para esta temporada", "Moda al Día · 2025"],
+            ["Guía de tallas: encuentra tu ajuste ideal", "Vestir Bien · Vol. 6"],
+        ],
+        footer: "© 2025 Vestir Bien · Revista de moda y estilo personal.",
+    },
+    {
+        key: "bienestar",
+        bg: "#f8f3ee", accent: "#a5643b", accentSoft: "#f6e7dc",
+        heroFrom: "#33262f", heroTo: "#a5643b",
+        icon: "🌷", title: "Vida Serena", subtitle: "Bienestar, hogar y vida diaria",
+        nav: ["Inicio", "Bienestar", "Hogar", "Plantas", "Hábitos"],
+        tag: "Bienestar",
+        heroTitle: "Rutinas sencillas para una casa más ordenada y en calma",
+        heroText: "Pequeños hábitos diarios hacen una gran diferencia. Te compartimos ideas prácticas para mantener tu espacio ordenado y disfrutar de un ambiente tranquilo.",
+        cards: [
+            { emoji: "🪴", title: "Plantas de interior", text: "Especies resistentes como el potos o la sansevieria purifican el aire y necesitan muy pocos cuidados." },
+            { emoji: "🧺", title: "Orden diario", text: "Diez minutos al día para ordenar bastan para mantener la casa en armonía sin esfuerzo." },
+            { emoji: "☕", title: "Momentos de calma", text: "Reserva un rato para ti: una infusión, una lectura o una respiración pausada renuevan la energía." },
+        ],
+        listTitle: "Ideas para el día a día",
+        list: [
+            ["Rincón acogedor", "una lámpara cálida y un cojín transforman cualquier espacio en un refugio."],
+            ["Rutina de mañana", "abre las cortinas y ventila unos minutos para empezar el día con energía."],
+            ["Menos es más", "conserva lo que usas y aprecias; libera espacio y mente."],
+            ["Descanso reparador", "apaga las pantallas media hora antes de dormir para descansar mejor."],
+        ],
+        sideTitle: "Lo más leído",
+        side: [
+            ["Cinco plantas que sobreviven a todo", "Vida Serena · Edición 24"],
+            ["Cómo crear una rutina de mañana tranquila", "Bienestar Diario · 2025"],
+            ["Orden en casa: un método en tres pasos", "Hogar y Calma · Vol. 9"],
+        ],
+        footer: "© 2025 Vida Serena · Bienestar, hogar y vida cotidiana.",
+    },
+];
+let lastDisguiseIndex = -1;
+
+function pickDisguiseTheme() {
+    if (DISGUISE_THEMES.length < 2) return DISGUISE_THEMES[0];
+    let i;
+    do { i = Math.floor(Math.random() * DISGUISE_THEMES.length); }
+    while (i === lastDisguiseIndex); // evita repetir el mismo dos veces seguidas
+    lastDisguiseIndex = i;
+    return DISGUISE_THEMES[i];
+}
+
+function renderDisguise(t) {
+    disguisedSite.style.setProperty("--dg-bg", t.bg);
+    disguisedSite.style.setProperty("--dg-accent", t.accent);
+    disguisedSite.style.setProperty("--dg-accent-soft", t.accentSoft);
+    disguisedSite.style.setProperty("--dg-hero-from", t.heroFrom);
+    disguisedSite.style.setProperty("--dg-hero-to", t.heroTo);
+
+    const nav = t.nav.map(n => `<a href="#" onclick="event.preventDefault()">${n}</a>`).join("");
+    const cards = t.cards.map(c => `
+          <div class="disguised-card">
+            <div class="disguised-card__emoji">${c.emoji}</div>
+            <h3>${c.title}</h3>
+            <p>${c.text}</p>
+          </div>`).join("");
+    const list = t.list.map(([s, rest]) => `<li><strong>${s}</strong> — ${rest}</li>`).join("");
+    const side = t.side.map(([title, meta]) => `
+              <div class="publication-item">
+                <p class="pub-title">${title}</p>
+                <p class="pub-meta">${meta}</p>
+              </div>`).join("");
+
+    disguisedSite.innerHTML = `
+      <header class="disguised-header">
+        <div class="disguised-header__container">
+          <div class="disguised-header__logo">
+            <span class="disguised-header__logo-icon">${t.icon}</span>
+            <div>
+              <span class="disguised-header__logo-text">${t.title}</span>
+              <span class="disguised-header__logo-subtext">${t.subtitle}</span>
+            </div>
+          </div>
+          <nav class="disguised-nav">${nav}</nav>
+        </div>
+      </header>
+      <main class="disguised-main">
+        <div class="disguised-hero">
+          <span class="disguised-tag">${t.tag}</span>
+          <h2>${t.heroTitle}</h2>
+          <p>${t.heroText}</p>
+        </div>
+        <div class="disguised-grid-three">${cards}</div>
+        <div class="disguised-grid-two">
+          <div class="disguised-card">
+            <h3>${t.listTitle}</h3>
+            <ul>${list}</ul>
+          </div>
+          <div class="disguised-card">
+            <h3>${t.sideTitle}</h3>
+            <div class="disguised-publications">${side}</div>
+          </div>
+        </div>
+      </main>
+      <footer class="disguised-footer">
+        <p>${t.footer}</p>
+        <span class="disguised-secret-trigger" data-restore title="Volver">——</span>
+      </footer>`;
+}
+
 function setDisguisedState(isDisguised) {
     if (isDisguised) {
+        const theme = pickDisguiseTheme();
+        renderDisguise(theme);
         // Ocultar test principal y barra flotante
         mainContent.classList.add("is-hidden");
         topIsland.classList.add("is-hidden");
         // Mostrar disfraz
         disguisedSite.classList.remove("is-hidden");
-        // Cambiar background del body
-        document.body.style.background = "#f8fafc";
+        // Fondo del body a juego con el tema
+        document.body.style.background = theme.bg;
         document.body.style.minHeight = "100vh";
+        window.scrollTo(0, 0);
     } else {
         // Restaurar estilos del body
         document.body.style.background = "";
@@ -1062,7 +1320,11 @@ document.getElementById("close-urgent-results").addEventListener("click", resetT
 // Eventos de barra superior
 urgentHelpBtn.addEventListener("click", triggerUrgentHelp);
 hideSiteBtn.addEventListener("click", () => setDisguisedState(true));
-restoreSiteTrigger.addEventListener("click", () => setDisguisedState(false));
+// El disparador secreto para restaurar se regenera con cada tema, así que se
+// escucha por delegación sobre el contenedor del disfraz.
+disguisedSite.addEventListener("click", (e) => {
+    if (e.target.closest("[data-restore]")) setDisguisedState(false);
+});
 
 // Hacer click en el logo para reiniciar todo el portal (si existe)
 if (headerLogo) {
@@ -1107,8 +1369,11 @@ async function initApp() {
         populateMunicipioSelects();
         buildMuniMenu();
 
-        // Intentar restaurar sesión guardada (máx 15 min)
-        const restored = restoreSession();
+        // Intentar restaurar sesión guardada (máx 15 min).
+        // Si hay parámetros de pre-contestado en la URL, siempre empezamos
+        // desde cero para que los valores prefijados tengan efecto.
+        const hasPrefill = PREFILL.edad || PREFILL.persona;
+        const restored = !hasPrefill && restoreSession();
         if (restored) {
             if (currentQuestionId === "LOCATION") {
                 showStage("location");

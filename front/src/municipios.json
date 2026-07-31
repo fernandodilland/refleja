@@ -16,10 +16,11 @@
       "name": "Allende",
       "resources": [
         {
-          "name": "Coordinación del Instituto Municipal de las Mujeres (DIF)",
-          "address": "Calle Juárez #200, Col. Centro, Allende, N.L., C.P. 67350",
+          "name": "Instituto de la Mujer de Allende",
+          "address": "Calle Juárez #200, Centro, Allende, N.L.",
           "contact": "826 268 2885",
-          "desc": "Orientación, asesoría psicológica y canalización de casos de violencia de género."
+          "email": "dif@allende.gob.mx",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00 (24 horas para denuncias). Servicios: asesoría jurídica, atención psicológica, refugio para menores y refugio para mujeres en coordinación con la Fiscalía."
         }
       ]
     },
@@ -32,33 +33,95 @@
       "resources": [
         {
           "name": "Secretaría de las Mujeres de Apodaca",
-          "address": "Edificio Mujeres Plenas, Antiguo Camino a Agua Fría esq. con Arco Vial, Col. Nova, Apodaca, N.L.",
-          "contact": "81 3424 3844",
-          "altContact": "81 3424 3845",
+          "address": "Oficina Central Mujeres Plenas: Av. La Joyita s/n, Col. Centro de Apodaca, N.L.",
+          "contact": "81 3424 5086",
+          "altContact": "Emergencia jurídica: 81 1544 4473 · Urgencia psicológica: 81 1130 6293",
           "whatsapp": "8180272776",
-          "desc": "Atención especializada, asesoría jurídica, psicológica y apoyo integral para mujeres en Apodaca.",
-          "link": "https://www.facebook.com/secretariadelasmujeresa/?locale=es_LA",
-          "linkLabel": "Facebook de la Secretaría"
+          "desc": "Horario general: lunes a viernes de 8:00 a 17:00. Servicios: asesoría jurídica, atención psicológica, orientación social, gestión y canalización institucional, refugio de resguardo temporal, pláticas, capacitaciones y talleres de prevención de la violencia de género, con acompañamiento según proceda."
+        },
+        {
+          "name": "Zona Norte Mujeres Libres",
+          "address": "Calle Noruega #505, Col. Nuevo Amanecer 2° Sector, Apodaca, N.L.",
+          "contact": "81 3231 7328",
+          "altContact": "81 3231 7329",
+          "desc": "Sede de la Secretaría de las Mujeres de Apodaca en la zona norte."
+        },
+        {
+          "name": "Zona Norte Cielo Nuevo",
+          "address": "Avenida Gasoducto s/n, Col. Renaceres, Apodaca, N.L.",
+          "contact": "81 1798 6500",
+          "desc": "Sede de la Secretaría de las Mujeres de Apodaca en la zona norte."
+        },
+        {
+          "name": "Zona Sur Casa Rosa",
+          "address": "Avenida Río Pilón s/n, Col. Pueblo Nuevo, Apodaca, N.L.",
+          "contact": "81 8386 3838",
+          "desc": "Sede de la Secretaría de las Mujeres de Apodaca en la zona sur."
+        },
+        {
+          "name": "Oficina Mujeres Fuertes",
+          "address": "Calle Garza García #501, cruce con Melchor Ocampo, Centro de Apodaca, N.L.",
+          "contact": "81 3673 4268",
+          "desc": "Sede de la Secretaría de las Mujeres de Apodaca."
+        },
+        {
+          "name": "Centro de Masculinidades Positivas",
+          "address": "Multicomercial Apodaca Local 309, Carretera Mezquital-Santa Rosa, Col. Prados de Santa Rosa, Apodaca, N.L.",
+          "contact": "81 3955 8200",
+          "desc": "Trabajo con hombres para la prevención de la violencia de género."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Apodaca",
+          "address": "Av. Gaspar Castaño 101, Col. Lomas del Pedregal, Plaza Bella Huinalá Local LB017, Apodaca, N.L., C.P. 66648",
+          "contact": "81 1599 0137",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
     "aramberri": {
       "name": "Aramberri",
-      "resources": []
+      "resources": [
+        {
+          "name": "Defensoría Municipal de Aramberri (DIF)",
+          "address": "Calle Hidalgo s/n, Col. Centro, Aramberri, N.L.",
+          "contact": "826 213 2000",
+          "desc": "Servicios: atención psicológica, asesoría jurídica y orientación médica, con acompañamiento legal para víctimas de violencia."
+        }
+      ]
     },
     "bustamante": {
       "name": "Bustamante",
-      "resources": []
+      "resources": [
+        {
+          "name": "Defensoría Municipal de Bustamante",
+          "address": "Ignacio Santos #100, Zona Centro, Bustamante, N.L.",
+          "contact": "829 246 0020",
+          "desc": "Servicios: asesoría y asistencia jurídica, tratamiento psicológico especializado y refugios para víctimas de violencia."
+        }
+      ]
     },
     "cadereyta-jimenez": {
       "name": "Cadereyta Jiménez",
       "resources": [
         {
-          "name": "Instituto de la Mujer Jimenense",
-          "address": "Calle Campesina s/n, Colonia Jerónimo Treviño, Cadereyta Jiménez, N.L.",
-          "contact": "82 8284 2110",
-          "altContact": "Atención 24/7: 82 8269 1900 / 82 8284 2111",
-          "desc": "Atención, asesoría psicológica, legal y acompañamiento a mujeres de la localidad."
+          "name": "Instituto de la Mujer de Cadereyta Jiménez",
+          "address": "Calle Campesina s/n, Col. Jerónimo Treviño (atrás de la Estación de Bomberos), Cadereyta Jiménez, N.L., C.P. 67484",
+          "contact": "828 284 2110",
+          "altContact": "Atención 24/7: 828 269 1900",
+          "email": "datos.imm.cadereyta@gmail.com",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: asesoría jurídica, atención psicológica especializada y gratuita, atención integral a mujeres en situación de violencia, canalización y acompañamiento. Cuenta con Casa de Emergencia: espacio temporal y seguro de atención inmediata e interdisciplinaria."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Cadereyta",
+          "address": "Calle Campesina s/n, entre Candelario Ríos y Vicente Guerrero, Col. Jerónimo Treviño, Cadereyta Jiménez, N.L., C.P. 67483",
+          "contact": "811 589 1476",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
+        },
+        {
+          "name": "Centro Violeta Cadereyta",
+          "address": "Calle Campesina s/n, Col. Jerónimo Treviño (atrás de bomberos), Cadereyta Jiménez, N.L.",
+          "contact": "811 588 7542",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
         }
       ]
     },
@@ -66,11 +129,17 @@
       "name": "El Carmen",
       "resources": [
         {
-          "name": "Instituto Municipal de la Mujer de El Carmen",
-          "address": "Calle Víctor Hugo s/n, Centro, El Carmen, N.L.",
+          "name": "Instituto Municipal de las Mujeres de El Carmen",
+          "address": "Calle Víctor Hugo s/n, entre Francisco I. Madero y 5 de Mayo, Col. Centro, El Carmen, N.L., C.P. 66550",
           "contact": "81 8236 0042",
-          "altContact": "Atención 24/7: 81 2350 2560",
-          "desc": "Orientación jurídica, psicológica y canalización especializada."
+          "altContact": "Ext. 2019",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: atención psicológica; asesoría y acompañamiento legal en materia familiar y de violencia de género; orientación y gestión de trabajo social; talleres de empoderamiento económico y social; pláticas y talleres preventivos; orientación vocacional; procesos de mediación; canalización a bolsas de trabajo e instituciones de salud mental especializada."
+        },
+        {
+          "name": "Centro Libre para las Mujeres El Carmen",
+          "address": "Calle Víctor Hugo s/n, entre Francisco I. Madero, Col. Centro, El Carmen, N.L., C.P. 66550",
+          "contact": "811 588 9731",
+          "desc": "Horario: lunes a viernes de 9:00 a 16:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -78,10 +147,10 @@
       "name": "Cerralvo",
       "resources": [
         {
-          "name": "Coordinación del Instituto de la Mujer de Cerralvo",
-          "address": "Ayuntamiento de Cerralvo (Palacio Municipal), N.L.",
-          "contact": "892 975 0161",
-          "desc": "Apoyo municipal y canalización. Solicita comunicar con la Coordinación del Instituto de la Mujer al llamar al Palacio Municipal."
+          "name": "DIF Municipal de Cerralvo",
+          "address": "Calle Padre Mier #512, Col. Centro, Cerralvo, N.L.",
+          "contact": "892 975 0184",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: atención médica, asesoría y asistencia jurídica, atención psicológica especializada, orientación y canalización de víctimas de violencia, apoyo y gestión para el acceso a refugios y servicios de protección. Requisitos: presentar identificación oficial."
         }
       ]
     },
@@ -89,45 +158,85 @@
       "name": "Ciénega de Flores",
       "resources": [
         {
-          "name": "Instituto Municipal de las Mujeres Ciénega de Flores",
+          "name": "Instituto Municipal de las Mujeres de Ciénega de Flores",
           "address": "Av. Independencia 120, Centro de Ciénega de Flores, N.L., C.P. 65550",
           "contact": "825 238 5850",
-          "email": "institutodelamujer@cienegadeflores.gob.mx",
-          "desc": "Orientación integral y asesoría jurídica local."
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: orientación, asesoría y representación jurídica; canalización de menores a SIPINNA; atención inicial y valoración de víctimas de violencia; traslado e ingreso a refugios."
+        },
+        {
+          "name": "Defensoría Municipal SIPINNA",
+          "address": "Calle Francisco J. Gutiérrez #620, Col. Ampliación Conchita Velasco, Ciénega de Flores, N.L.",
+          "contact": "813 539 8632",
+          "desc": "Atención las 24 horas. Servicios: atención de quejas o denuncias donde se presume la vulneración de derechos de niñas, niños y adolescentes.",
+          "link": "https://cienega.digital/",
+          "linkLabel": "Atención ciudadana en línea"
         }
       ]
     },
     "china": {
       "name": "China",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer de China",
+          "address": "Calle Francisco I. Madero s/n, esquina con Abasolo, Col. Centro, China, N.L.",
+          "contact": "823 110 3652",
+          "desc": "Horario: lunes a viernes de 8:00 a 15:00. Servicios: atención médica, asesoría y asistencia jurídica, tratamiento psicológico especializado y gratuito. Cuenta con un refugio del área de SIPINNA."
+        },
+        {
+          "name": "Centro Libre para las Mujeres China",
+          "address": "Calle Francisco I. Madero s/n, esquina con Abasolo, China, N.L., C.P. 67050",
+          "desc": "Horario: lunes a viernes de 9:00 a 15:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
+        }
+      ]
     },
     "doctor-arroyo": {
       "name": "Doctor Arroyo",
       "resources": [
         {
-          "name": "Unidad de Atención a la Violencia Familiar",
-          "address": "Padre Severiano Martínez S/N, Col. Centro, C.P. 67901, Doctor Arroyo, N.L.",
-          "contact": "488 888 0143",
-          "desc": "Servicio local de orientación y contención psicológica."
+          "name": "Centro Libre para las Mujeres Doctor Arroyo",
+          "address": "Calle Padre Severiano Martínez 22, entre Bravo y Mina, Col. Centro, Doctor Arroyo, N.L., C.P. 67901",
+          "contact": "811 590 0766",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
     "doctor-coss": {
       "name": "Doctor Coss",
-      "resources": []
+      "resources": [
+        {
+          "name": "Defensoría Municipal de SIPINNA",
+          "address": "Calle Zaragoza esquina con Francisco Gutiérrez, Col. Centro, Doctor Coss, N.L.",
+          "contact": "823 107 6027",
+          "desc": "Servicios: asesoría, consulta psicológica y trabajo social."
+        }
+      ]
     },
     "doctor-gonzalez": {
       "name": "Doctor González",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto de Protección a la Mujer",
+          "address": "Calle Matamoros esquina con República, Zona Centro, Doctor González, N.L.",
+          "contact": "812 907 1372",
+          "email": "institutodelamujer2024.2027@gmail.com",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: atención psicológica, asesoría jurídica, trabajo social, prevención de la violencia contra las mujeres, promoción de la igualdad de género, gestión y vinculación institucional."
+        }
+      ]
     },
     "galeana": {
       "name": "Galeana",
       "resources": [
         {
-          "name": "Atención Municipal a la Mujer (Galeana)",
-          "address": "Calle Cuauhtémoc S/N, Centro, Galeana, N.L., C.P. 67850",
-          "contact": "81 2020 4100",
-          "desc": "Atención, asesoría y canalización para mujeres en situación de vulnerabilidad."
+          "name": "Instituto Municipal de la Mujer de Galeana",
+          "address": "Constitución #57, Col. Centro, Galeana, N.L. (edificio rosa del Instituto Municipal de la Mujer)",
+          "contact": "826 126 8966",
+          "desc": "Horario: lunes a viernes de 9:00 a 15:00. Enlace de Seguridad Pública Municipal. Servicios: atención y orientación a mujeres en situación de vulnerabilidad, acompañamiento institucional y canalización interinstitucional."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Galeana",
+          "address": "Constitución #52, Col. Centro, Galeana, N.L. (planta alta del edificio rosa del Instituto Municipal de la Mujer)",
+          "contact": "811 589 4506",
+          "desc": "Horario: 9:00 a 15:00. Servicios: diagnóstico social, vinculación, canalización, acompañamiento y gestión de recursos; asesoría legal, acompañamiento y representación jurídica, órdenes de protección y divorcio incausado; intervención en crisis, terapia individual y acompañamiento psicológico."
         }
       ]
     },
@@ -135,10 +244,34 @@
       "name": "García",
       "resources": [
         {
-          "name": "Coordinación para Atender la Violencia Familiar y de Género (CAVIFG)",
-          "address": "Camino a la Estación S/N, Colonia Fray Juan Antonio de Sobrevilla, García, N.L.",
+          "name": "Secretaría de Atención a la Mujer de García",
+          "address": "Cristo Rey s/n, Col. Riberas de Capellanía, García, N.L.",
+          "contact": "81 8283 4831",
+          "desc": "Servicios: asesoría jurídica, atención psicológica, gestión social, canalización interinstitucional, órdenes de protección preventiva y emergente, divorcio incausado, divorcio con medidas de protección, juicio oral de alimentos, actos prejudiciales de separación y círculo de mujeres 'Voces que sanan'."
+        },
+        {
+          "name": "Línea Guardia Aurora",
+          "contact": "812 442 4402",
+          "whatsapp": "8124424402",
+          "desc": "Atención inmediata para mujeres: orientación y acompañamiento ante violencia familiar o de género, crisis emocional, asesoría legal, información sobre programas institucionales y situaciones de riesgo o vulnerabilidad social."
+        },
+        {
+          "name": "Dirección de Prevención a la Violencia de Género",
+          "address": "Camino a la Estación s/n, Col. Fray Juan Antonio de Sobrevilla, García, N.L.",
           "contact": "81 8283 1970",
-          "desc": "Atención y contención especializada para casos de violencia familiar y de género."
+          "desc": "Servicios: atención psicológica, gestión social, canalización interinstitucional, pláticas de prevención de violencias y programa de emprendimiento."
+        },
+        {
+          "name": "Centro Violeta García",
+          "address": "Av. Lagos s/n, entre Praderas y Laderas, Col. Paraje San José, García, N.L.",
+          "contact": "811 599 6132",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Libre para las Mujeres García",
+          "address": "Calle Camino a la Estación s/n, cruce con Fray Francisco de Soto, Col. Sobrevilla, García, N.L., C.P. 66000",
+          "contact": "811 599 0123",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -146,40 +279,65 @@
       "name": "San Pedro Garza García",
       "resources": [
         {
-          "name": "Coordinación de las Mujeres (San Pedro)",
-          "address": "Francisco Villa #133, Col. Jesús M. Garza, San Pedro Garza García, N.L.",
-          "contact": "81 1052 4236",
-          "desc": "Asesoría psicológica y jurídica de manera confidencial y gratuita."
-        },
-        {
-          "name": "Puerta Violeta San Pedro (Atención 24/7)",
+          "name": "Centro Integral de Atención a la Mujer",
+          "address": "Degollado #610, Zona Mirasierra, San Pedro Garza García, N.L.",
           "contact": "81 8242 5022",
-          "altContact": "81 8242 5023 al 24",
-          "desc": "Unidad de auxilio y atención inmediata disponible las 24 horas del día."
+          "altContact": "81 8242 5023",
+          "desc": "Atención las 24 horas. Servicios: atención psicológica, asesoría legal, gestoría social y enlace a resguardos."
         }
       ]
     },
     "general-bravo": {
       "name": "General Bravo",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto de la Mujer de General Bravo",
+          "address": "Calle 5 de Mayo #149, Col. Centro, General Bravo, N.L. (a un costado del Palacio Municipal)",
+          "contact": "823 234 0204",
+          "desc": "Atención las 24 horas. Servicios: apoyo, orientación y acompañamiento a todas las mujeres, asesoría en todos los tipos de violencia, atención anónima y confidencial, refugio para víctimas y acompañamiento al CEJUM en Monterrey para atención médica y psicológica."
+        }
+      ]
     },
     "general-escobedo": {
       "name": "General Escobedo",
       "resources": [
         {
           "name": "Secretaría de las Mujeres de Escobedo",
-          "address": "Calle Cto. de la Luz, Monte Real INFONAVIT, C.P. 66056, General Escobedo, N.L.",
+          "address": "Calle Circuito de la Luz #202, Col. Infonavit Monterreal, General Escobedo, N.L.",
           "contact": "81 8286 9432",
-          "altContact": "81 1306 4773",
-          "email": "sriadelamujer@gmail.com",
-          "whatsapp": "8134571093",
-          "desc": "Atención psicológica y jurídica integral. Chat de asistencia inmediata por WhatsApp: 'MIA, mi amiga'."
+          "altContact": "81 1306 4774",
+          "desc": "Horario: lunes a sábado de 8:00 a 18:00. Servicios: atención y orientación integral a mujeres, canalización a servicios especializados, gestión de apoyos institucionales, programas de prevención y atención de la violencia, talleres de fortalecimiento y vinculación con otras dependencias."
+        },
+        {
+          "name": "Puerta Violeta Escobedo",
+          "address": "Pablo A. de la Garza, Col. Infonavit Monterreal, General Escobedo, N.L., C.P. 66056",
+          "contact": "811 357 1331",
+          "desc": "Horario: lunes a viernes de 8:00 a 19:00. Servicios: atención psicológica, asesoría jurídica, trabajo social, atención integral a mujeres en situación de violencia y canalización institucional."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Escobedo",
+          "address": "Avenida Revolución esquina con Calle Artículo 123, Col. Campeche, General Escobedo, N.L., C.P. 66086",
+          "contact": "811 599 0127",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: atención psicológica, asesoría jurídica, trabajo social, orientación integral, canalización y acompañamiento a servicios especializados y talleres para el fortalecimiento económico de las mujeres."
+        },
+        {
+          "name": "Centro Violeta Escobedo",
+          "address": "Circuito de la Luz, Col. Infonavit Monterreal, General Escobedo, N.L., C.P. 66056",
+          "contact": "811 588 9014",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: atención psicológica, asesoría jurídica, trabajo social y actividades de fortalecimiento comunitario."
         }
       ]
     },
     "general-teran": {
       "name": "General Terán",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto de la Mujer de General Terán",
+          "address": "Calle Hidalgo esquina con Mariano Escobedo, Col. Centro, General Terán, N.L., C.P. 67400 (segundo piso del DIF Municipal)",
+          "contact": "826 267 0326",
+          "desc": "Horario: lunes a viernes de 8:00 a 15:00. Servicios: acompañamiento psicológico, orientación legal, talleres y capacitaciones."
+        }
+      ]
     },
     "general-trevino": {
       "name": "General Treviño",
@@ -187,18 +345,36 @@
     },
     "general-zaragoza": {
       "name": "General Zaragoza",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto de la Mujer de General Zaragoza",
+          "address": "Calle 5 de Mayo #33, Col. Centro, General Zaragoza, N.L., C.P. 67960",
+          "contact": "826 129 4067",
+          "altContact": "826 213 3099",
+          "desc": "Instancia municipal de atención a mujeres: orientación, asesoría y canalización."
+        }
+      ]
     },
     "general-zuazua": {
       "name": "General Zuazua",
       "resources": [
         {
-          "name": "Instituto Municipal de las Mujeres Zuazua",
-          "address": "Juárez #111, Col. Centro, General Zuazua, N.L.",
-          "contact": "825 247 0318",
-          "altContact": "825 247 1206 (Ext. 124)",
-          "whatsapp": "8121042696",
-          "desc": "Asesoría, contención psicológica y acompañamiento legal. Línea 24/7 habilitada."
+          "name": "Defensoría del DIF Municipal, sede Real de Palmas",
+          "address": "Av. Real de Palmas #377, lote 43, Col. Real de Palmas, General Zuazua, N.L.",
+          "contact": "813 990 8729",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00; atención telefónica las 24 horas. Servicios: asesoría legal en materia familiar y penal."
+        },
+        {
+          "name": "Defensoría del DIF Municipal, sede Del Lago",
+          "address": "Avenida Del Lago s/n, Col. Valle Santa Elena, General Zuazua, N.L.",
+          "contact": "813 990 8729",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00; atención telefónica las 24 horas. Servicios: asesoría legal en materia familiar y penal."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Zuazua",
+          "address": "Av. Real de Palmas 378, lote 43, Col. Real de Palmas, General Zuazua, N.L., C.P. 65760",
+          "contact": "811 588 7659",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -206,13 +382,28 @@
       "name": "Guadalupe",
       "resources": [
         {
-          "name": "Centro Violeta / Secretaría de Igualdad Sustantiva de Guadalupe",
-          "address": "Sierra de la Iguana s/n, Fracc. Cerro de la Silla, Guadalupe, N.L.",
-          "contact": "81 8007 6255",
-          "altContact": "Línea Amiga: 81 4444 0000",
-          "desc": "Espacio de atención integral y multidisciplinario para mujeres en situación de violencia.",
-          "link": "https://nl.gob.mx/es/boletines/inauguran-centro-violeta-en-guadalupe",
-          "linkLabel": "Boletín Informativo"
+          "name": "UNIPREVI · Unidad de Prevención y Atención de la Violencia Familiar y de Género",
+          "address": "Calle Plutarco Elías Calles #2839, Col. Ignacio Zaragoza, Guadalupe, N.L.",
+          "contact": "812 133 2007",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: atención psicológica, atención jurídica, trabajo social y denuncia virtual."
+        },
+        {
+          "name": "Centro Violeta Guadalupe · Hospital Materno Infantil",
+          "address": "Avenida San Rafael #450, Col. San Rafael, Guadalupe, N.L., C.P. 67140",
+          "contact": "811 588 7826",
+          "desc": "Atención las 24 horas. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Violeta Guadalupe",
+          "address": "Calle Lagos de Moreno 274, Tierra Propia 2° Sector, Guadalupe, N.L., C.P. 67190",
+          "contact": "811 588 8008",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Guadalupe",
+          "address": "Calle Río Papaloapan s/n, cruce con Río Trinidad, Col. Dos Ríos, Guadalupe, N.L., C.P. 67196",
+          "contact": "811 588 7677",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -230,37 +421,77 @@
     },
     "iturbide": {
       "name": "Iturbide",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto de la Mujer Municipal de Iturbide",
+          "address": "Calle Aldama s/n, Col. Centro, Iturbide, N.L.",
+          "contact": "818 189 2581",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: orientación, asesoría y canalización para atención médica, jurídica y tratamiento psicológico."
+        }
+      ]
     },
     "juarez": {
       "name": "Juárez",
       "resources": [
         {
-          "name": "Instituto Municipal de la Mujer en Juárez",
-          "address": "Avenida Vistas de la Primavera número 198, Colonia Vistas del Río, Juárez, N.L., C.P. 67267",
-          "contact": "81 3061 0907",
-          "desc": "Orientación, asesoría psicológica y jurídica confidencial."
+          "name": "Centro Violeta Juárez",
+          "address": "Av. Vistas de la Primavera #168, cruce Av. Vistas de Cinchos, Col. Vistas del Río, Juárez, N.L.",
+          "contact": "811 474 3281",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Juárez",
+          "address": "Calle Piedras Negras 141, Col. Coahuila, Juárez, N.L., C.P. 67257",
+          "contact": "811 599 4041",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
     "lampazos-de-naranjo": {
       "name": "Lampazos de Naranjo",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer de Lampazos",
+          "address": "Calle Hidalgo #234, Zona Centro, Lampazos de Naranjo, N.L.",
+          "contact": "873 738 0030",
+          "altContact": "Ext. 101",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: asesoría legal, atención psicológica y trabajo social."
+        }
+      ]
     },
     "linares": {
       "name": "Linares",
       "resources": [
         {
-          "name": "Instancia Municipal de la Mujer",
-          "address": "Juárez #108 Poniente, Piso 3 (Torre Administrativa), Zona Centro, Linares, N.L.",
-          "contact": "821 118 1266",
-          "desc": "Atención psicológica, acompañamiento y orientación jurídica para mujeres del municipio."
+          "name": "Instancia Municipal de las Mujeres de Linares",
+          "address": "Benito Juárez, tercer piso, Col. Centro, Linares, N.L., C.P. 67700",
+          "contact": "821 121 9997",
+          "email": "inmujeres.linares2427@hotmail.com",
+          "desc": "Horario: lunes a viernes de 9:00 a 15:00. Servicios: atención psicológica; asesoría jurídica en materia familiar, civil y penal relacionada con violencia contra las mujeres; acompañamiento y canalización ante autoridades competentes; orientación sobre medidas de protección y derechos de las mujeres."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Linares",
+          "address": "Calle Miguel Hidalgo 701 Norte, esquina con Independencia, Col. Centro, Linares, N.L., C.P. 67700",
+          "contact": "811 590 1385",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
     "marin": {
       "name": "Marín",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto de las Mujeres de Marín",
+          "address": "Jerónimo Treviño #110, Col. Centro, Marín, N.L.",
+          "contact": "825 248 0024",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: atención psicológica y asesoría jurídica, en coordinación con el Gobierno del Estado de Nuevo León."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Marín",
+          "address": "Calle José María Morelos y Pavón #517-519, entre Puebla y Leandro de la Garza, Marín, N.L., C.P. 66700",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
+        }
+      ]
     },
     "melchor-ocampo": {
       "name": "Melchor Ocampo",
@@ -268,20 +499,42 @@
     },
     "mier-y-noriega": {
       "name": "Mier y Noriega",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto Municipal de la Mujer de Mier y Noriega",
+          "address": "Calle Vicente Suárez s/n, esquina con Zaragoza, Zona Centro, Mier y Noriega, N.L.",
+          "contact": "811 011 0206",
+          "altContact": "826 106 0755",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: orientación inicial y canalización al Centro Libre."
+        },
+        {
+          "name": "Centro Libre para las Mujeres, sede Doctor Arroyo",
+          "address": "Calle Padre Severiano Martínez s/n, entre Bravo y Mina, Col. Centro, Doctor Arroyo, N.L.",
+          "contact": "811 590 0766",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: atención psicológica, acompañamiento, asesoría y orientación legal, representación jurídica (divorcio, pensión alimenticia, órdenes de protección) y gestoría social."
+        }
+      ]
     },
     "mina": {
       "name": "Mina",
-      "resources": []
+      "resources": [
+        {
+          "name": "Centro Comunitario de la Mujer de Mina",
+          "address": "Miguel Hidalgo s/n, Centro de Mina, N.L., C.P. 65100",
+          "contact": "829 288 0251",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00; 24 horas para emergencias. Servicios: atención a emergencias, asesoría legal, psicología y servicio social."
+        }
+      ]
     },
     "montemorelos": {
       "name": "Montemorelos",
       "resources": [
         {
-          "name": "Dirección del Instituto de la Mujer de Montemorelos",
-          "address": "Palacio Municipal (Zaragoza e Hidalgo S/N, Centro Histórico), Montemorelos, N.L., C.P. 67500",
-          "contact": "826 263 4050",
-          "desc": "Atención integral, orientación jurídica y canalización especializada."
+          "name": "Instituto Municipal de las Mujeres de Montemorelos",
+          "address": "Calle Parás s/n, entre Simón Bolívar y Cuauhtémoc, Col. Centro, Montemorelos, N.L.",
+          "contact": "826 115 4922",
+          "email": "institutodelamujer2427@gmail.com",
+          "desc": "Servicios: atención psicológica, asesoría y representación jurídica. Cuenta con especialistas en derecho penal y familiar para orientar y representar a víctimas de violencia."
         }
       ]
     },
@@ -289,22 +542,48 @@
       "name": "Monterrey",
       "resources": [
         {
-          "name": "Instituto de las Mujeres Regias",
-          "address": "Av. Céntrika #110, Col. Céntrika, Monterrey, N.L.",
+          "name": "Instituto Municipal de las Mujeres Regias",
+          "address": "Delicias 1646, Mitras Centro, Monterrey, N.L., C.P. 64460",
           "contact": "81 2090 2828",
-          "desc": "Asesoría psicológica, jurídica y de trabajo social."
+          "whatsapp": "8117302908",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios gratuitos: orientación jurídica, trabajo social y atención psicológica."
         },
         {
-          "name": "UAVVI Sede Alamey (Policía de Monterrey)",
-          "address": "Avenida Los Ángeles s/n, esquina con la calle Arista, Col. Del Norte, C.P. 64500, Monterrey, N.L.",
+          "name": "UAVVI Alamey · Unidad de Atención a Víctimas de Violencia Familiar y de Género",
+          "address": "Av. Los Ángeles s/n, esquina con Arista, Col. Del Norte, Monterrey, N.L.",
           "contact": "81 5102 8010",
-          "desc": "Unidad de Atención a Víctimas de Violencia Intrafamiliar."
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: asesoría legal, atención de trabajo social, terapia psicológica y casa de emergencia de hasta 72 horas."
         },
         {
-          "name": "UAVVI Sede Norte - San Bernabé (Policía de Monterrey)",
-          "address": "Calle Ixtlixóchitl s/n, en su cruce con la calle Nezahualcóyotl, Provileón San Bernabé, C.P. 64217, Monterrey, N.L.",
+          "name": "UAVVI San Bernabé · Unidad de Atención a Víctimas de Violencia Familiar y de Género",
+          "address": "Ixtlixóchitl s/n, San Bernabé I, Monterrey, N.L., C.P. 64217",
           "contact": "81 5102 6980",
-          "desc": "Unidad de Atención a Víctimas de Violencia Intrafamiliar."
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: asesoría legal, atención de trabajo social, terapia psicológica y casa de emergencia de hasta 72 horas."
+        },
+        {
+          "name": "Centro Violeta · Macro Centro Comunitario San Bernabé",
+          "address": "Calle Apolo s/n, Col. San Bernabé, Monterrey, N.L.",
+          "contact": "811 588 7798",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Violeta · Edificio Estatal Zaragoza",
+          "address": "Zaragoza #555 Norte, Col. Centro, Monterrey, N.L.",
+          "contact": "81 8372 9066",
+          "whatsapp": "8112733298",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Violeta · Zihuakali, Casa de la Mujer Indígena",
+          "address": "Julián Villagrán 116, Col. Centro, Monterrey, N.L., C.P. 64000",
+          "contact": "811 588 7429",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Monterrey",
+          "address": "5 de Mayo 525 Ote., Col. Centro, Monterrey, N.L., C.P. 64000, Edificio Elizondo Páez, piso 2",
+          "contact": "811 599 2123",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -316,12 +595,42 @@
       "name": "Pesquería",
       "resources": [
         {
-          "name": "Instituto Municipal de la Mujer de Pesquería",
-          "address": "Calle Ayala S/N (entre Guerrero y Matamoros), Zona Centro, Pesquería, N.L., C.P. 66650",
-          "contact": "825 688 0479",
-          "altContact": "81 3079 8232",
-          "whatsapp": "8180984221",
-          "desc": "Apoyo psicológico y jurídico. Teléfono 24/7 disponible."
+          "name": "Instituto de la Mujer de Pesquería, sede Centro",
+          "address": "Ayala #36, Centro de Pesquería, N.L., C.P. 66650",
+          "contact": "813 256 6745",
+          "email": "institutodelamujer@pesqueria.gob.mx",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00; 24 horas para emergencias. Servicios jurídicos (juicio oral de alimentos, divorcio, órdenes de protección, convivencia de padres a hijos, denuncias), atención psicológica y trabajo social."
+        },
+        {
+          "name": "Instituto de la Mujer de Pesquería, sede Colinas del Aeropuerto",
+          "address": "Av. Central s/n, Colinas del Aeropuerto, Pesquería, N.L., C.P. 66650",
+          "contact": "813 256 6745",
+          "email": "institutodelamujer@pesqueria.gob.mx",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00; 24 horas para emergencias. Servicios jurídicos (juicio oral de alimentos, divorcio, órdenes de protección, convivencia de padres a hijos, denuncias), atención psicológica y trabajo social."
+        },
+        {
+          "name": "Centro Violeta Pesquería · Colinas del Aeropuerto",
+          "address": "Av. Central y Monterrey s/n, Colinas del Aeropuerto, Pesquería, N.L.",
+          "contact": "811 599 9157",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Violeta Pesquería · Instituto Municipal de la Mujer",
+          "address": "Calle Ayala #34, entre Guerrero y Matamoros, Zona Centro, Pesquería, N.L., C.P. 66650",
+          "contact": "811 599 9157",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Violeta Pesquería · Alcaldía Poniente",
+          "address": "Roma s/n, Col. Lomas de San Martín, Pesquería, N.L., C.P. 66673",
+          "contact": "811 588 7959",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Pesquería",
+          "address": "Calle San Fernando #717, Col. Valle de Santa María, Pesquería, N.L., C.P. 66670",
+          "contact": "811 599 0028",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -337,11 +646,17 @@
       "name": "Sabinas Hidalgo",
       "resources": [
         {
-          "name": "Instituto Municipal de la Mujer",
-          "address": "Calle Niños Héroes #600, Colonia Centro, Sabinas Hidalgo, N.L.",
-          "contact": "824 242 0836",
-          "altContact": "Atención 24/7: 824 242 7878",
-          "desc": "Atención, asesoría y canalización para mujeres en situación de violencia de género."
+          "name": "DIF Municipal de Sabinas Hidalgo",
+          "address": "Calle Niños Héroes #600, Col. Centro, Sabinas Hidalgo, N.L., C.P. 65200",
+          "contact": "824 242 5904",
+          "altContact": "824 242 5905",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: atención médica, asesoría jurídica y tratamiento psicológico."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Sabinas Hidalgo",
+          "address": "Calle Guadalupe Victoria s/n, cruce con Primera Avenida, Col. María Luisa, Sabinas Hidalgo, N.L., C.P. 65220",
+          "contact": "811 588 7607",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -349,10 +664,17 @@
       "name": "Salinas Victoria",
       "resources": [
         {
-          "name": "Instituto Municipal de la Mujer Salinas Victoria",
-          "address": "Bosques de los Nogales, C.P. 65500, Salinas Victoria, N.L.",
-          "contact": "81 2289 5529",
-          "desc": "Atención municipal especializada y orientación jurídica o de contención."
+          "name": "Instituto Municipal de la Mujer de Salinas Victoria",
+          "address": "Av. del Nogal s/n, Col. Bosques de los Nogales, Salinas Victoria, N.L.",
+          "contact": "811 291 5661",
+          "whatsapp": "8122895529",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: acompañamiento y asesoría gratuita."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Salinas Victoria",
+          "address": "Avenida Los Nogales s/n, entre Naranjo y Limón, Col. Bosques de los Nogales, Salinas Victoria, N.L., C.P. 65515",
+          "contact": "811 600 1632",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -360,28 +682,66 @@
       "name": "San Nicolás de los Garza",
       "resources": [
         {
-          "name": "Dirección de la Mujer de San Nicolás",
-          "address": "Jorge González Camarena #125, Fracc. Residencial Roble, San Nicolás de los Garza, N.L.",
-          "contact": "81 8158 1391",
-          "altContact": "Ext. 3031",
+          "name": "Centro de Justicia para las Mujeres · Puerta Azul",
+          "address": "Juárez #100, Col. Antiguo Poblado Santo Domingo, San Nicolás de los Garza, N.L.",
+          "contact": "811 103 0147",
           "whatsapp": "8112289876",
-          "desc": "Asesoría integral, apoyo psicológico, canalización legal y orientación."
+          "email": "familiaybienestarsocial@sanicolas.gob.mx",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: acompañamiento en procesos jurídicos, terapia psicológica, trabajo social y refugio para mujeres."
+        },
+        {
+          "name": "Centro Integral de la Mujer · Policía Rosa",
+          "address": "Av. Adolfo López Mateos km 2.5, Col. La Grange, San Nicolás de los Garza, N.L.",
+          "contact": "81 8158 1365",
+          "desc": "Atención las 24 horas. Servicios: asesoría y asistencia jurídica y atención psicológica de primer contacto."
+        },
+        {
+          "name": "Centro Violeta · Centro de Justicia para las Mujeres",
+          "address": "Juárez 100, Santo Domingo, San Nicolás de los Garza, N.L., C.P. 66437",
+          "contact": "811 588 7929",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
+        },
+        {
+          "name": "Centro Violeta · Hospital Metropolitano",
+          "address": "Adolfo López Mateos #4600, San Nicolás de los Garza, N.L., C.P. 66480",
+          "contact": "811 588 7922",
+          "altContact": "81 2002 8284",
+          "desc": "Atención las 24 horas. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
         }
       ]
     },
     "hidalgo": {
       "name": "Hidalgo",
-      "resources": []
+      "resources": [
+        {
+          "name": "Instituto Municipal de las Mujeres de Hidalgo",
+          "address": "Benito Juárez s/n, entre Eusebio de la Cueva y Aquiles Serdán, Col. Revolución, Hidalgo, N.L.",
+          "contact": "829 286 0702",
+          "altContact": "813 240 0915",
+          "desc": "Horario: lunes a viernes de 9:00 a 17:00. Servicios: asesoría y asistencia jurídica, tratamiento psicológico especializado y gratuito."
+        },
+        {
+          "name": "Defensoría DIF Municipal Hidalgo",
+          "address": "Calle Eusebio de la Cueva s/n, Col. Revolución, Hidalgo, N.L., C.P. 65600",
+          "contact": "829 286 0826",
+          "email": "difhgo27@outlook.com",
+          "desc": "Servicios: asesoría legal a padres separados, atención a reportes de vulneración de derechos de menores, terapia psicológica a personas que reciben violencia y refugios para víctimas de violencia."
+        },
+        {
+          "name": "Centro Libre para las Mujeres Hidalgo",
+          "address": "Calle Eusebio de la Cueva esquina con Reforma s/n, Col. Revolución, Hidalgo, N.L., C.P. 65600",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
+        }
+      ]
     },
     "santa-catarina": {
       "name": "Santa Catarina",
       "resources": [
         {
-          "name": "Atención a la Mujer de Santa Catarina",
-          "address": "Manuel Ordóñez 319, Col. Centro, Santa Catarina, N.L.",
-          "contact": "81 8676 1700",
-          "altContact": "Ext. 2514",
-          "desc": "Servicio de orientación y atención psicológica en el DIF municipal."
+          "name": "Centro Libre para las Mujeres Santa Catarina",
+          "address": "Av. Sierra Verde s/n, entre Sierra Picachos y Sierra Madre, Col. Robles de Santa Catarina, Santa Catarina, N.L., C.P. 66359",
+          "contact": "811 590 2890",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios gratuitos de asesoría legal, psicológica, orientación, gestión y acompañamiento en la interposición de denuncias y solicitudes de órdenes de protección. Atención integral de las violencias contra las mujeres."
         }
       ]
     },
@@ -389,47 +749,92 @@
       "name": "Santiago",
       "resources": [
         {
-          "name": "Dirección de Atención a la Mujer de Santiago",
-          "address": "Calle Escobedo #113, Col. San Javier (Villa de Santiago), Santiago, N.L., C.P. 67322",
-          "contact": "828 284 2110",
-          "altContact": "24/7: 828 269 1900 / 828 284 2111",
-          "desc": "Atención y acompañamiento en casos de violencia familiar y de género."
+          "name": "Casa Rosa Santiago",
+          "address": "Jardines de la Boca #100, Col. Jardines de la Boca, Santiago, N.L.",
+          "contact": "811 454 5665",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: atención psicológica, asesoría jurídica, trámites legales y refugio temporal."
+        },
+        {
+          "name": "Dirección General de Atención a la Mujer",
+          "address": "Escobedo #113, Col. Centro, Santiago, N.L.",
+          "contact": "812 451 4918",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: atención psicológica, asesoría y orientación jurídica, canalización y acompañamiento institucional."
+        },
+        {
+          "name": "Centro Violeta Santiago · Hospital",
+          "address": "Mariano Escobedo 113, Santiago, N.L., C.P. 67322",
+          "contact": "811 588 7500",
+          "desc": "Horario: lunes a viernes de 8:00 a 17:00. Apoyo psicológico, asesoría legal y gestoría o trabajo social."
         }
       ]
     },
     "vallecillo": {
       "name": "Vallecillo",
-      "resources": []
+      "resources": [
+        {
+          "name": "DIF Municipal de Vallecillo",
+          "address": "Carretera Nacional #210, Zona Centro, Vallecillo, N.L.",
+          "contact": "824 245 6003",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00. Servicios: acompañamiento institucional a víctimas y personas de atención prioritaria, sin requisitos previos."
+        }
+      ]
     },
     "villaldama": {
       "name": "Villaldama",
-      "resources": []
-    },
-    "otro": {
-      "name": "Otro Municipio (Fuera de Nuevo León)",
       "resources": [
         {
-          "name": "Apoyo en otros estados",
-          "desc": "Si vives fuera de Nuevo León, te sugerimos utilizar las líneas nacionales de apoyo detalladas abajo, las cuales tienen cobertura en todo el territorio mexicano."
+          "name": "DIF Municipal de Villaldama",
+          "address": "Calle Vicente Guerrero s/n, Zona Centro, Villaldama, N.L.",
+          "contact": "829 245 0450",
+          "altContact": "829 101 4499",
+          "desc": "Horario: lunes a viernes de 8:00 a 16:00; atención de emergencias las 24 horas. Servicios: orientación y promoción de servicios legales, servicios psicológicos, seguimiento de casos y acompañamiento legal y psicológico."
+        }
+      ]
+    },
+    "otro": {
+      "name": "No vivo en Nuevo León",
+      "resources": [
+        {
+          "name": "Atención en todo México",
+          "desc": "Estas líneas nacionales atienden desde cualquier estado del país, son gratuitas y confidenciales. Consulta los números de emergencia y apoyo que aparecen abajo."
         }
       ]
     }
   },
   "estatalNLResources": [
     {
-      "name": "Línea 070 (Informatel y Locatel)",
+      "name": "Línea 070 · Atención Ciudadana Nuevo León",
       "contact": "070",
-      "desc": "Servicio gratuito de orientación, asesoría psicológica y jurídica, disponible las 24 horas, los 365 días del año en todo el estado de Nuevo León."
+      "desc": "Orientación y asesoría psicológica y jurídica, gratuita, las 24 horas los 365 días del año en todo el estado."
     },
     {
-      "name": "Secretaría de las Mujeres de Nuevo León",
+      "name": "Centro de Justicia para las Mujeres del Estado de Nuevo León (CEJUM)",
+      "address": "Calle Alejandro de Humboldt #800, Col. Mirador, Monterrey, N.L.",
+      "contact": "81 2020 4880",
+      "desc": "Horario: lunes a viernes de 9:00 a 18:00. Emergencias: abierto las 24 horas los 365 días del año. Servicios: consejería, gestión social, atención psicológica, orientación legal, empoderamiento económico, atención lúdica, protección, seguridad y atención médica.",
+      "link": "https://fiscalia-nl.gob.mx/ServiciosAV",
+      "linkLabel": "Atención virtual"
+    },
+    {
+      "name": "Procuraduría de la Defensa de los Derechos de las Mujeres",
+      "address": "Calle Washington #539 Oriente, Centro de Monterrey, N.L., C.P. 64000, Edificio Elizondo Garza, planta baja",
+      "contact": "81 2033 0140",
+      "altContact": "81 2033 0150",
+      "whatsapp": "8113004875",
+      "email": "procuraduriadelasmujeres@nuevoleon.gob.mx",
+      "desc": "Servicios: tratamiento psicológico, asesoría, representación legal y acompañamiento."
+    },
+    {
+      "name": "Instituto Estatal de las Mujeres",
+      "address": "Edificio Elizondo Páez, calle 5 de Mayo #525 Ote., Centro de Monterrey, N.L.",
       "contact": "81 2020 9773",
-      "desc": "Oficina principal de atención. Dirección: Eugenio Garza Sada Sur 2145, Piso 6, Col. Roma, Monterrey, N.L."
+      "altContact": "Ext. 53621 y 53648",
+      "email": "instituto.mujeres@nuevoleon.gob.mx",
+      "desc": "Horario: lunes a viernes de 8:00 a 17:00. Servicios: grupos de reflexión, escuela para mujeres, puntos de resguardo, empoderamiento económico, vinculación comunitaria, capacitación, centros de mecanismos alternativos para la solución de controversias, orientación y gestiones para canalización a las instancias competentes."
     },
     {
-      "name": "Denuncia Virtual (Fiscalía General de Justicia de NL)",
-      "contact": "",
-      "desc": "Plataforma oficial para realizar denuncias a través de videollamada con un Agente del Ministerio Público de la Fiscalía.",
+      "name": "Denuncia Virtual · Fiscalía General de Justicia de Nuevo León",
+      "desc": "Plataforma oficial para realizar denuncias por videollamada con un Agente del Ministerio Público.",
       "link": "https://denuncia.fiscalia-nl.gob.mx:8443/",
       "linkLabel": "Acceder a Video Denuncia"
     }
@@ -438,17 +843,24 @@
     {
       "name": "Emergencias (Policía, Cruz Roja, Bomberos)",
       "contact": "911",
-      "desc": "Disponible 24/7 en todo el país"
+      "desc": "Disponible las 24 horas en todo el país. Llama si tu vida o tu integridad están en riesgo inmediato."
+    },
+    {
+      "name": "Línea de Bienestar para las Mujeres · 079 opción 1",
+      "contact": "079",
+      "desc": "Marca 079 y elige la opción 1. Línea nacional gratuita y confidencial del Gobierno de México, disponible las 24 horas los 365 días: acompañamiento, asesoría legal y apoyo psicoemocional inmediato para mujeres, adolescentes y niñas, desde cualquier estado del país.",
+      "link": "https://www.gob.mx/sesnsp/articulos/conoce-el-079-opcion-1-linea-de-bienestar-para-las-mujeres",
+      "linkLabel": "Información oficial"
     },
     {
       "name": "Red Nacional de Refugios para Mujeres",
       "contact": "800 822 44 60",
-      "desc": "Atención confidencial 24/7. Refugios seguros en todo México"
+      "desc": "Atención confidencial las 24 horas. Refugios seguros en todo México."
     },
     {
-      "name": "Línea de la Vida - Apoyo Psicológico",
+      "name": "Línea de la Vida · Apoyo Psicológico",
       "contact": "800 911 2000",
-      "desc": "Orientación emocional gratuita, CONADIC"
+      "desc": "¿Necesitas platicar con alguien? Orientación emocional gratuita las 24 horas (CONADIC)."
     }
   ]
 }

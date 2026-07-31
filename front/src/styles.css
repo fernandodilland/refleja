@@ -899,6 +899,16 @@ a {
   background: oklch(0.42 0.02 280);
   transform: translateY(-1px) scale(1.02);
 }
+/* Icono del botón Ocultar: ojo tachado, blanco y nítido. */
+.button-hide .btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+.button-hide .btn-icon svg {
+  display: block;
+}
 
 @media (max-width: 500px) {
   .btn-text--desktop {
@@ -1426,9 +1436,15 @@ a {
 
 /* --- ESTILOS DEL PORTAL DE BIODIVERSIDAD (DISFRAZ) --- */
 .disguised-site {
+  /* Paleta cálida por defecto; el tema (JS) sobrescribe estas variables. */
+  --dg-bg: #faf3ec;
+  --dg-accent: #b0476a;
+  --dg-accent-soft: #fbe6ee;
+  --dg-hero-from: #3d2438;
+  --dg-hero-to: #b0476a;
   min-height: 100vh;
-  background-color: #f8fafc;
-  color: #334155;
+  background-color: var(--dg-bg);
+  color: #5c4a54;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
@@ -1436,8 +1452,8 @@ a {
 }
 .disguised-header {
   background-color: #ffffff;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(48, 16, 52, 0.06), 0 1px 2px -1px rgba(48, 16, 52, 0.06);
+  border-bottom: 1px solid #efe4dc;
 }
 .disguised-header__container {
   max-width: 1120px;
@@ -1456,7 +1472,7 @@ a {
 }
 .disguised-header__logo-icon {
   font-size: 1.75rem;
-  background-color: #ecfdf5;
+  background-color: var(--dg-accent-soft);
   padding: 0.5rem;
   border-radius: 12px;
 }
@@ -1464,14 +1480,14 @@ a {
   display: block;
   font-size: 1.1rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #3d2438;
   line-height: 1.2;
 }
 .disguised-header__logo-subtext {
   display: block;
   font-size: 0.65rem;
   font-weight: 700;
-  color: #047857;
+  color: var(--dg-accent);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-top: 0.15rem;
@@ -1489,11 +1505,11 @@ a {
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
-  color: #475569;
+  color: #6b5a63;
   transition: color 0.2s;
 }
 .disguised-nav a:hover {
-  color: #047857;
+  color: var(--dg-accent);
 }
 .disguised-main {
   max-width: 1120px;
@@ -1503,16 +1519,16 @@ a {
   flex-grow: 1;
 }
 .disguised-hero {
-  background: linear-gradient(135deg, #064e3b 0%, #0f766e 100%);
+  background: linear-gradient(135deg, var(--dg-hero-from) 0%, var(--dg-hero-to) 100%);
   border-radius: 24px;
   padding: 2.5rem;
   color: #ffffff;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px -12px color-mix(in oklab, var(--dg-hero-to) 45%, transparent);
 }
 .disguised-tag {
-  background-color: rgba(4, 120, 87, 0.8);
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  background-color: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   padding: 0.25rem 0.6rem;
   border-radius: 4px;
   font-size: 0.65rem;
@@ -1535,7 +1551,7 @@ a {
 .disguised-hero p {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: #ecfdf5;
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
   font-weight: 300;
 }
@@ -1561,10 +1577,10 @@ a {
 }
 .disguised-card {
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #efe4dc;
   border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(48, 16, 52, 0.04);
 }
 .disguised-card__emoji {
   font-size: 1.75rem;
@@ -1573,7 +1589,7 @@ a {
 .disguised-card h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #3d2438;
   margin: 0 0 0.6rem 0;
   text-transform: none !important;
   letter-spacing: normal !important;
@@ -1581,7 +1597,7 @@ a {
 .disguised-card p {
   font-size: 0.82rem;
   line-height: 1.5;
-  color: #475569;
+  color: #6b5a63;
   margin: 0;
   font-weight: 300;
 }
@@ -1589,14 +1605,14 @@ a {
   margin: 0;
   padding-left: 1.2rem;
   font-size: 0.82rem;
-  color: #475569;
+  color: #6b5a63;
 }
 .disguised-card li {
   margin-bottom: 0.75rem;
   line-height: 1.5;
 }
 .disguised-card li strong {
-  color: #0f172a;
+  color: #3d2438;
 }
 .disguised-publications {
   display: flex;
@@ -1604,7 +1620,7 @@ a {
   gap: 1rem;
 }
 .publication-item {
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f3ebe3;
   padding-bottom: 0.75rem;
 }
 .publication-item:last-child {
@@ -1613,39 +1629,39 @@ a {
 }
 .pub-title {
   font-weight: 600 !important;
-  color: #334155 !important;
+  color: #4a3540 !important;
   font-size: 0.85rem !important;
   line-height: 1.4 !important;
   margin: 0 0 0.2rem 0 !important;
 }
 .pub-meta {
   font-size: 0.7rem !important;
-  color: #047857 !important;
+  color: var(--dg-accent) !important;
   font-weight: 600 !important;
   margin: 0 !important;
 }
 .disguised-footer {
-  background-color: #020617;
-  color: #94a3b8;
+  background-color: #2a1a2e;
+  color: #b9a8b4;
   font-size: 0.75rem;
   padding: 2.5rem 1.5rem;
   text-align: center;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid #3a2a3e;
 }
 .disguised-footer p {
   margin: 0;
-  color: #64748b;
+  color: #9c8a96;
 }
 .disguised-secret-trigger {
   display: inline-block;
   margin-top: 0.75rem;
-  color: #1e293b;
+  color: #3a2a3e;
   cursor: pointer;
   user-select: none;
   transition: color 0.2s;
 }
 .disguised-secret-trigger:hover {
-  color: #334155;
+  color: #4a3a4e;
 }
 
 /* --- ACCIONES DENTRO DEL CUESTIONARIO (ANTERIOR / VOLVER A EMPEZAR) --- */

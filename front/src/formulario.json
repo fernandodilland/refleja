@@ -168,7 +168,7 @@
     },
     "pareja_2": {
       "qid": "pareja_2",
-      "text": "¿Sientes que ‘caminas sobre cáscaras de huevo’ con {persona}? ¿Mides lo que dices para no provocarla?",
+      "text": "¿Sientes que ‘caminas sobre cáscaras de huevo’ con {persona}, cuidando lo que dices o haces por temor a su reacción?",
       "explanation": "Modificar tu comportamiento por miedo a la reacción de la otra persona es señal de la fase de acumulación de tensión del ciclo de la violencia.",
       "source": "Ciclo de la Violencia - Leonore Walker (1979)",
       "options": [
@@ -369,12 +369,12 @@
     },
     "pareja_9": {
       "qid": "pareja_9",
-      "text": "¿{Persona} ha roto cosas tuyas (ropa, documentos, objetos preciados) cuando se enoja?",
+      "text": "¿{Persona} ha roto, escondido o retenido cosas tuyas (ropa, documentos, objetos preciados) cuando se enoja o para controlarte?",
       "explanation": "Romper tus pertenencias es violencia patrimonial. Busca intimidarte, controlar tu comportamiento y demostrar poder. Es un indicador de violencia física inminente.",
       "source": "Ley General de Acceso de las Mujeres a una Vida Libre de Violencia (México)",
       "options": [
         {
-          "label": "Sí, ha roto cosas importantes para mí",
+          "label": "Sí, ha roto o retenido cosas importantes para mí",
           "nextId": "pareja_10",
           "scores": {
             "patrimonial": 3,
@@ -382,7 +382,7 @@
           }
         },
         {
-          "label": "Ha roto cosas pero dice que fue sin querer",
+          "label": "Ha pasado, pero dice que fue sin querer",
           "nextId": "pareja_10",
           "scores": {
             "patrimonial": 1

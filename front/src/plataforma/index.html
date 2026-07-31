@@ -61,8 +61,10 @@
           <label for="f-muni">Municipio</label>
           <select id="f-muni"><option value="">Todos</option></select>
         </div>
-        <button id="f-apply" class="btn-apply">Aplicar</button>
-        <button id="f-reset" class="btn-ghost">Limpiar</button>
+        <div class="factions">
+          <button id="f-apply" class="btn-apply">Aplicar</button>
+          <button id="f-reset" class="btn-ghost">Limpiar</button>
+        </div>
       </div>
 
       <!-- KPIs -->
@@ -132,6 +134,17 @@
           <span><i style="background:var(--coral)"></i> Empezaron</span>
           <span><i style="background:var(--ok)"></i> Completaron</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal: detalle de un elemento (barra, día, recorrido…) -->
+    <div id="detail-modal" class="modal-overlay" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="detail-title" style="max-width:560px">
+        <div class="modal-head">
+          <h2 id="detail-title">—</h2>
+          <button id="detail-close" class="modal-close" aria-label="Cerrar">×</button>
+        </div>
+        <div id="detail-body" class="modal-body"></div>
       </div>
     </div>
 

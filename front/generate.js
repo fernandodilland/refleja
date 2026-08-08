@@ -198,14 +198,27 @@ function municipioPage(slug) {
   const h1 = `Medios de Apoyo a la Violencia de Género en ${name}`;
   const h1Html = `Medios de Apoyo a la Violencia de Género en <span class="muni-hero__name">${esc(name)}</span>`;
   const title = `${h1} | Refleja`;
-  const description = hasMunicipal
-    ? `Directorio de apoyo a la violencia de género en ${name}, Nuevo León: teléfonos, WhatsApp, correos y direcciones de instancias municipales y estatales gratuitas y confidenciales.`
-    : `Apoyo a la violencia de género para ${name}, Nuevo León: líneas estatales y nacionales gratuitas y confidenciales disponibles las 24 horas.`;
+  // "otro" ("No vivo en Nuevo León") no es un municipio: no se le añade el estado.
+  const isMunicipio = slug !== "otro";
+  // Ubicación completa que se repite en la meta descripción y en el texto de la página.
+  const place = isMunicipio ? `${name}, Nuevo León, México` : name;
+  const placeHtml = isMunicipio
+    ? `<strong>${esc(name)}</strong>, Nuevo León, México`
+    : `<strong>${esc(name)}</strong>`;
+  // Meta descripción ≤ ~160 caracteres, con el municipio, "violencia",
+  // "medios de apoyo" y "Nuevo León, México".
+  const description = !isMunicipio
+    ? `Medios de apoyo si vives violencia de género y no vives en Nuevo León, México: líneas nacionales gratuitas y confidenciales, disponibles 24/7 en todo el país.`
+    : hasMunicipal
+    ? `Medios de apoyo si vives violencia de género en ${place}: teléfonos, WhatsApp y oficinas gratuitas y confidenciales.`
+    : `Medios de apoyo si vives violencia de género en ${place}: líneas estatales y nacionales gratuitas, confidenciales y 24/7.`;
   const canonical = `${SITE}/${slug}`;
 
-  const lead = hasMunicipal
-    ? `Si vives violencia de género en <strong>${esc(name)}</strong>, no estás sola. Aquí reunimos los medios de apoyo municipales, estatales y nacionales —gratuitos y confidenciales— para orientarte, acompañarte y protegerte.`
-    : `Reunimos los medios de apoyo disponibles para <strong>${esc(name)}</strong>, Nuevo León. Aunque no identificamos una oficina municipal dedicada, los recursos estatales y nacionales que aparecen aquí son gratuitos, confidenciales y cubren todo el estado.`;
+  const lead = !isMunicipio
+    ? `Si vives violencia de género y <strong>no vives en Nuevo León</strong>, no estás sola. Aquí reunimos las líneas nacionales de apoyo —gratuitas y confidenciales— disponibles las 24 horas en todo México.`
+    : hasMunicipal
+    ? `Si vives violencia de género en ${placeHtml}, no estás sola. Aquí reunimos los medios de apoyo municipales, estatales y nacionales —gratuitos y confidenciales— para orientarte, acompañarte y protegerte.`
+    : `Reunimos los medios de apoyo contra la violencia de género disponibles en ${placeHtml}. Aunque no identificamos una oficina municipal dedicada, los recursos estatales y nacionales que aparecen aquí son gratuitos, confidenciales y cubren todo el estado.`;
 
   const municipalSection = hasMunicipal
     ? resourceGroup(`📍 Apoyo municipal en ${esc(name)}`, m.resources)
@@ -221,7 +234,7 @@ function municipioPage(slug) {
     isPartOf: { "@type": "WebSite", name: "Refleja", url: SITE },
     about: {
       "@type": "Place",
-      name: `${name}, Nuevo León, México`,
+      name: place,
     },
   };
   const breadcrumbLd = {

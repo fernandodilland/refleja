@@ -65,8 +65,9 @@ refleja/
 ├── front/          # Sitio estático (JAMstack) desplegado en Cloudflare (wrangler)
 │   ├── src/
 │   │   ├── formulario.json    # Preguntas del cuestionario y puntajes
-│   │   ├── municipios.json    # Directorio de recursos por municipio
-│   │   └── generate.js        # Genera las páginas por municipio + sitemap
+│   │   └── municipios.json    # Directorio de recursos por municipio
+│   ├── generate.js            # Genera las páginas por municipio + sitemap
+│   ├── package.json           # Scripts build/dev/deploy y versión de wrangler
 │   └── wrangler.toml
 └── back/           # API FastAPI (Python 3.10) de estadística anónima + panel admin
     └── README.md   # Guía de despliegue del backend
@@ -87,6 +88,31 @@ El front detecta el entorno automáticamente: en local apunta al backend en `loc
 
 ---
 
+## Despliegue del front (Cloudflare Workers Builds)
+
+El Worker `refleja` está conectado a este repositorio: **cada push a `main` despliega automáticamente** refleja.org. Los pushes a otras ramas suben una versión de vista previa sin tocar producción.
+
+Configuración del Worker en Cloudflare (*Workers & Pages → refleja → Settings → Build*):
+
+| Campo | Valor |
+|---|---|
+| Repositorio / rama de producción | `fernandodilland/refleja` / `main` |
+| Root directory | `front` |
+| Build command | `npm run build` (regenera páginas de municipio + sitemap) |
+| Deploy command | `npx wrangler deploy` |
+| Build watch paths | incluir `front/*` (los cambios en `back/` no redespliegan el sitio) |
+
+Despliegue manual (por si se necesita):
+
+```bash
+cd front
+npm install
+npm run build
+npm run deploy
+```
+
+---
+
 ## Cómo aportar
 
 Refleja es abierto: se agradecen correcciones de datos, nuevos recursos, mejoras al cuestionario y al código.
@@ -95,7 +121,7 @@ Refleja es abierto: se agradecen correcciones de datos, nuevos recursos, mejoras
 
 - **Recursos de un municipio** → edita [`front/src/municipios.json`](front/src/municipios.json): agrega o corrige teléfonos, WhatsApp, direcciones y enlaces en el arreglo `resources` del municipio.
 - **Preguntas del cuestionario** → edita [`front/src/formulario.json`](front/src/formulario.json).
-- Tras editar los datos, regenera las páginas con `node front/generate.js`.
+- Tras editar los datos, regenera las páginas con `node front/generate.js` (al desplegar, Cloudflare también lo corre automáticamente).
 
 ### Flujo con Git/GitHub
 

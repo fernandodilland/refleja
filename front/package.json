@@ -1,0 +1,13 @@
+{
+  "name": "refleja-front",
+  "private": true,
+  "description": "Sitio estático de Refleja desplegado en Cloudflare Workers (static assets)",
+  "scripts": {
+    "build": "node generate.js",
+    "dev": "wrangler dev --port 8788",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.149.0"
+  }
+}

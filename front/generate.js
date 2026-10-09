@@ -40,6 +40,7 @@ const LABNL_URL =
   "https://wiki.labnuevoleon.mx/index.php?title=Refleja:_Una_herramienta_para_la_concientizaci%C3%B3n_sobre_la_Violencia_de_G%C3%A9nero";
 
 const INSTAGRAM_URL = "https://www.instagram.com/refleja__/";
+const MAP_URL = "https://mapa.refleja.org";
 const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61589134577377";
 
 // --- Utilidades ---
@@ -129,6 +130,10 @@ function header() {
           <a href="/municipios" class="muni-menu__all">Ver los 51 municipios →</a>
         </div>
       </div>
+      <a href="${MAP_URL}" class="muni-menu__trigger map-link" title="Mapa de apoyo en Nuevo León: centros de atención cerca de ti">
+        <span class="muni-menu__trigger-icon" aria-hidden="true">🗺️</span>
+        <span>Mapa</span>
+      </a>
     </div>
     <div class="top-island__actions">
       <a href="#emergencia" class="button-urgent" title="Líneas de ayuda inmediata">
@@ -156,6 +161,8 @@ function footer() {
   </div>
   <nav class="footer-nav" aria-label="Directorio de municipios">
     <a href="/municipios">Medios de apoyo por municipio de Nuevo León</a>
+    <span aria-hidden="true">·</span>
+    <a href="${MAP_URL}">Mapa de apoyo de Nuevo León</a>
   </nav>
   <nav class="footer-social" aria-label="Redes sociales de Refleja">
     <a class="footer-social__link" href="${INSTAGRAM_URL}" target="_blank" rel="noopener noreferrer">

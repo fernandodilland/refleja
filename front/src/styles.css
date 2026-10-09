@@ -2761,3 +2761,11 @@ body.no-scroll {
   overflow: hidden !important;
   height: 100vh !important;
 }
+/* --- ENLACE AL MAPA DE APOYO (mapa.refleja.org) --- */
+.map-link {
+  text-decoration: none;
+}
+.footer-nav span[aria-hidden="true"] {
+  margin: 0 0.45rem;
+  opacity: 0.6;
+}

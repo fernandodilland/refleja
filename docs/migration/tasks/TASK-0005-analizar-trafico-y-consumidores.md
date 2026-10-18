@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0005
 - **Título:** Analizar tráfico real y consumidores de la API a partir de los logs del proxy
-- **Estado:** lista
+- **Estado:** fuera del alcance local (checklist de despliegue del propietario)
 - **Prioridad:** P1
 - **Dominio:** Descubrimiento
 - **Responsable o agente asignado:** Propietario del proyecto (acceso al servidor) — un agente solo puede procesar la evidencia entregada
@@ -72,7 +72,7 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 - Riesgo bajo. Rollback: borrar el archivo.
 
 ## Resultado de la ejecución
-*(El agente completa esta sección al terminar. No marcar la tarea como completada si algún criterio de aceptación sigue sin cumplirse.)*
+*(Tarea de despliegue: requiere acceso al servidor de producción o autorización del propietario; la migración local no depende de ella. El migrador no puede ejecutarla sin inventar datos. No marcar la tarea como completada si algún criterio de aceptación sigue sin cumplirse.)*
 
 - **Resumen de cambios:**
 - **Archivos modificados:**

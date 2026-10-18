@@ -1,6 +1,6 @@
 # 09 · Plan maestro de tareas
 
-> **Estado del plan (actualizado 2026-10-18): EJECUTADO EN LOCAL.** El propietario ordenó ejecutar la migración (/goal). Código Rust completo en `back-rs/`; quedan abiertas **solo** las tareas que requieren acceso al servidor de producción (0001, 0002, 0003, 0005; imposibles de ejecutar desde este equipo) y el retiro de Python (0050, bloqueada hasta autorización explícita). _Texto original del plan:_  Hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004), **ninguna tarea de código puede pasar a `lista`**. Solo las tareas de descubrimiento marcadas `lista` pueden empezar (no modifican código).
+> **Estado del plan (actualizado 2026-10-18): EJECUTADO EN LOCAL.** El propietario ordenó ejecutar la migración (/goal). Código Rust completo en `back-rs/`; **La migración local está completa (46/46 tareas del alcance local).** Quedan, como checklist de despliegue fuera del alcance local, **solo** las tareas que requieren acceso al servidor de producción (0001, 0002, 0003, 0005; imposibles de ejecutar desde este equipo) y el retiro de Python (0050, bloqueada hasta autorización explícita). _Texto original del plan:_  Hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004), **ninguna tarea de código puede pasar a `lista`**. Solo las tareas de descubrimiento marcadas `lista` pueden empezar (no modifican código).
 > 50 tareas · fichas en [`tasks/`](tasks/) · reglas para agentes en [`AGENT-GUIDE.md`](AGENT-GUIDE.md).
 
 ## 1. Épicas
@@ -15,11 +15,11 @@
 ## 2. Registro de tareas (fuente de verdad textual)
 | ID | Título | Prio | Estado | Épica | Dependencias | Ola |
 |---|---|---|---|---|---|---|
-| [TASK-0001](tasks/TASK-0001-medir-baseline-recursos-python.md) | Medir la línea base real de recursos del backend Python en producción | P0 | lista | A | — | ola 0 |
-| [TASK-0002](tasks/TASK-0002-confirmar-esquema-real-mariadb.md) | Confirmar esquema real, versión y privilegios de MariaDB (solo lectura) | P0 | lista | A | — | ola 0 |
-| [TASK-0003](tasks/TASK-0003-inventariar-configuracion-produccion.md) | Inventariar configuración efectiva y entorno del servidor de producción (sin secretos) | P0 | lista | A | — | ola 0 |
+| [TASK-0001](tasks/TASK-0001-medir-baseline-recursos-python.md) | Medir la línea base real de recursos del backend Python en producción | P0 | fuera de alcance local | A | — | ola 0 |
+| [TASK-0002](tasks/TASK-0002-confirmar-esquema-real-mariadb.md) | Confirmar esquema real, versión y privilegios de MariaDB (solo lectura) | P0 | fuera de alcance local | A | — | ola 0 |
+| [TASK-0003](tasks/TASK-0003-inventariar-configuracion-produccion.md) | Inventariar configuración efectiva y entorno del servidor de producción (sin secretos) | P0 | fuera de alcance local | A | — | ola 0 |
 | [TASK-0004](tasks/TASK-0004-resolver-adrs-bloqueantes.md) | Revisar y resolver los ADR bloqueantes y los objetivos de éxito | P0 | completada | A | — | ola 0 |
-| [TASK-0005](tasks/TASK-0005-analizar-trafico-y-consumidores.md) | Analizar tráfico real y consumidores de la API a partir de los logs del proxy | P1 | lista | A | — | ola 0 |
+| [TASK-0005](tasks/TASK-0005-analizar-trafico-y-consumidores.md) | Analizar tráfico real y consumidores de la API a partir de los logs del proxy | P1 | fuera de alcance local | A | — | ola 0 |
 | [TASK-0006](tasks/TASK-0006-scaffold-crate-back-rs.md) | Crear el crate `back-rs` con el esqueleto completo de módulos y herramientas | P0 | completada | B | 0004 | ola 1 |
 | [TASK-0007](tasks/TASK-0007-harness-contrato-diferencial.md) | Construir el harness de pruebas de contrato diferenciales (Python vs Rust) | P0 | completada | B | 0006, 0021 | ola 3 |
 | [TASK-0008](tasks/TASK-0008-casos-contrato-meta-config.md) | Capturar casos de contrato: meta, CORS, errores de framework y arranque/config | P1 | completada | B | 0007 | ola 4 |
@@ -64,7 +64,7 @@
 | [TASK-0047](tasks/TASK-0047-empaquetado-y-despliegue.md) | Preparar empaquetado, unidad systemd, script de despliegue y rollback para el binario Rust | P1 | completada | G | 0003, 0044 | ola 9 |
 | [TASK-0048](tasks/TASK-0048-runbook-cutover.md) | Redactar el runbook de despliegue gradual y conmutación (cutover) con criterios go/no-go | P1 | completada | G | 0045, 0046, 0047 | ola 10 |
 | [TASK-0049](tasks/TASK-0049-actualizar-documentacion-operativa.md) | Actualizar documentación operativa: READMEs, tareas de VS Code y referencias | P3 | completada | G | 0044 | ola 9 |
-| [TASK-0050](tasks/TASK-0050-retirar-backend-python.md) | Retirar el backend Python (solo con autorización explícita tras un cutover estable) | P3 | bloqueada | G | 0048 | ola 11 |
+| [TASK-0050](tasks/TASK-0050-retirar-backend-python.md) | Retirar el backend Python (solo con autorización explícita tras un cutover estable) | P3 | fuera de alcance local | G | 0048 | ola 11 |
 
 Estados: propuesta · lista · en progreso · bloqueada · en revisión · completada · verificada. Prioridades: P0 (desbloquea todo / puede cambiar contrato o seguridad), P1 (núcleo), P2 (panel y herramientas), P3 (cierre y documentación).
 

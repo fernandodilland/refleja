@@ -49,6 +49,9 @@ Documentos **no creados a propósito** (se generan durante la ejecución): `trac
 - Memoria (benchmark local macOS, [`evidence/bench-2026-10-18.md`](evidence/bench-2026-10-18.md)): ≈7 MB en reposo vs 25–150 MB de Python; pico con 8 logins simultáneos 75 MB vs 560–634 MB. **Medir en el servidor Linux** antes de dar la cifra por buena.
 - Hallazgo: bajo carga concurrente en MariaDB ≥11.8 el backend Python produce 500 (error 1020); Rust los evita con `READ COMMITTED` + reintentos (ADR-020).
 
+## Checklist de despliegue (fuera del alcance local)
+TASK-0001 (RAM real), 0002 (esquema real), 0003 (config/servidor), 0005 (tráfico) y 0050 (retirar Python) requieren acceso al servidor o autorización del propietario. No condicionan la corrección de la migración local, pero **deben hacerse antes del cutover**.
+
 ## Siguiente paso recomendado
 1. Ejecutar TASK-0002 (esquema real, solo lectura) y TASK-0003 (config/servidor) y comparar con `back-rs/migrations/0001_baseline.sql`.
 2. Ensayar `back-rs/deploy/` en el servidor en puerto alterno (fase *shadow* del runbook).

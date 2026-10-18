@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0002
 - **Título:** Confirmar esquema real, versión y privilegios de MariaDB (solo lectura)
-- **Estado:** fuera del alcance local (checklist de despliegue del propietario)
+- **Estado:** parcialmente resuelta por el despliegue (2026-10-18)
 - **Prioridad:** P0
 - **Dominio:** Descubrimiento
 - **Responsable o agente asignado:** Propietario del proyecto (acceso al servidor) — un agente solo puede procesar la evidencia entregada
@@ -89,3 +89,6 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 - **Diferencias detectadas respecto al original:**
 - **Decisiones que requieren revisión humana:**
 - **Evidencia y commit:**
+
+
+> **Nota 2026-10-18:** `refleja-api --check` en el servidor real confirmó que el esquema de producción tiene todas las tablas y columnas que usa la API (incl. `event_counter`). No se volcó el DDL completo.

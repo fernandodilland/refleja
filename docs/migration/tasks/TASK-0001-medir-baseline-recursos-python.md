@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0001
 - **Título:** Medir la línea base real de recursos del backend Python en producción
-- **Estado:** fuera del alcance local (checklist de despliegue del propietario)
+- **Estado:** parcialmente resuelta por el despliegue (2026-10-18)
 - **Prioridad:** P0
 - **Dominio:** Descubrimiento
 - **Responsable o agente asignado:** Propietario del proyecto (acceso al servidor) — un agente solo puede procesar la evidencia entregada
@@ -86,3 +86,6 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 - **Diferencias detectadas respecto al original:**
 - **Decisiones que requieren revisión humana:**
 - **Evidencia y commit:**
+
+
+> **Nota 2026-10-18:** No se midió la RAM del Python antes de apagarlo. Medido en Rust: RSS ≈ 6.7 MB tras el arranque en producción.

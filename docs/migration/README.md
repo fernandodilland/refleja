@@ -1,6 +1,7 @@
 # Migración del backend de Refleja a Rust — índice
 
-> **Fase actual: B — Implementación local COMPLETA; pendiente despliegue.** El backend Rust (`../../back-rs`) implementa las 15 rutas y todo el comportamiento observable del backend Python, verificado con un arnés diferencial (Python vs Rust, misma BD). **No se ha desplegado ni probado contra producción.**
+> **Fase actual: C — DESPLEGADO EN PRODUCCIÓN (18 oct 2026, 13:06 hora del servidor).** La API Rust sirve `api.refleja.org` en el puerto 20834; el Python quedó apagado, deshabilitado y bloqueado (no borrado). Ver «Despliegue realizado».
+> _Texto previo:_ B — Implementación local COMPLETA. El backend Rust (`../../back-rs`) implementa las 15 rutas y todo el comportamiento observable del backend Python, verificado con un arnés diferencial (Python vs Rust, misma BD). **No se ha desplegado ni probado contra producción.**
 > Análisis del 2026-10-18 sobre `main` @ `f4d996c`; implementación en la rama `migration/rust-backend`.
 > Lo que sigue (requiere al propietario): TASK-0001/0002/0003/0005 (datos del servidor), revisión de 0045–0048, y el cutover según [`runbook-cutover.md`](runbook-cutover.md).
 
@@ -48,6 +49,13 @@ Documentos **no creados a propósito** (se generan durante la ejecución): `trac
 - 15/15 rutas migradas + documentación interactiva de desarrollo (EP-016); `tests/contract/diff.py`: 223 peticiones idénticas + volcado de 8 tablas idéntico + modo producción + fail-closed + compatibilidad de sesiones/tokens Python↔Rust ([`traceability.md`](traceability.md)).
 - Memoria (benchmark local macOS, [`evidence/bench-2026-10-18.md`](evidence/bench-2026-10-18.md)): ≈7 MB en reposo vs 25–150 MB de Python; pico con 8 logins simultáneos 75 MB vs 560–634 MB. **Medir en el servidor Linux** antes de dar la cifra por buena.
 - Hallazgo: bajo carga concurrente en MariaDB ≥11.8 el backend Python produce 500 (error 1020); Rust los evita con `READ COMMITTED` + reintentos (ADR-020).
+
+## Despliegue realizado (2026-10-18)
+- `./desplegar.sh simulacro` → validó en el servidor real: configuración, base de datos y **esquema completo** (`refleja-api --check`). Esto resuelve TASK-0002 en lo que importa (el esquema de producción contiene todas las tablas/columnas que la API usa).
+- `back-rs/scripts/dia-d.sh` → Python parado y bloqueado (`/etc/systemd/system/refleja-api.service.d/90-apagado-por-rust.conf`), Rust instalado (`releases/1.0.0-20261018190542-1f8a3c1`), salud local 200 y salud pública `https://api.refleja.org/api/health` OK.
+- Verificado después: CORS (preflight desde `https://refleja.org` 200), `/api/docs` 404 en producción, front 200; **RSS del proceso Rust ≈ 6.7 MB**; `NRestarts=0`; vecinos intactos (`sistema-rs`, `archivo-correos-api-rs`, `rgm-api`, `fractory-api`, `nginx`, `mariadb` activos; las únicas unidades fallidas, `logrotate` y `motd-news`, ya lo estaban).
+- Mapa de Sistemas actualizado (repo `sistema.fernandodilland`, commit `3e80f86`, publicado con `git pull --ff-only` en el servidor) y `/etc/sistemas-agente/supervisar.json` actualizado (respaldo `.antes-refleja-rs`); agente reiniciado.
+- Volver al Python: `./desplegar.sh deshacer`. Revertir a otra release Rust: `./desplegar.sh revertir`.
 
 ## Checklist de despliegue (fuera del alcance local)
 TASK-0001 (RAM real), 0002 (esquema real), 0003 (config/servidor), 0005 (tráfico) y 0050 (retirar Python) requieren acceso al servidor o autorización del propietario. No condicionan la corrección de la migración local, pero **deben hacerse antes del cutover**.

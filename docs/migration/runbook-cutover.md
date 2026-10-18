@@ -1,6 +1,7 @@
 # Runbook de despliegue y conmutación (cutover) a Rust
 
-> **Estado:** todo preparado; **nada se ha desplegado**. El propietario avisará cuándo ejecutar. Patrón copiado de
+> **Estado: EJECUTADO el 2026-10-18** (simulacro → día D → verificación → Mapa de Sistemas). Ver `docs/migration/README.md` «Despliegue realizado».
+> _Texto previo:_ todo preparado; nada desplegado. Patrón copiado de
 > `sistema.fernandodilland` (`rust/deploy/`) y `correo.fractory.mx` (`back-rs/scripts/desplegar.sh`).
 > Detalles técnicos y comandos: [`back-rs/despliegue/README.md`](../../back-rs/despliegue/README.md).
 
@@ -30,7 +31,7 @@ Si algo falla después de apagar el Python, `dia-d.sh` se deshace solo (vuelve e
 `./desplegar.sh back` · `./desplegar.sh revertir` (release Rust anterior) · `./desplegar.sh deshacer` (volver al Python).
 
 ## 4. Mapa de Sistemas — actualización MANUAL tras el despliegue
-Se hace **después** del día D (por el asistente, a petición del propietario) en el repo `~/git/Personal/sistema.fernandodilland`, siguiendo lo hecho con «Sistema» y «Archivo de correos» (filas Rust vivas, filas Python en gris «obsoleto» con su sustituto). Ese repo tiene cambios sin commitear del propietario: **tocar solo estos archivos y commitear solo ellos**.
+**Hecho** el 18 oct 2026 (commit `3e80f86` en `sistema.fernandodilland`). Se hizo **después** del día D (por el asistente, a petición del propietario) en el repo `~/git/Personal/sistema.fernandodilland`, siguiendo lo hecho con «Sistema» y «Archivo de correos» (filas Rust vivas, filas Python en gris «obsoleto» con su sustituto). Ese repo tiene cambios sin commitear del propietario: **tocar solo estos archivos y commitear solo ellos**.
 
 Parche ya preparado (sin aplicar): [`mapa-sistemas/`](mapa-sistemas/README.md).
 

@@ -4,8 +4,8 @@ Mismo patrón que `sistema.fernandodilland` (`rust/deploy/`) y `correo.fractory.
 `despliegue/instalar-en-servidor.sh`): **se compila en la Mac y al servidor solo se sube el paquete compilado**. El
 servidor no tiene Rust.
 
-> **Estado:** preparado y con el paquete Linux compilado/verificado en la Mac. **Aún no se ha desplegado** (se hará cuando
-> el propietario lo indique). CloudPanel ya apunta al puerto **20834**.
+> **Estado: en producción desde el 18 oct 2026** (release `1.0.0-20261018190542-1f8a3c1`, puerto 20834). El Python sigue
+> instalado pero apagado, deshabilitado y bloqueado; ver «Volver al Python».
 
 ## Dónde queda en el servidor
 

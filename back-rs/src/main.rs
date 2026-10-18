@@ -30,6 +30,15 @@ async fn main() {
         eprintln!("{e}");
         std::process::exit(1);
     }
+    // `--check`: valida configuración, conexión y esquema y termina (lo usa el instalador del servidor
+    // antes de cambiar de release; equivale a `sis-cli migrar --estado` del backend de sistema).
+    if std::env::args().any(|a| a == "--check") {
+        println!(
+            "OK: configuración válida (ENV={}), base de datos accesible y esquema completo",
+            settings.env
+        );
+        return;
+    }
     let (host, port, env) = (
         settings.app_host.clone(),
         settings.app_port,

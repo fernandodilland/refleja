@@ -83,8 +83,8 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 *(El agente completa esta sección al terminar. No marcar la tarea como completada si algún criterio de aceptación sigue sin cumplirse.)*
 
 - **Resumen de cambios:** implementado en `back-rs/` (ver archivos).
-- **Archivos modificados:** `back-rs/deploy/{deploy.sh,refleja-api-rs.service,refleja-api-rs.sudoers,README.md}`
-- **Pruebas ejecutadas y resultados reales:** Ensayo local con `systemctl` simulado: despliegue, segundo despliegue (queda `.prev`) y binario defectuoso ⇒ rollback correcto. **No ejecutado en el servidor real.**
+- **Archivos modificados:** `desplegar.sh` (raíz), `back-rs/scripts/{compilar,desplegar,dia-d,limpiar}.sh`, `back-rs/despliegue/**`
+- **Pruebas ejecutadas y resultados reales:** (2026-10-18, rediseñado según el patrón de sistema.fernandodilland/correo.fractory.mx) `back-rs/scripts/compilar.sh` completo: fmt, clippy, 19 pruebas, `cargo audit` y paridad con Python en verde; paquete Linux x86_64 de 3.8 MB (ELF, necesita GLIBC ≤2.34, SHA-256 verificados). Instalador ensayado en la Mac con `systemctl`/`runuser` simulados y MariaDB real: simulacro, instalación, segunda release, `--revertir`, binario roto y esquema incompleto ⇒ rechazados sin cambiar nada. **No ejecutado en el servidor real.**
 - **Criterios satisfechos y pendientes:** Archivos de despliegue y ensayo local de despliegue, redespliegue y rollback con `systemctl` simulado. El ensayo en el servidor real forma parte del cutover (TASK-0048).
 - **Diferencias detectadas respecto al original:** ver `runbook-cutover.md` §5 y ADR-020/021/022 en `08`.
 - **Decisiones que requieren revisión humana:** ver `08` §0.

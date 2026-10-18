@@ -1,47 +1,50 @@
-# Runbook de despliegue gradual y conmutación (cutover) a Rust
+# Runbook de despliegue y conmutación (cutover) a Rust
 
-> **Estado:** borrador para aprobación del propietario (TASK-0048). **Nada de esto se ha ejecutado en producción.** Los pasos de servidor están ensayados solo con un `systemctl` simulado (ver `back-rs/deploy/`).
-> Principio: Python sigue instalado y listo hasta que Rust demuestre estabilidad; el rollback es cambiar el proxy y arrancar Python (segundos).
+> **Estado:** todo preparado; **nada se ha desplegado**. El propietario avisará cuándo ejecutar. Patrón copiado de
+> `sistema.fernandodilland` (`rust/deploy/`) y `correo.fractory.mx` (`back-rs/scripts/desplegar.sh`).
+> Detalles técnicos y comandos: [`back-rs/despliegue/README.md`](../../back-rs/despliegue/README.md).
 
-## 0. Preflight (no modifica nada)
-1. **Esquema:** ejecutar TASK-0002 (`SHOW CREATE TABLE` de solo lectura) y comparar con `back-rs/migrations/0001_baseline.sql`. Debe coincidir (en especial `event_counter`, columnas `visitor.*_count` y `form_run.counted`). Si faltara algo, aplicar *solo migraciones aditivas* aprobadas.
-2. **Backup** de MariaDB (el propietario) y comprobar que se puede restaurar.
-3. **Secretos idénticos:** `back-rs/.env` = copia de `back/.env` (`JWT_SECRET`, `PUBLIC_TOKEN_SECRET`, `VID_HMAC_KEY` **iguales** ⇒ las sesiones admin y los tokens públicos de 30 días siguen válidos; verificado en `tests/contract/diff.py` fase 2c). `DATABASE_URL=mysql+pymysql://…` se acepta tal cual.
-4. Servidor: arquitectura/glibc (Q-11) y binario compatible; `back-rs/deploy/README.md`.
-5. Medir línea base de producción (TASK-0001) para comparar después.
+## Punto de partida (importante)
+- **CloudPanel ya apunta a `127.0.0.1:20834`** (cambiado por el propietario). El Python escucha en `20832`, así que **hasta que se despliegue Rust, `api.refleja.org` no tiene backend** (el front fallará al enviar estadística y el panel no cargará). Conviene desplegar pronto o revertir el App Port.
+- Rust escucha en `20834`, el Python en `20832`: **no chocan**, por eso el despliegue puede hacerse con el Python aún vivo; el día D lo apaga y bloquea.
+- Usuario del sitio `refleja-api`, repo en `/home/refleja-api/htdocs/api.refleja.org` (`back/.env`, `front/src/formulario.json`). La API Rust usa **la misma `.env`**: no se copia ni se edita nada.
 
-## 1. Fase *shadow* (Rust en puerto alterno, sin tráfico público)
-1. `APP_PORT=20833` en `back-rs/.env`; instalar unidad y sudoers (`back-rs/deploy/`); `BINARY=… back-rs/deploy/deploy.sh`.
-2. Verificar: `curl -s http://127.0.0.1:20833/api/health` → `{"status":"ok","env":"production"}`. Si `ORIGIN_SECRET` está definido, enviar la cabecera.
-3. Verificar lecturas del panel con un admin de prueba (mismo `login` → `GET /api/platform/overview` en ambos puertos y comparar números: deben coincidir porque comparten BD).
-4. Medir RSS: `ps -o rss,cmd -C refleja-api` (debe ser mucho menor que Python).
-**Abortar si:** el servicio no arranca (revisar `journalctl -u refleja-api-rs`), `verify_schema` reporta columnas faltantes, o las cifras del panel difieren.
+## 0. Antes de desplegar (una vez)
+1. **Esquema** (TASK-0002): `refleja-api --check` lo verifica automáticamente en el servidor y **aborta sin cambiar nada** si falta algo (p. ej. `event_counter`). Si aborta, aplicar `back-rs/migrations/0001_baseline.sql` (idempotente) a mano y repetir.
+2. Backup de MariaDB (el propietario).
+3. Requisitos en la Mac: ver README de despliegue (`cargo-zigbuild`, `zig`, target Linux, MariaDB local para el gate de paridad).
+4. Opcional: anotar RAM del Python (`ps -o rss,cmd -u refleja-api`) para comparar (TASK-0001).
 
-## 2. Conmutación
-1. Cambiar `APP_PORT` de Rust a `20832` **solo después** de detener Python: `sudo systemctl stop refleja-api` → `sudo systemctl restart refleja-api-rs` (ventana de unos segundos). *Alternativa sin ventana:* dejar Rust en 20833 y apuntar el reverse proxy de CloudPanel a `127.0.0.1:20833`.
-2. `curl https://api.refleja.org/api/health` → 200. Probar desde el sitio real: abrir el cuestionario (se emite token y llegan eventos), entrar a `/acceso` y `/plataforma`.
-3. Vigilar 30–60 min: `journalctl -u refleja-api-rs -f` (sin 5xx; avisos de reuso de refresh son normales solo si hay robo/ráfaga), RSS estable, y que `/plataforma` → "Activos ahora" y contadores crezcan.
-**Rollback inmediato** (cualquier fallo): proxy → 20832/Python; `sudo systemctl stop refleja-api-rs && sudo systemctl start refleja-api`. Los datos escritos por Rust son compatibles con Python (misma BD, mismo formato).
+## 1. Ensayo sin cambios
+```bash
+./desplegar.sh simulacro      # gates + compila + sube + valida refleja-api --check en el servidor; no cambia nada
+```
 
-## 3. Criterios go/no-go (medibles)
-| Criterio | Go |
+## 2. Día D
+```bash
+./desplegar.sh dia-d          # gates + compila + para/bloquea Python + instala Rust + salud local y pública
+```
+Si algo falla después de apagar el Python, `dia-d.sh` se deshace solo (vuelve el Python). Comprobaciones posteriores: abrir `refleja.org` (cuestionario), `/acceso` → `/plataforma`, `journalctl -u refleja-api-rs -f` sin 5xx, `ps -o rss,cmd -C refleja-api`.
+
+## 3. Versiones siguientes
+`./desplegar.sh back` · `./desplegar.sh revertir` (release Rust anterior) · `./desplegar.sh deshacer` (volver al Python).
+
+## 4. Mapa de Sistemas — actualización MANUAL tras el despliegue
+Se hace **después** del día D (por el asistente, a petición del propietario) en el repo `~/git/Personal/sistema.fernandodilland`, siguiendo lo hecho con «Sistema» y «Archivo de correos» (filas Rust vivas, filas Python en gris «obsoleto» con su sustituto). Ese repo tiene cambios sin commitear del propietario: **tocar solo estos archivos y commitear solo ellos**.
+
+| Archivo | Cambio |
 |---|---|
-| Errores 5xx en la primera hora | 0 (o iguales a la línea base de Python) |
-| Panel (`overview`, `funnel`, `realtime`) | Responde y cuadra con los datos previos |
-| Login admin + refresh + logout desde navegador real | OK |
-| Estadística: el front reintenta lotes ≠ 2xx; no debe haber crecimiento anómalo de cola (no 422/429/5xx en `collect`) | OK |
-| RSS del proceso Rust vs línea base de Python (TASK-0001) | Menor (objetivo a fijar por el propietario, Q-12) |
+| `static/js/sistemas-datos.js` (≈ línea 193) | Añadir fila viva `hv-refleja-rs` «Refleja · API (Rust)» (`svc("refleja-api-rs", "refleja-api", ["Escucha en 127.0.0.1:20834 (el 20832 queda libre para el Python)."])`, `expo: [["pub","api.refleja.org"]]`) y dejar `hv-refleja` como «Refleja · API (Python)» en gris (`color: "neutro"`, sin `expo`) |
+| `static/js/sistemas-servidor.js` (≈ línea 40) | `"hv-refleja-rs": { u: "refleja-api-rs.service", salud: "refleja" }` y `"hv-refleja": { u: "refleja-api.service", obsoleto: OBSOLETO_REFLEJA, sustituto: "refleja-api-rs.service" }` (definir `OBSOLETO_REFLEJA` como `OBSOLETO_CORREOS`); la arista `cf-proxy → hv-refleja` y `hv-refleja → db-refleja` en `sistemas-datos.js` (líneas ≈ 295 y 346) pasan a `hv-refleja-rs` |
+| `agentes/hivelocity/supervisar.json` | Añadir `refleja-api-rs.service` a `unidades` y cambiar la salud `refleja` a `http://127.0.0.1:20834/api/health`; copiar al servidor `/etc/sistemas-agente/supervisar.json` y reiniciar el agente (como en el día D de Sistema) |
+| `SISTEMAS.md` | Anotar el cambio (convención del repo) |
 
-## 4. Después de la conmutación
-- Mantener `refleja-api.service` (Python) **detenido, no borrado** durante el periodo que decida el propietario (sugerido: 1–2 semanas).
-- Retirar Python (`back/`, TASK-0050) **solo con autorización explícita**: etiqueta git `python-backend-final`, quitar `back/` y `back/deploy*`.
-- Actualizar `deploy.sh` del CI/proceso del propietario para usar `back-rs/deploy/deploy.sh`.
-
-## 5. Diferencias de comportamiento conocidas (aprobadas en este plan)
+## 5. Diferencias de comportamiento conocidas
 | Tema | Python | Rust | Motivo |
 |---|---|---|---|
-| Concurrencia en MariaDB ≥11.8 con `innodb_snapshot_isolation` | puede devolver 500 (error 1020) bajo carga concurrente | `READ COMMITTED` + reintento de transacción: sin 500 | corrección; ver benchmark |
+| Concurrencia en MariaDB ≥11.8 con `innodb_snapshot_isolation` | puede devolver 500 (error 1020) | `READ COMMITTED` + reintento: sin 500 | ADR-020 |
 | Límites de tasa | por worker (×2 con `--workers 2`) | por proceso (exactos) | un solo proceso |
-| Texto de `msg`/`ctx` en algunos 422 (JSON malformado, fechas inválidas) | mensajes de Pydantic | `type`/`loc`/estado idénticos; texto puede variar | ADR-008 |
+| Texto de `msg`/`ctx` en algunos 422 | Pydantic | `type`/`loc`/estado idénticos | ADR-008 |
 | Límite de cuerpo | ninguno | 256 KiB → 413 | ADR-015 |
-| Base de datos en desarrollo | SQLite automática | MariaDB local; `back-rs/scripts/dev.sh` la levanta y siembra con un solo comando | ADR-016 (no afecta producción, que ya usa MariaDB) |
+| DDL al arrancar (`create_all`) | sí | no: solo verifica el esquema | ADR-006 |
+| Base de datos en desarrollo | SQLite automática | MariaDB local; `back-rs/scripts/dev.sh` | ADR-016 |

@@ -50,7 +50,7 @@ Benchmark de memoria/latencia: `RS_PROFILE=release python3 bench/bench.py` (ver 
 
 ## Despliegue
 
-Ver [`deploy/README.md`](deploy/README.md). **No se ha desplegado a producción.**
+Ver [`despliegue/README.md`](despliegue/README.md) y, desde la raíz del repo, `./desplegar.sh` (patrón de sistema.fernandodilland / correo.fractory.mx: compila en la Mac, sube el paquete, el servidor no tiene Rust). Puerto de producción **20834**. **No se ha desplegado a producción.**
 
 ## Limpieza (liberar disco/RAM del equipo)
 

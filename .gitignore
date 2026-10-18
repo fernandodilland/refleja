@@ -43,3 +43,8 @@ tmp/
 back-rs/target/
 back-rs/.env
 back-rs/*.db
+
+# Despliegue Rust (back-rs)
+back-rs/dist/
+back-rs/prod/
+back-rs/despliegue/despliegue.conf

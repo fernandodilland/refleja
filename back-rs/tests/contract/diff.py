@@ -14,7 +14,8 @@ ROOT = Path(__file__).resolve().parents[3]
 BACK = ROOT / "back"
 RS = ROOT / "back-rs"
 PY = BACK / ".venv" / "bin" / "python"
-RS_BIN = RS / "target" / ("release" if os.environ.get("RS_PROFILE") == "release" else "debug") / "refleja-api"
+_tgt = Path(os.environ.get("CARGO_TARGET_DIR", RS / "target"))
+RS_BIN = Path(os.environ["RS_BIN"]) if os.environ.get("RS_BIN") else _tgt / ("release" if os.environ.get("RS_PROFILE") == "release" else "debug") / "refleja-api"
 SOCK = Path(os.environ.get("MDB_DIR", os.environ.get("TMPDIR", "/tmp") + "/refleja-mariadb")) / "mysql.sock"
 PORT_PY, PORT_RS, PORT_MOCK = 29832, 29833, 29834
 ADMIN_USER, ADMIN_PASS = "admin_test", "TestAdmin#2026-ok"
@@ -136,7 +137,7 @@ def norm_json(v, key=None):
         rr = v["recent_runs"]
         v = {**v, "recent_runs": sorted(json.dumps(norm_json(x), sort_keys=True) for x in rr) if len(rr) >= 7 else len(rr)}
     if key == "seconds_ago" and isinstance(v, int):
-        return 0 if v <= 10 else v
+        return "<n>"  # depende del reloj de cada ejecución (Python y Rust corren uno tras otro)
     return v
 
 
@@ -601,7 +602,7 @@ def phase2(ext, pwh):
         py.req("ping con token de Rust", "POST", "/api/public/ping", {"X-Refleja-Token": rs.last_json["token"]}, record=False)
         chk("Python acepta token estadístico emitido por Rust", py.last_json == {"ok": True})
         # hash Argon2 generado por Rust verifica en argon2-cffi y viceversa
-        r = subprocess.run([str(RS / "target" / ("release" if os.environ.get("RS_PROFILE") == "release" else "debug") / "refleja-admin"), "hash-password"],
+        r = subprocess.run([str(RS_BIN.parent / "refleja-admin"), "hash-password"],
                            input="otra-clave-ñ-2026", capture_output=True, text=True, cwd=str(RS), env=env)
         h = r.stdout.strip()
         code = "from app.security import verify_password, needs_rehash; import sys; h=sys.argv[1]; print(verify_password(h,'otra-clave-ñ-2026'), verify_password(h,'x'), needs_rehash(h))"

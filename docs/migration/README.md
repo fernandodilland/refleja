@@ -54,11 +54,11 @@ TASK-0001 (RAM real), 0002 (esquema real), 0003 (config/servidor), 0005 (tráfic
 
 ## Siguiente paso recomendado
 1. Ejecutar TASK-0002 (esquema real, solo lectura) y TASK-0003 (config/servidor) y comparar con `back-rs/migrations/0001_baseline.sql`.
-2. Ensayar `back-rs/deploy/` en el servidor en puerto alterno (fase *shadow* del runbook).
+2. Ensayar `./desplegar.sh simulacro` y luego `./desplegar.sh dia-d` (ver `runbook-cutover.md`; puerto de producción 20834, ya configurado en CloudPanel).
 3. Aprobar el runbook y conmutar; retirar Python solo con autorización (TASK-0050).
 
 ## Hallazgos que conviene conocer antes de aprobar
 - La documentación del backend está **desactualizada** (6 vs 8 tablas; falta `/platform/logins`).
 - Hay **quirks** que el front ya tolera y que el plan preserva por defecto (clave JSON `"None"`, cookie no borrada en 401 de refresh, `accepted` que cuenta eventos descartados, 307 por barra final…). Ver ADR-009/010.
 - El hash Argon2id cuesta **64 MiB por login** también en Rust: el plan incluye un semáforo para que los picos no anulen el ahorro (ADR-014).
-- `deploy.sh` y `healthcheck` actuales **no son reutilizables tal cual** para un binario Rust (TASK-0047).
+- El despliegue Rust sigue el patrón de tus otros proyectos (`./desplegar.sh`, `back-rs/scripts/`, `back-rs/despliegue/`); el `deploy.sh` de Python no se usa.

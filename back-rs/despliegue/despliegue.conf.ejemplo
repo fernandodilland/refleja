@@ -1,0 +1,25 @@
+# Copia a `despliegue/despliegue.conf` (ignorado por git) y ajusta lo que haga falta.
+# Los valores por defecto ya son los de producción de Refleja.
+
+# Alias de ~/.ssh/config que entra como root (mismo que sistema.fernandodilland y correo.fractory.mx).
+ALIAS_SSH=hivelocity
+
+# Usuario del sitio en CloudPanel: el MISMO que ejecuta la API Python.
+USUARIO_SITIO=refleja-api
+DOMINIO_SITIO=api.refleja.org
+BASE=/home/refleja-api/htdocs/api.refleja.org
+
+# Carpeta `back/` del Python: de aquí se LEE su .env (nunca se escribe) y es el directorio de trabajo.
+RAIZ_PYTHON=/home/refleja-api/htdocs/api.refleja.org/back
+
+# Dónde viven los binarios Rust (releases/<id> + enlace `actual`). Dentro de htdocs para que entre en los respaldos.
+INSTALACION=/home/refleja-api/htdocs/api.refleja.org/back-rs/prod
+
+# Puerto de la API Rust (CloudPanel → App Port). 20832 es el del Python y está prohibido aquí.
+PUERTO=20834
+
+# Releases que se conservan para volver atrás.
+CONSERVAR=5
+
+# Ubuntu 22.04 trae glibc 2.35.
+TARGET=x86_64-unknown-linux-gnu.2.35

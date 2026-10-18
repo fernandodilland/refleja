@@ -1,0 +1,32 @@
+# API de Refleja en Rust (sustituye a refleja-api.service, que queda apagada y bloqueada sin borrarse).
+# Plantilla: la instala despliegue/instalar-en-servidor.sh sustituyendo @USUARIO@ @RAIZ_PYTHON@ @INSTALACION@ @PUERTO@.
+# La configuración es la MISMA .env del Python (WorkingDirectory = back/); el puerto lo fija esta unidad
+# (las variables del proceso ganan a las del .env), así que el .env de producción no se toca.
+[Unit]
+Description=Refleja API (Rust)
+After=network.target mariadb.service
+
+[Service]
+Type=simple
+User=@USUARIO@
+Group=@USUARIO@
+WorkingDirectory=@RAIZ_PYTHON@
+Environment=APP_HOST=127.0.0.1
+Environment=APP_PORT=@PUERTO@
+Environment=RUST_LOG=info
+ExecStart=@INSTALACION@/actual/bin/refleja-api
+Restart=always
+RestartSec=3
+TimeoutStopSec=15
+MemoryMax=256M
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

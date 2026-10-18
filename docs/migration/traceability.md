@@ -1,7 +1,7 @@
 # Matriz de trazabilidad (TASK-0044)
 
 Estado real al 2026-10-18. «Prueba» = etiquetas de `back-rs/tests/contract/diff.py` (petición idéntica contra Python y Rust, respuesta y tablas comparadas) y `back-rs/tests/vectors.rs`.
-Resultado de la última ejecución completa: **215 peticiones (fase 1) + 19 (modo producción) + 4 arranques fail-closed + 8 comprobaciones de cutover: TODO OK**, 12 pruebas de Rust en verde (`cargo test --release`), `clippy -D warnings` limpio.
+Resultado de la última ejecución completa: **215 peticiones (fase 1) + 19 (modo producción) + 4 arranques fail-closed + 8 comprobaciones de cutover: TODO OK**, 19 pruebas de Rust en verde (14 unitarias + 5 de vectores de Python) (`cargo test --release`), `clippy -D warnings` limpio.
 
 | Endpoint | Implementación | Pruebas (etiquetas del arnés) | Tareas |
 |---|---|---|---|

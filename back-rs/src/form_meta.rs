@@ -143,6 +143,20 @@ impl FormMeta {
 mod tests {
     use super::*;
     #[test]
+    fn fallback_when_missing_or_invalid() {
+        let m = FormMeta::load("/ruta/que/no/existe.json");
+        let n: Vec<usize> = m.flow_order.iter().map(|(_, v)| v.len()).collect();
+        assert_eq!(n, vec![12, 12, 12]);
+        assert!(
+            m.is_valid_question_id("RESULT")
+                && m.is_valid_question_id("pareja_12")
+                && !m.is_valid_question_id("pareja_13")
+        );
+        assert!(FormMeta::parse("{not json").is_err());
+        assert!(FormMeta::parse("{\"questions\": {}}").is_err());
+    }
+
+    #[test]
     fn real_form() {
         let m = FormMeta::load("../front/src/formulario.json");
         let n: Vec<usize> = m.flow_order.iter().map(|(_, v)| v.len()).collect();

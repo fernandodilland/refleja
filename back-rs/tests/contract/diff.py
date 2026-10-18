@@ -27,6 +27,16 @@ BASE_ENV = dict(
 )
 
 
+def stop(*ps):
+    for p in ps:
+        p.terminate()
+    for p in ps:
+        try:
+            p.wait(timeout=10)
+        except Exception:
+            p.kill()
+
+
 def sh(*a, **k):
     return subprocess.run(a, check=True, capture_output=True, text=True, **k)
 
@@ -89,6 +99,8 @@ def start(kind, db, port, extra=None):
         try:
             urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=1)
             return p
+        except urllib.error.HTTPError:
+            return p  # responde (p. ej. 403 por ORIGIN_SECRET)
         except Exception:
             if p.poll() is not None:
                 raise RuntimeError(f"{kind} terminó: {open(log.name).read()[-800:]}")
@@ -118,6 +130,11 @@ def norm_json(v, key=None):
             return "<jwt>"
         if TS.match(v):
             return "<ts>"
+    if isinstance(v, dict) and "recent_runs" in v:
+        # empates de updated_at sin orden definido (mismo SQL en ambos): se compara como conjunto,
+        # y si el LIMIT recorta, solo la cantidad.
+        rr = v["recent_runs"]
+        v = {**v, "recent_runs": sorted(json.dumps(norm_json(x), sort_keys=True) for x in rr) if len(rr) >= 7 else len(rr)}
     if key == "seconds_ago" and isinstance(v, int):
         return 0 if v <= 10 else v
     return v
@@ -468,6 +485,130 @@ def compare(a, b, what):
     return bad
 
 
+PROD_ENV = dict(ENV="production", DEV_BYPASS_TURNSTILE="true", COOKIE_DOMAIN=".refleja.org", COOKIE_SAMESITE="none",
+                ORIGIN_SECRET="origen-secreto-de-prueba", CORS_ORIGINS="https://refleja.org, https://www.refleja.org,,")
+
+
+def prod_scenario(c, ext):
+    OS = {"X-Origin-Secret": "origen-secreto-de-prueba"}
+    O = {"Origin": "https://refleja.org"}
+    L = lambda t: {"username": ADMIN_USER, "password": ADMIN_PASS, "turnstile_token": t}
+    c.req("health no secret", "GET", "/api/health")
+    c.req("health no secret + origin", "GET", "/api/health", O)
+    c.req("health bad secret", "GET", "/api/health", {"X-Origin-Secret": "x"})
+    c.req("health empty secret", "GET", "/api/health", {"X-Origin-Secret": ""})
+    c.req("health secret", "GET", "/api/health", OS)
+    c.req("health secret lower hdr", "GET", "/api/health", {"x-origin-secret": "origen-secreto-de-prueba"})
+    c.req("preflight no secret", "OPTIONS", "/api/auth/login", {**O, "Access-Control-Request-Method": "POST"})
+    c.req("bare OPTIONS no secret", "OPTIONS", "/api/auth/login")
+    c.req("docs", "GET", "/api/docs", OS)
+    c.req("openapi", "GET", "/api/openapi.json", OS)
+    c.req("nope no secret", "GET", "/api/nope")
+    c.req("root no secret", "GET", "/")
+    c.req("outside api", "GET", "/health")
+    c.req("login bypass ignored", "POST", "/api/auth/login", OS, body=L("dev-bypass"))
+    c.req("session bypass ignored", "POST", "/api/public/session", OS, body={"turnstile_token": "dev-bypass"})
+    c.req("login ok prod cookie", "POST", "/api/auth/login", OS, body=L("good-token"))
+    c.cookie = c.last_headers.get_all("set-cookie")[0].split(";")[0]
+    c.req("refresh prod", "POST", "/api/auth/refresh", OS)
+    c.cookie = c.last_headers.get_all("set-cookie")[0].split(";")[0]
+    c.req("logout prod", "POST", "/api/auth/logout", OS)
+    c.req("session good", "POST", "/api/public/session", OS, body={"turnstile_token": "good-token"})
+    return c
+
+
+def startup_fail(kind, extra, label):
+    env = {**os.environ, **BASE_ENV, **extra}
+    if kind == "py":
+        env.update(DATABASE_URL="mysql+pymysql://refleja:dev_only_pw@127.0.0.1:33306/refleja_py?charset=utf8mb4", PYTHONPATH=str(BACK), PYTHONDONTWRITEBYTECODE="1")
+        cmd, cwd = [str(PY), "-c", "import app.config"], tempfile.gettempdir()
+    else:
+        env.update(DATABASE_URL="mysql://refleja:dev_only_pw@127.0.0.1:33306/refleja_rs", APP_PORT="29839")
+        cmd, cwd = [str(RS_BIN)], str(RS)
+    try:
+        r = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True, timeout=15)
+        return r.returncode, (r.stdout + r.stderr)
+    except subprocess.TimeoutExpired:
+        return 0, "arrancó (timeout)"
+
+
+def phase2(ext, pwh):
+    bad = 0
+    print("\n== Fase 2a: modo producción (CORS con espacios, ORIGIN_SECRET, cookie Domain/Secure/None)")
+    for db in ("refleja_py", "refleja_rs"):
+        setup_db(db); seed_admins(db, pwh)
+    procs = [start("py", "refleja_py", PORT_PY, PROD_ENV), start("rs", "refleja_rs", PORT_RS, PROD_ENV)]
+    try:
+        logs = {n: prod_scenario(Client(p), dict(ext)).log for n, p in (("py", PORT_PY), ("rs", PORT_RS))}
+    finally:
+        stop(*procs)
+    bad += compare(logs["py"], logs["rs"], "prod")
+    print(f"   {len(logs['py'])} peticiones comparadas")
+
+    print("== Fase 2b: arranque fail-closed en producción")
+    cases = [
+        ("secretos por defecto", dict(ENV="production", JWT_SECRET="cambia-esto-en-produccion-jwt")),
+        ("JWT corto (31)", dict(ENV="Production", JWT_SECRET="j" * 31)),
+        ("PUBLIC corto", dict(ENV="prod", PUBLIC_TOKEN_SECRET="p" * 10)),
+        ("VID por defecto", dict(ENV="production", VID_HMAC_KEY="cambia-esto-en-produccion-hmac")),
+    ]
+    for label, env in cases:
+        res = {k: startup_fail(k, env, label) for k in ("py", "rs")}
+        name = [k for k in env if k.endswith(("SECRET", "KEY"))][0]
+        ok = all(code != 0 and name in out for code, out in res.values())
+        print(f"   {'✓' if ok else '✗'} {label}: py={res['py'][0]} rs={res['rs'][0]}")
+        if not ok:
+            bad += 1; print("      py:", res["py"][1][-300:], "\n      rs:", res["rs"][1][-300:])
+
+    print("== Fase 2c: cutover con BASE COMPARTIDA (tokens y sesiones intercambiables Python <-> Rust)")
+    setup_db("refleja_py"); seed_admins("refleja_py", pwh)
+    procs = [start("py", "refleja_py", PORT_PY), start("rs", "refleja_py", PORT_RS)]
+    # el binario Rust apunta a la misma BD: se relanza con DATABASE_URL de refleja_py
+    stop(procs[1])
+    env = {**os.environ, **BASE_ENV, "DATABASE_URL": "mysql://refleja:dev_only_pw@127.0.0.1:33306/refleja_py", "APP_PORT": str(PORT_RS)}
+    procs[1] = subprocess.Popen([str(RS_BIN)], cwd=str(RS), env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(1.5)
+    try:
+        py, rs = Client(PORT_PY), Client(PORT_RS)
+        checks = []
+        def chk(name, cond): checks.append((name, cond)); print(f"   {'✓' if cond else '✗'} {name}")
+        L = {"username": ADMIN_USER, "password": ADMIN_PASS, "turnstile_token": "dev-bypass"}
+        py.req("login", "POST", "/api/auth/login", body=L, record=False)
+        at_py = py.last_json["access_token"]; ck_py = py.last_headers.get_all("set-cookie")[0].split(";")[0]
+        rs.req("me con access de Python", "GET", "/api/auth/me", {"Authorization": "Bearer " + at_py}, record=False)
+        chk("Rust acepta access token emitido por Python", rs.last_json and rs.last_json.get("username") == ADMIN_USER)
+        rs.req("refresh con cookie de Python", "POST", "/api/auth/refresh", {"Cookie": ck_py}, cookie=False, record=False)
+        ok = rs.last_json and "access_token" in rs.last_json
+        chk("Rust rota la sesión (refresh) creada por Python", ok)
+        ck_rs = rs.last_headers.get_all("set-cookie")[0].split(";")[0] if ok else ""
+        py.req("refresh con cookie de Rust", "POST", "/api/auth/refresh", {"Cookie": ck_rs}, cookie=False, record=False)
+        chk("Python rota la sesión creada por Rust", py.last_json and "access_token" in py.last_json)
+        py.req("reuso", "POST", "/api/auth/refresh", {"Cookie": ck_py}, cookie=False, record=False)
+        chk("reuso de la cookie vieja detectado por Python", py.last_json == {"detail": "Sesión revocada por seguridad."})
+        rs.req("login", "POST", "/api/auth/login", body=L, record=False)
+        at_rs = rs.last_json["access_token"]
+        py.req("me con access de Rust", "GET", "/api/auth/me", {"Authorization": "Bearer " + at_rs}, record=False)
+        chk("Python acepta access token emitido por Rust", py.last_json and py.last_json.get("username") == ADMIN_USER)
+        py.req("session", "POST", "/api/public/session", body={"turnstile_token": "dev-bypass"}, record=False)
+        pub_py = py.last_json["token"]
+        rs.req("collect con token de Python", "POST", "/api/public/collect", {"X-Refleja-Token": pub_py}, body={"events": [{"type": "restart"}]}, record=False)
+        chk("Rust acepta token estadístico emitido por Python", rs.last_json == {"ok": True, "accepted": 1})
+        rs.req("session", "POST", "/api/public/session", body={"turnstile_token": "dev-bypass"}, record=False)
+        py.req("ping con token de Rust", "POST", "/api/public/ping", {"X-Refleja-Token": rs.last_json["token"]}, record=False)
+        chk("Python acepta token estadístico emitido por Rust", py.last_json == {"ok": True})
+        # hash Argon2 generado por Rust verifica en argon2-cffi y viceversa
+        r = subprocess.run([str(RS / "target" / ("release" if os.environ.get("RS_PROFILE") == "release" else "debug") / "refleja-admin"), "hash-password"],
+                           input="otra-clave-ñ-2026", capture_output=True, text=True, cwd=str(RS), env=env)
+        h = r.stdout.strip()
+        code = "from app.security import verify_password, needs_rehash; import sys; h=sys.argv[1]; print(verify_password(h,'otra-clave-ñ-2026'), verify_password(h,'x'), needs_rehash(h))"
+        out = subprocess.run([str(PY), "-c", code, h], cwd=tempfile.gettempdir(), env={**os.environ, "PYTHONPATH": str(BACK)}, capture_output=True, text=True).stdout.strip()
+        chk("hash de refleja-admin verifica en argon2-cffi y no necesita re-hash", out == "True False False")
+        bad += sum(1 for _, c in checks if not c)
+    finally:
+        stop(*procs)
+    return bad
+
+
 def main():
     keep = "--keep" in sys.argv
     if not RS_BIN.exists():
@@ -494,10 +635,13 @@ def main():
                 bad += 1
                 print(f"\n✗ [tabla {t}]\n   py: {d_py[t]}\n   rs: {d_rs[t]}")
         print(f"\n{'OK: sin diferencias' if bad == 0 else f'DIFERENCIAS: {bad}'} ({len(logs['py'])} peticiones comparadas, {len(d_py)} tablas)")
+        stop(*procs)
+        procs = []
+        bad += phase2(ext, pwh)
+        print(f"\n{'TODO OK' if bad == 0 else f'FALLAS TOTALES: {bad}'}")
         sys.exit(1 if bad else 0)
     finally:
-        for p in procs:
-            p.terminate()
+        stop(*procs)
         mock.shutdown()
         if not keep:
             pass

@@ -32,6 +32,8 @@ Si algo falla después de apagar el Python, `dia-d.sh` se deshace solo (vuelve e
 ## 4. Mapa de Sistemas — actualización MANUAL tras el despliegue
 Se hace **después** del día D (por el asistente, a petición del propietario) en el repo `~/git/Personal/sistema.fernandodilland`, siguiendo lo hecho con «Sistema» y «Archivo de correos» (filas Rust vivas, filas Python en gris «obsoleto» con su sustituto). Ese repo tiene cambios sin commitear del propietario: **tocar solo estos archivos y commitear solo ellos**.
 
+Parche ya preparado (sin aplicar): [`mapa-sistemas/`](mapa-sistemas/README.md).
+
 | Archivo | Cambio |
 |---|---|
 | `static/js/sistemas-datos.js` (≈ línea 193) | Añadir fila viva `hv-refleja-rs` «Refleja · API (Rust)» (`svc("refleja-api-rs", "refleja-api", ["Escucha en 127.0.0.1:20834 (el 20832 queda libre para el Python)."])`, `expo: [["pub","api.refleja.org"]]`) y dejar `hv-refleja` como «Refleja · API (Python)» en gris (`color: "neutro"`, sin `expo`) |

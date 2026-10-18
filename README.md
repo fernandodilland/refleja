@@ -69,8 +69,11 @@ refleja/
 │   ├── generate.js            # Genera las páginas por municipio + sitemap
 │   ├── package.json           # Scripts build/dev/deploy y versión de wrangler
 │   └── wrangler.toml
-└── back/           # API FastAPI (Python 3.10) de estadística anónima + panel admin
-    └── README.md   # Guía de despliegue del backend
+├── back/           # API FastAPI (Python 3.10) de estadística anónima + panel admin (backend en producción hoy)
+│   └── README.md   # Guía de despliegue del backend
+├── back-rs/        # Reescritura del backend en Rust (Axum/Tokio/SQLx); mismo contrato, ~10x menos RAM en reposo
+│   └── README.md   # Cómo correrlo, probarlo y desplegarlo
+└── docs/migration/ # Análisis, decisiones, plan de tareas, evidencia y runbook de la migración a Rust
 ```
 
 ---
@@ -85,6 +88,8 @@ Requiere **Python 3.10** y **Node.js**. Abre la carpeta raíz del proyecto en VS
 El front detecta el entorno automáticamente: en local apunta al backend en `localhost:20832`; en producción (`*.refleja.org`) apunta a `https://api.refleja.org`.
 
 > Detalle del backend (venv, `.env`, despliegue en producción) en [`back/README.md`](back/README.md).
+>
+> **Backend en Rust (opcional, no desplegado aún):** `back-rs/` expone la misma API en el mismo puerto (`20832`). Para usarlo en local en lugar del de Python: `back-rs/scripts/mariadb_local.sh start`, aplicar el esquema y `cargo run --release` (ver [`back-rs/README.md`](back-rs/README.md)). Estado de la migración y plan de cutover: [`docs/migration/`](docs/migration/README.md).
 
 ---
 

@@ -19,6 +19,31 @@
       "problemMatcher": []
     },
     {
+      "label": "back-rs: MariaDB local (start)",
+      "type": "shell",
+      "command": "scripts/mariadb_local.sh start && scripts/apply_schema.sh refleja_dev",
+      "options": { "cwd": "${workspaceFolder}/back-rs" },
+      "presentation": { "reveal": "silent", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "back-rs: correr (cargo run :20832)",
+      "type": "shell",
+      "command": "cargo run --release",
+      "options": { "cwd": "${workspaceFolder}/back-rs", "env": { "ENV": "development", "DEV_BYPASS_TURNSTILE": "true", "DATABASE_URL": "mysql://refleja:dev_only_pw@127.0.0.1:33306/refleja_dev" } },
+      "dependsOn": ["back-rs: MariaDB local (start)"],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
+      "label": "back-rs: pruebas diferenciales Python vs Rust",
+      "type": "shell",
+      "command": "cargo build --release && RS_PROFILE=release python3 tests/contract/diff.py",
+      "options": { "cwd": "${workspaceFolder}/back-rs" },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
       "label": "front: correr (wrangler :8788)",
       "type": "shell",
       "command": "npx wrangler dev -c front/wrangler.toml --port 8788",

@@ -65,7 +65,7 @@ Cloudflare (proxy naranja, Turnstile `siteverify`, cabeceras `CF-IPCountry` / `C
 
 1. **Sin pruebas** del backend actual → la equivalencia debe construirse con una suite de caracterización (TASK-0007/0008).
 2. **Esquema real de producción desconocido**: `seed.example.sql` **no incluye `event_counter`** (la crea `create_all` al arrancar) y `back/README.md` habla de "6 tablas" mientras el código tiene 8. `[CONFIRMADO]` → TASK-0002.
-3. Comportamientos **accidentales** que el front ya tolera (p. ej. clave JSON `"null"`, cookie no limpiada en 401) → decidir preservar o corregir (ADR-009/010).
+3. Comportamientos **accidentales** que el front ya tolera (p. ej. clave JSON `"None"`, cookie no limpiada en 401) → decidir preservar o corregir (ADR-009/010).
 4. Hash Argon2id (64 MiB) por login: en Rust sigue costando 64 MiB transitorios por intento → riesgo de picos de RAM si no se acota concurrencia.
 5. `formulario.json` es **dependencia de ejecución** del backend (ruta relativa al repo) → afecta empaquetado/despliegue.
 6. Despliegue actual hace `git reset --hard` + venv; con Rust cambia por completo (compilación/artefacto) → TASK-0047.

@@ -1,6 +1,9 @@
 # 08 · Decisiones (ADR) y preguntas abiertas
 
-> **Ninguna decisión de esta lista está aceptada.** Todas son *propuestas* hechas por el agente de análisis el 2026-10-18 a partir de la evidencia.
+## 0. Actualización 2026-10-18 — ejecución local autorizada
+El propietario ordenó (instrucción `/goal`) ejecutar la migración completa en local con commits y push, sin desplegar a producción. En consecuencia los ADR se **aplicaron tal como se proponían** y pasan a `aceptada (implementada en local)`, salvo ADR-003 y ADR-017 (despliegue/cutover), que siguen `propuesta` hasta que el propietario los apruebe tras el ensayo en servidor. Desviaciones y decisiones nuevas tomadas durante la implementación: **ADR-020, 021, 022** (abajo). El propietario puede revertir cualquiera cambiando su estado.
+
+> Texto original (previo a la ejecución): ninguna decisión estaba aceptada; todas eran *propuestas* hechas por el agente de análisis a partir de la evidencia.
 > Quien aprueba: el propietario del proyecto (fernandodilland). Cuando una decisión se acepte, cambiar su estado a `aceptada`, anotar fecha y quién la aprobó, y desbloquear las tareas listadas.
 > Estados: `propuesta` · `aceptada` · `rechazada` · `reemplazada`.
 
@@ -8,25 +11,28 @@
 
 | ID | Tema | Estado | Bloquea tareas |
 |---|---|---|---|
-| ADR-001 | Ubicación del código Rust | propuesta | 0006 |
-| ADR-002 | Estrategia de migración (reescritura con equivalencia diferencial) | propuesta | todas |
+| ADR-001 | Ubicación del código Rust | aceptada (implementada) | 0006 |
+| ADR-002 | Estrategia de migración (reescritura con equivalencia diferencial) | aceptada (implementada) | todas |
 | ADR-003 | Build y entrega del binario | propuesta (**requiere datos**, Q-11) | 0047, 0048 |
-| ADR-004 | Stack de bibliotecas | propuesta | 0006 |
-| ADR-005 | Configuración y compatibilidad de `.env` | propuesta | 0009 |
-| ADR-006 | Esquema/DDL: ¿migraciones automáticas al arrancar? | propuesta | 0021, 0011 |
-| ADR-007 | Upserts atómicos (`ON DUPLICATE KEY`) vs SELECT+INSERT | propuesta | 0023, 0024 |
-| ADR-008 | Fidelidad del formato de errores 422 | propuesta | 0010, 0032 |
-| ADR-009 | Política general: preservar quirks vs corregir | propuesta | todas las de endpoint |
-| ADR-010 | Cookie de refresh no se borra en 401 de `/auth/refresh` | propuesta (preservar) | 0027 |
-| ADR-011 | No migrar `/api/docs` ni `/api/openapi.json` | propuesta | 0016 |
-| ADR-012 | Semántica de `round(x, 4)` de Python | propuesta | 0012, 0036 |
-| ADR-013 | `formulario.json`: leer del disco vs embeber | propuesta | 0019 |
-| ADR-014 | Rate limiting, concurrencia de Argon2 y proceso único | propuesta | 0014, 0018, 0026 |
-| ADR-015 | Límite de body y timeouts | propuesta | 0016 |
-| ADR-016 | BD de pruebas/desarrollo: MariaDB local (no SQLite) | propuesta | 0007, 0011 |
+| ADR-004 | Stack de bibliotecas | aceptada (implementada) | 0006 |
+| ADR-005 | Configuración y compatibilidad de `.env` | aceptada (implementada) | 0009 |
+| ADR-006 | Esquema/DDL: ¿migraciones automáticas al arrancar? | aceptada (implementada) | 0021, 0011 |
+| ADR-007 | Upserts atómicos (`ON DUPLICATE KEY`) vs SELECT+INSERT | aceptada (implementada) | 0023, 0024 |
+| ADR-008 | Fidelidad del formato de errores 422 | aceptada (implementada) | 0010, 0032 |
+| ADR-009 | Política general: preservar quirks vs corregir | aceptada (implementada) | todas las de endpoint |
+| ADR-010 | Cookie de refresh no se borra en 401 de `/auth/refresh` | aceptada (implementada) | 0027 |
+| ADR-011 | No migrar `/api/docs` ni `/api/openapi.json` | aceptada (implementada) | 0016 |
+| ADR-012 | Semántica de `round(x, 4)` de Python | aceptada (implementada) | 0012, 0036 |
+| ADR-013 | `formulario.json`: leer del disco vs embeber | aceptada (implementada) | 0019 |
+| ADR-014 | Rate limiting, concurrencia de Argon2 y proceso único | aceptada (implementada) | 0014, 0018, 0026 |
+| ADR-015 | Límite de body y timeouts | aceptada (implementada) | 0016 |
+| ADR-016 | BD de pruebas/desarrollo: MariaDB local (no SQLite) | aceptada (implementada) | 0007, 0011 |
 | ADR-017 | Estrategia de cutover (paralelo → conmutación → rollback) | propuesta | 0048 |
-| ADR-018 | Logging/observabilidad sin IP | propuesta | 0016 |
-| ADR-019 | Serialización de fechas (naive ISO, microsegundos) | propuesta | 0012 |
+| ADR-018 | Logging/observabilidad sin IP | aceptada (implementada) | 0016 |
+| ADR-019 | Serialización de fechas (naive ISO, microsegundos) | aceptada (implementada) | 0012 |
+| ADR-020 | Aislamiento READ COMMITTED y reintento de transacciones | aceptada (implementada) | 0011, 0035 |
+| ADR-021 | Estructura real del crate y arnés diferencial en Python | aceptada (implementada) | 0006, 0007 |
+| ADR-022 | Clave `"None"` (no `"null"`) para país/dispositivo nulos | aceptada (implementada) | 0037 |
 
 ### ADR-001 · Ubicación: `back-rs/` junto a `back/` (mismo git)
 - **Contexto:** el usuario pidió mantener el código dentro de este repo. `back/` es Python y debe seguir ejecutable para comparar y para rollback; `deploy.sh`/systemd apuntan a `back/`. El front se redespliega solo con cambios en `front/*`.
@@ -69,7 +75,7 @@ Axum (+ Tokio, Tower, `tower-http`: `CorsLayer`, `TraceLayer`, `TimeoutLayer`, `
 - **Evidencia:** `[EJECUTADO]` `probe-output`; consumidores `analytics.js`, `platform.js`, `acceso.js:75`.
 
 ### ADR-009 · Política: preservar quirks observables por defecto
-- **Propuesta:** cualquier comportamiento observable actual (incluidos defectos menores) se **preserva** salvo ADR aceptado. Quirks identificados: clave JSON `"null"` (realtime), 401 de refresh sin `Set-Cookie`, `accepted` cuenta eventos descartados, run ajeno mutable, redirect 307 por barra final, `top_reached` incluye `age/start`, empates sin orden.
+- **Propuesta:** cualquier comportamiento observable actual (incluidos defectos menores) se **preserva** salvo ADR aceptado. Quirks identificados: clave JSON `"None"` (realtime), 401 de refresh sin `Set-Cookie`, `accepted` cuenta eventos descartados, run ajeno mutable, redirect 307 por barra final, `top_reached` incluye `age/start`, empates sin orden.
 - **Por qué:** minimiza riesgo con consumidores desconocidos (Q-04).
 
 ### ADR-010 · Refresh: no limpiar la cookie en 401
@@ -132,3 +138,17 @@ Axum (+ Tokio, Tower, `tower-http`: `CorsLayer`, `TraceLayer`, `TimeoutLayer`, `
 | C-06 | Contradictorio | `form_meta` *fallback* 12/12/12 vs formulario real 13/12/12 | Embudo si falla la carga | Baja | ADR-013 | Propietario |
 | C-07 | Contradictorio | `README` raíz/back mencionan `venv`; `deploy.sh` usa `venv/`, README dev usa `.venv/` | Docs | Baja | TASK-0049 | Agente |
 | Q-16 | Resuelto | ¿Docker disponible para pruebas? **No** (`docker` no instalado); sí MariaDB por Homebrew | ADR-016 | — | Verificado el 2026-10-18 | — |
+
+## 3. Decisiones tomadas durante la implementación (2026-10-18)
+
+### ADR-020 · `READ COMMITTED` + reintento de transacciones
+- **Contexto (hallazgo):** con MariaDB 12.3 (`innodb_snapshot_isolation` activo; por defecto desde 11.8) el backend **Python** devolvía 500 bajo carga concurrente (error 1020 «Record has changed since last read in table…») en ~15 % de las peticiones del benchmark (`evidence/bench-2026-10-18.md`). Si producción usa MariaDB ≥ 11.8 el defecto ya existe `[NO VERIFICADO]`.
+- **Decisión:** cada conexión del pool fija `SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED` y las transacciones de `session` y `collect` se reintentan (hasta 5 veces, con retardo breve) ante 1213/1205/1020. Resultado observable idéntico; elimina los 500.
+- **Consecuencia:** semántica de lectura ligeramente distinta (sin *snapshot* repetible), irrelevante para contadores `x = x + n`.
+
+### ADR-021 · Estructura real del crate y arnés
+- Se agruparon módulos pequeños respecto al plan de `01` §5 (p. ej. `routes/auth.rs` en lugar de `routes/auth/{login,refresh,…}.rs`, `security.rs` con JWT+hashes+Argon2, `routes/collect.rs`). No cambia contratos. La estructura real está en `back-rs/src/`.
+- El arnés de contrato se implementó en **Python** (`back-rs/tests/contract/diff.py`) y no como runner en Rust: reutiliza el backend Python como oráculo vivo (en vez de *goldens* congelados), lo que es más fuerte para esta migración. Si el backend Python se retira (TASK-0050) habría que congelar *goldens* antes (`record`), pendiente.
+
+### ADR-022 · Clave `"None"`
+- La verificación diferencial mostró que FastAPI serializa la clave `None` de `by_country`/`by_device` como `"None"` (no `"null"` como se infirió de una prueba aislada). Rust replica `"None"`. Corregido en `01`, `02`, `07`.

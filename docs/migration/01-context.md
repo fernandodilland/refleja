@@ -94,7 +94,7 @@ sequenceDiagram
 6. **CORS**: ver `02` §0 (credenciales, métodos, cabeceras, `max-age 600`, respuestas de preflight).
 7. **Efectos en BD**: mismas tablas/columnas/semántica de contadores, cuotas por token (2000/20/300) y rate limits (120/30/30 por minuto), idempotencia por qid en `form_run.counted`, `updated_at` actualizado en cada UPDATE de `form_run`.
 8. **Fechas**: UTC naive; `metric_date` por fecha UTC; serialización ISO sin zona.
-9. **Números**: `completion_rate`/`start_rate` redondeados a 4 decimales como `round()` de Python (ADR-012); enteros como enteros; `by_country`/`by_device` con clave `"null"` para nulos.
+9. **Números**: `completion_rate`/`start_rate` redondeados a 4 decimales como `round()` de Python (ADR-012); enteros como enteros; `by_country`/`by_device` con clave `"None"` para nulos.
 10. **Privacidad**: nunca persistir/loggear IP; solo país; `vid` solo como HMAC.
 11. **Arranque fail-closed en producción** (secretos ≥32).
 12. **Entorno**: escucha en `127.0.0.1:20832` por defecto; mismas variables de entorno (`06` §2).
@@ -134,6 +134,8 @@ back-rs/
 ```
 
 No se aprueba aquí ninguna biblioteca: cada versión se verifica en TASK-0006.
+
+> **Nota (2026-10-18):** la estructura implementada es una versión agrupada de este árbol (ver ADR-021): `src/{app,client,config,db,error,form_meta,municipios,rate_limit,security,timefmt,turnstile,validate}.rs`, `src/http/{cors,origin_guard,extract}.rs`, `src/repo/{visitor,counters,form_run,admin}.rs`, `src/routes/{mod,auth,public,collect,platform}.rs`, `src/bin/refleja-admin.rs`.
 
 ## 6. Mapa de equivalencia
 Estado inicial de **todas** las filas: `pendiente`.

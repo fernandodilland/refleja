@@ -57,3 +57,11 @@ Severidad: Alta / Media / Baja / Informativa. "Preservar" = comportamiento de se
 4. Hashes Argon2 existentes deben verificar sin intervención (TASK-0014).
 5. Sin `unsafe` salvo justificación; `cargo clippy -D warnings`, `cargo audit` en verificación.
 6. Cualquier "mejora" de la lista anterior (S-01…S-07) se implementa **solo** con ADR aceptado.
+
+## 5. Resultado de la implementación Rust (2026-10-18)
+- **Paridad demostrada** por `back-rs/tests/contract/diff.py` y `back-rs/tests/vectors.rs`: P-01 (fail-closed, 4 casos), P-02 (bypass imposible con `ENV=production`), P-03 (Turnstile fail-closed, mock), P-04/P-05 (Argon2id + señuelo; hash de argon2-cffi verifica y viceversa), P-06 (typ/alg/secretos; tokens Python↔Rust), P-07 (cookie `Domain/HttpOnly/Max-Age/Path/SameSite/Secure`, dev y prod), P-08 (rotación y reuso, sin `Set-Cookie` en 401), P-10 (cuotas y rate limits), P-11 (validación), P-12 (CORS exacto), P-13 (guard de origen, comparación en tiempo constante), P-14 (sin docs), P-15 (usuario desactivado ⇒ 401 inmediato).
+- **P-09 (privacidad):** el log de acceso de Rust no registra IP, cabeceras ni cuerpos. No se persiste IP.
+- **S-01/S-02:** el semáforo de Argon2 (`ARGON2_CONCURRENCY=1`) acota el pico de memoria de logins simultáneos (75 MB vs 560–634 MB en Python, benchmark local). No se añadió rate limit de login (cambiaría el contrato).
+- **S-03:** límite de cuerpo 256 KiB (413). **S-07:** comparación en tiempo constante del secreto de origen. **S-12:** el healthcheck de `back-rs/deploy/deploy.sh` envía `ORIGIN_SECRET` si está definido.
+- **Nuevo (S-16, informativo):** bajo MariaDB con `innodb_snapshot_isolation`, el backend Python produce 500 por conflictos de concurrencia (ver ADR-020); Rust no.
+- **Pendiente:** `cargo audit`/`cargo deny` (no instalados en este equipo), revisión humana de `unsafe` (0 usos) y de `expect()` (solo en invariantes de arranque).

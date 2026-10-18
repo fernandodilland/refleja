@@ -1,5 +1,7 @@
 # Refleja · API (FastAPI)
 
+> **Aviso:** existe una reescritura equivalente en Rust en [`../back-rs`](../back-rs/README.md) (plan y estado en [`../docs/migration`](../docs/migration/README.md)). Este backend Python sigue siendo el de producción hasta el cutover aprobado por el propietario.
+
 Backend minimalista para **estadística anónima** de la experiencia de usuario de
 Refleja. Sin datos personales, sin IPs. Se despliega en `api.refleja.org` detrás
 de **Cloudflare + CloudPanel**. La app escucha en `127.0.0.1:20832`.

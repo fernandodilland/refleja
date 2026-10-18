@@ -1,6 +1,6 @@
 # 09 · Plan maestro de tareas
 
-> **Estado del plan: PROPUESTO — pendiente de revisión y aprobación humana.** Hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004), **ninguna tarea de código puede pasar a `lista`**. Solo las tareas de descubrimiento marcadas `lista` pueden empezar (no modifican código).
+> **Estado del plan (actualizado 2026-10-18): EJECUTADO EN LOCAL.** El propietario ordenó ejecutar la migración (/goal). Código Rust completo en `back-rs/`; quedan abiertas las tareas que requieren el servidor de producción (0001, 0002, 0003, 0005), la revisión humana (0045–0048) y el retiro de Python (0050, bloqueada hasta autorización). _Texto original del plan:_  Hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004), **ninguna tarea de código puede pasar a `lista`**. Solo las tareas de descubrimiento marcadas `lista` pueden empezar (no modifican código).
 > 50 tareas · fichas en [`tasks/`](tasks/) · reglas para agentes en [`AGENT-GUIDE.md`](AGENT-GUIDE.md).
 
 ## 1. Épicas
@@ -18,52 +18,52 @@
 | [TASK-0001](tasks/TASK-0001-medir-baseline-recursos-python.md) | Medir la línea base real de recursos del backend Python en producción | P0 | lista | A | — | ola 0 |
 | [TASK-0002](tasks/TASK-0002-confirmar-esquema-real-mariadb.md) | Confirmar esquema real, versión y privilegios de MariaDB (solo lectura) | P0 | lista | A | — | ola 0 |
 | [TASK-0003](tasks/TASK-0003-inventariar-configuracion-produccion.md) | Inventariar configuración efectiva y entorno del servidor de producción (sin secretos) | P0 | lista | A | — | ola 0 |
-| [TASK-0004](tasks/TASK-0004-resolver-adrs-bloqueantes.md) | Revisar y resolver los ADR bloqueantes y los objetivos de éxito | P0 | lista | A | — | ola 0 |
+| [TASK-0004](tasks/TASK-0004-resolver-adrs-bloqueantes.md) | Revisar y resolver los ADR bloqueantes y los objetivos de éxito | P0 | completada | A | — | ola 0 |
 | [TASK-0005](tasks/TASK-0005-analizar-trafico-y-consumidores.md) | Analizar tráfico real y consumidores de la API a partir de los logs del proxy | P1 | lista | A | — | ola 0 |
-| [TASK-0006](tasks/TASK-0006-scaffold-crate-back-rs.md) | Crear el crate `back-rs` con el esqueleto completo de módulos y herramientas | P0 | propuesta | B | 0004 | ola 1 |
-| [TASK-0007](tasks/TASK-0007-harness-contrato-diferencial.md) | Construir el harness de pruebas de contrato diferenciales (Python vs Rust) | P0 | propuesta | B | 0006, 0021 | ola 3 |
-| [TASK-0008](tasks/TASK-0008-casos-contrato-meta-config.md) | Capturar casos de contrato: meta, CORS, errores de framework y arranque/config | P1 | propuesta | B | 0007 | ola 4 |
-| [TASK-0009](tasks/TASK-0009-config-y-fail-closed.md) | Implementar `config.rs`: variables de entorno, `.env`, precedencia y fail-closed en producción | P1 | propuesta | B | 0006 | ola 2 |
-| [TASK-0010](tasks/TASK-0010-errores-y-extractores-json.md) | Implementar `error.rs`: errores `{"detail"}`, respuestas 422 y extractores con errores propios | P1 | propuesta | B | 0006 | ola 2 |
-| [TASK-0011](tasks/TASK-0011-pool-mariadb-y-verificacion-esquema.md) | Implementar `db.rs`: pool SQLx MariaDB, sesión UTC y verificación de esquema al arrancar | P1 | propuesta | C | 0009, 0021 | ola 3 |
-| [TASK-0012](tasks/TASK-0012-tiempo-y-redondeo-python.md) | Implementar `timefmt.rs`: UTC naive, `isoformat` y `round(x, 4)` compatibles con Python | P1 | propuesta | B | 0006 | ola 2 |
-| [TASK-0013](tasks/TASK-0013-jwt-y-primitivas-hash.md) | Implementar `security/jwt.rs` y `security/hash.rs`: JWT HS256 compatibles con PyJWT, SHA-256, HMAC del vid | P1 | propuesta | B | 0006, 0009 | ola 3 |
-| [TASK-0014](tasks/TASK-0014-argon2-y-limite-concurrencia.md) | Implementar `security/password.rs`: Argon2id compatible con argon2-cffi y semáforo de memoria | P1 | propuesta | B | 0006, 0009 | ola 3 |
-| [TASK-0015](tasks/TASK-0015-cliente-turnstile.md) | Implementar `turnstile.rs`: verificación de Cloudflare Turnstile fail-closed | P1 | propuesta | B | 0006, 0009 | ola 3 |
-| [TASK-0016](tasks/TASK-0016-esqueleto-http-axum.md) | Implementar `app.rs`, `http/*` y `routes/health.rs`: router, CORS, guard de origen, 307/404/405 y arranque | P1 | propuesta | B | 0009, 0010, 0011, 0015, 0018, 0019 | ola 4 |
-| [TASK-0017](tasks/TASK-0017-contexto-cliente-ua-pais-ip.md) | Implementar `http/client.rs`: IP, país y parsers de User-Agent idénticos a Python | P1 | propuesta | B | 0006 | ola 2 |
-| [TASK-0018](tasks/TASK-0018-rate-limiter-memoria.md) | Implementar `http/rate_limit.rs`: ventana deslizante de 60 s con LRU acotado | P1 | propuesta | B | 0006 | ola 2 |
-| [TASK-0019](tasks/TASK-0019-form-meta-y-municipios.md) | Implementar `form_meta.rs` y `municipios.rs`: allowlist de qids, flujos y slugs de municipio | P1 | propuesta | B | 0006, 0009 | ola 3 |
-| [TASK-0020](tasks/TASK-0020-extractores-auth-publico-admin.md) | Implementar `http/extract.rs`: extractores `PublicVid` y `AdminUser` con los mismos errores | P1 | propuesta | B | 0013, 0016, 0025 | ola 5 |
-| [TASK-0021](tasks/TASK-0021-migraciones-baseline-sql.md) | Crear migraciones SQL baseline idempotentes y la lista de esquema esperado | P0 | propuesta | C | 0002, 0004, 0006 | ola 2 |
-| [TASK-0022](tasks/TASK-0022-repo-visitor.md) | Implementar `repo/visitor.rs`: get-or-create, touch y cuotas atómicas | P1 | propuesta | C | 0011, 0012, 0021 | ola 4 |
-| [TASK-0023](tasks/TASK-0023-repo-contadores.md) | Implementar `repo/counters.rs`: `question_stat`, `event_counter` y `daily_metric` atómicos | P1 | propuesta | C | 0011, 0012, 0021 | ola 4 |
-| [TASK-0024](tasks/TASK-0024-repo-form-run.md) | Implementar `repo/form_run.rs`: runs con `counted` JSON y `updated_at` garantizado | P1 | propuesta | C | 0011, 0012, 0021 | ola 4 |
-| [TASK-0025](tasks/TASK-0025-repo-admin.md) | Implementar `repo/admin.rs`: usuarios, sesiones de refresh e historial de login | P1 | propuesta | C | 0011, 0012, 0021 | ola 4 |
-| [TASK-0026](tasks/TASK-0026-auth-login.md) | Implementar `POST /api/auth/login` (y helpers de sesión/cookie compartidos) | P1 | propuesta | D | 0007, 0009, 0010, 0012, 0013, 0014, 0015, 0016, 0017, 0025 | ola 5 |
-| [TASK-0027](tasks/TASK-0027-auth-refresh.md) | Implementar `POST /api/auth/refresh` con rotación y detección de reuso | P1 | propuesta | D | 0007, 0010, 0013, 0016, 0025, 0026 | ola 6 |
-| [TASK-0028](tasks/TASK-0028-auth-logout.md) | Implementar `POST /api/auth/logout` | P1 | propuesta | D | 0007, 0010, 0013, 0016, 0025, 0026 | ola 6 |
-| [TASK-0029](tasks/TASK-0029-auth-me.md) | Implementar `GET /api/auth/me` | P1 | propuesta | D | 0007, 0010, 0016, 0020, 0025 | ola 6 |
-| [TASK-0030](tasks/TASK-0030-public-session.md) | Implementar `POST /api/public/session` | P1 | propuesta | E | 0007, 0010, 0013, 0015, 0016, 0017, 0018, 0022, 0023 | ola 5 |
-| [TASK-0031](tasks/TASK-0031-public-ping.md) | Implementar `POST /api/public/ping` | P1 | propuesta | E | 0007, 0010, 0016, 0017, 0018, 0020, 0022 | ola 6 |
-| [TASK-0032](tasks/TASK-0032-collect-esquemas-validacion.md) | Implementar `collect/schema.rs`: esquemas de entrada y validación equivalentes a Pydantic | P1 | propuesta | E | 0007, 0010, 0006 | ola 4 |
-| [TASK-0033](tasks/TASK-0033-collect-cuotas-y-acciones.md) | Implementar `collect/quota.rs` y `collect/actions.rs`: cuotas por vida y eventos de acción | P1 | propuesta | E | 0007, 0019, 0022, 0023, 0032 | ola 5 |
-| [TASK-0034](tasks/TASK-0034-collect-eventos-de-run.md) | Implementar `collect/runs.rs`: `run_start`, `answer`, `minor`, `municipio`, `result` con idempotencia por qid | P1 | propuesta | E | 0007, 0019, 0023, 0024, 0032, 0033 | ola 6 |
-| [TASK-0035](tasks/TASK-0035-collect-handler.md) | Implementar `POST /api/public/collect`: orquestación, transacción y rate limit | P1 | propuesta | E | 0007, 0016, 0017, 0018, 0020, 0022, 0032, 0033, 0034 | ola 7 |
-| [TASK-0036](tasks/TASK-0036-platform-filtros-y-overview.md) | Implementar filtros compartidos y `GET /api/platform/overview` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0012, 0022, 0023, 0024 | ola 6 |
-| [TASK-0037](tasks/TASK-0037-platform-realtime.md) | Implementar `GET /api/platform/realtime` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0012, 0022, 0024 | ola 6 |
-| [TASK-0038](tasks/TASK-0038-platform-funnel.md) | Implementar `GET /api/platform/funnel` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0012, 0019, 0023 | ola 6 |
-| [TASK-0039](tasks/TASK-0039-platform-violence.md) | Implementar `GET /api/platform/violence` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0024, 0036 | ola 7 |
-| [TASK-0040](tasks/TASK-0040-platform-municipios.md) | Implementar `GET /api/platform/municipios` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0023, 0036 | ola 7 |
-| [TASK-0041](tasks/TASK-0041-platform-timeseries.md) | Implementar `GET /api/platform/timeseries` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0012, 0023 | ola 6 |
-| [TASK-0042](tasks/TASK-0042-platform-logins.md) | Implementar `GET /api/platform/logins` | P2 | propuesta | F | 0007, 0010, 0016, 0020, 0012, 0025 | ola 6 |
-| [TASK-0043](tasks/TASK-0043-cli-admin-bootstrap.md) | Crear la CLI `refleja-admin` (generar hash Argon2 y alta de administrador) | P2 | propuesta | G | 0009, 0011, 0014, 0025 | ola 5 |
-| [TASK-0044](tasks/TASK-0044-integracion-y-trazabilidad.md) | Tarea de integración: ensamblado final, suite completa y matriz de trazabilidad | P1 | propuesta | G | 0008, 0026, 0027, 0028, 0029, 0030, 0031, 0035, 0036, 0037, 0038, 0039, 0040, 0041, 0042, 0043 | ola 8 |
-| [TASK-0045](tasks/TASK-0045-revision-seguridad.md) | Revisión de seguridad y pruebas de seguridad del backend Rust | P1 | propuesta | G | 0044 | ola 9 |
-| [TASK-0046](tasks/TASK-0046-benchmark-memoria-latencia.md) | Medir memoria y latencia de Rust vs Python con carga representativa | P1 | propuesta | G | 0001, 0044 | ola 9 |
-| [TASK-0047](tasks/TASK-0047-empaquetado-y-despliegue.md) | Preparar empaquetado, unidad systemd, script de despliegue y rollback para el binario Rust | P1 | propuesta | G | 0003, 0044 | ola 9 |
-| [TASK-0048](tasks/TASK-0048-runbook-cutover.md) | Redactar el runbook de despliegue gradual y conmutación (cutover) con criterios go/no-go | P1 | propuesta | G | 0045, 0046, 0047 | ola 10 |
-| [TASK-0049](tasks/TASK-0049-actualizar-documentacion-operativa.md) | Actualizar documentación operativa: READMEs, tareas de VS Code y referencias | P3 | propuesta | G | 0044 | ola 9 |
+| [TASK-0006](tasks/TASK-0006-scaffold-crate-back-rs.md) | Crear el crate `back-rs` con el esqueleto completo de módulos y herramientas | P0 | completada | B | 0004 | ola 1 |
+| [TASK-0007](tasks/TASK-0007-harness-contrato-diferencial.md) | Construir el harness de pruebas de contrato diferenciales (Python vs Rust) | P0 | completada | B | 0006, 0021 | ola 3 |
+| [TASK-0008](tasks/TASK-0008-casos-contrato-meta-config.md) | Capturar casos de contrato: meta, CORS, errores de framework y arranque/config | P1 | completada | B | 0007 | ola 4 |
+| [TASK-0009](tasks/TASK-0009-config-y-fail-closed.md) | Implementar `config.rs`: variables de entorno, `.env`, precedencia y fail-closed en producción | P1 | completada | B | 0006 | ola 2 |
+| [TASK-0010](tasks/TASK-0010-errores-y-extractores-json.md) | Implementar `error.rs`: errores `{"detail"}`, respuestas 422 y extractores con errores propios | P1 | completada | B | 0006 | ola 2 |
+| [TASK-0011](tasks/TASK-0011-pool-mariadb-y-verificacion-esquema.md) | Implementar `db.rs`: pool SQLx MariaDB, sesión UTC y verificación de esquema al arrancar | P1 | completada | C | 0009, 0021 | ola 3 |
+| [TASK-0012](tasks/TASK-0012-tiempo-y-redondeo-python.md) | Implementar `timefmt.rs`: UTC naive, `isoformat` y `round(x, 4)` compatibles con Python | P1 | completada | B | 0006 | ola 2 |
+| [TASK-0013](tasks/TASK-0013-jwt-y-primitivas-hash.md) | Implementar `security/jwt.rs` y `security/hash.rs`: JWT HS256 compatibles con PyJWT, SHA-256, HMAC del vid | P1 | completada | B | 0006, 0009 | ola 3 |
+| [TASK-0014](tasks/TASK-0014-argon2-y-limite-concurrencia.md) | Implementar `security/password.rs`: Argon2id compatible con argon2-cffi y semáforo de memoria | P1 | completada | B | 0006, 0009 | ola 3 |
+| [TASK-0015](tasks/TASK-0015-cliente-turnstile.md) | Implementar `turnstile.rs`: verificación de Cloudflare Turnstile fail-closed | P1 | completada | B | 0006, 0009 | ola 3 |
+| [TASK-0016](tasks/TASK-0016-esqueleto-http-axum.md) | Implementar `app.rs`, `http/*` y `routes/health.rs`: router, CORS, guard de origen, 307/404/405 y arranque | P1 | completada | B | 0009, 0010, 0011, 0015, 0018, 0019 | ola 4 |
+| [TASK-0017](tasks/TASK-0017-contexto-cliente-ua-pais-ip.md) | Implementar `http/client.rs`: IP, país y parsers de User-Agent idénticos a Python | P1 | completada | B | 0006 | ola 2 |
+| [TASK-0018](tasks/TASK-0018-rate-limiter-memoria.md) | Implementar `http/rate_limit.rs`: ventana deslizante de 60 s con LRU acotado | P1 | completada | B | 0006 | ola 2 |
+| [TASK-0019](tasks/TASK-0019-form-meta-y-municipios.md) | Implementar `form_meta.rs` y `municipios.rs`: allowlist de qids, flujos y slugs de municipio | P1 | completada | B | 0006, 0009 | ola 3 |
+| [TASK-0020](tasks/TASK-0020-extractores-auth-publico-admin.md) | Implementar `http/extract.rs`: extractores `PublicVid` y `AdminUser` con los mismos errores | P1 | completada | B | 0013, 0016, 0025 | ola 5 |
+| [TASK-0021](tasks/TASK-0021-migraciones-baseline-sql.md) | Crear migraciones SQL baseline idempotentes y la lista de esquema esperado | P0 | completada | C | 0002, 0004, 0006 | ola 2 |
+| [TASK-0022](tasks/TASK-0022-repo-visitor.md) | Implementar `repo/visitor.rs`: get-or-create, touch y cuotas atómicas | P1 | completada | C | 0011, 0012, 0021 | ola 4 |
+| [TASK-0023](tasks/TASK-0023-repo-contadores.md) | Implementar `repo/counters.rs`: `question_stat`, `event_counter` y `daily_metric` atómicos | P1 | completada | C | 0011, 0012, 0021 | ola 4 |
+| [TASK-0024](tasks/TASK-0024-repo-form-run.md) | Implementar `repo/form_run.rs`: runs con `counted` JSON y `updated_at` garantizado | P1 | completada | C | 0011, 0012, 0021 | ola 4 |
+| [TASK-0025](tasks/TASK-0025-repo-admin.md) | Implementar `repo/admin.rs`: usuarios, sesiones de refresh e historial de login | P1 | completada | C | 0011, 0012, 0021 | ola 4 |
+| [TASK-0026](tasks/TASK-0026-auth-login.md) | Implementar `POST /api/auth/login` (y helpers de sesión/cookie compartidos) | P1 | completada | D | 0007, 0009, 0010, 0012, 0013, 0014, 0015, 0016, 0017, 0025 | ola 5 |
+| [TASK-0027](tasks/TASK-0027-auth-refresh.md) | Implementar `POST /api/auth/refresh` con rotación y detección de reuso | P1 | completada | D | 0007, 0010, 0013, 0016, 0025, 0026 | ola 6 |
+| [TASK-0028](tasks/TASK-0028-auth-logout.md) | Implementar `POST /api/auth/logout` | P1 | completada | D | 0007, 0010, 0013, 0016, 0025, 0026 | ola 6 |
+| [TASK-0029](tasks/TASK-0029-auth-me.md) | Implementar `GET /api/auth/me` | P1 | completada | D | 0007, 0010, 0016, 0020, 0025 | ola 6 |
+| [TASK-0030](tasks/TASK-0030-public-session.md) | Implementar `POST /api/public/session` | P1 | completada | E | 0007, 0010, 0013, 0015, 0016, 0017, 0018, 0022, 0023 | ola 5 |
+| [TASK-0031](tasks/TASK-0031-public-ping.md) | Implementar `POST /api/public/ping` | P1 | completada | E | 0007, 0010, 0016, 0017, 0018, 0020, 0022 | ola 6 |
+| [TASK-0032](tasks/TASK-0032-collect-esquemas-validacion.md) | Implementar `collect/schema.rs`: esquemas de entrada y validación equivalentes a Pydantic | P1 | completada | E | 0007, 0010, 0006 | ola 4 |
+| [TASK-0033](tasks/TASK-0033-collect-cuotas-y-acciones.md) | Implementar `collect/quota.rs` y `collect/actions.rs`: cuotas por vida y eventos de acción | P1 | completada | E | 0007, 0019, 0022, 0023, 0032 | ola 5 |
+| [TASK-0034](tasks/TASK-0034-collect-eventos-de-run.md) | Implementar `collect/runs.rs`: `run_start`, `answer`, `minor`, `municipio`, `result` con idempotencia por qid | P1 | completada | E | 0007, 0019, 0023, 0024, 0032, 0033 | ola 6 |
+| [TASK-0035](tasks/TASK-0035-collect-handler.md) | Implementar `POST /api/public/collect`: orquestación, transacción y rate limit | P1 | completada | E | 0007, 0016, 0017, 0018, 0020, 0022, 0032, 0033, 0034 | ola 7 |
+| [TASK-0036](tasks/TASK-0036-platform-filtros-y-overview.md) | Implementar filtros compartidos y `GET /api/platform/overview` | P2 | completada | F | 0007, 0010, 0016, 0020, 0012, 0022, 0023, 0024 | ola 6 |
+| [TASK-0037](tasks/TASK-0037-platform-realtime.md) | Implementar `GET /api/platform/realtime` | P2 | completada | F | 0007, 0010, 0016, 0020, 0012, 0022, 0024 | ola 6 |
+| [TASK-0038](tasks/TASK-0038-platform-funnel.md) | Implementar `GET /api/platform/funnel` | P2 | completada | F | 0007, 0010, 0016, 0020, 0012, 0019, 0023 | ola 6 |
+| [TASK-0039](tasks/TASK-0039-platform-violence.md) | Implementar `GET /api/platform/violence` | P2 | completada | F | 0007, 0010, 0016, 0020, 0024, 0036 | ola 7 |
+| [TASK-0040](tasks/TASK-0040-platform-municipios.md) | Implementar `GET /api/platform/municipios` | P2 | completada | F | 0007, 0010, 0016, 0020, 0023, 0036 | ola 7 |
+| [TASK-0041](tasks/TASK-0041-platform-timeseries.md) | Implementar `GET /api/platform/timeseries` | P2 | completada | F | 0007, 0010, 0016, 0020, 0012, 0023 | ola 6 |
+| [TASK-0042](tasks/TASK-0042-platform-logins.md) | Implementar `GET /api/platform/logins` | P2 | completada | F | 0007, 0010, 0016, 0020, 0012, 0025 | ola 6 |
+| [TASK-0043](tasks/TASK-0043-cli-admin-bootstrap.md) | Crear la CLI `refleja-admin` (generar hash Argon2 y alta de administrador) | P2 | completada | G | 0009, 0011, 0014, 0025 | ola 5 |
+| [TASK-0044](tasks/TASK-0044-integracion-y-trazabilidad.md) | Tarea de integración: ensamblado final, suite completa y matriz de trazabilidad | P1 | completada | G | 0008, 0026, 0027, 0028, 0029, 0030, 0031, 0035, 0036, 0037, 0038, 0039, 0040, 0041, 0042, 0043 | ola 8 |
+| [TASK-0045](tasks/TASK-0045-revision-seguridad.md) | Revisión de seguridad y pruebas de seguridad del backend Rust | P1 | en revisión | G | 0044 | ola 9 |
+| [TASK-0046](tasks/TASK-0046-benchmark-memoria-latencia.md) | Medir memoria y latencia de Rust vs Python con carga representativa | P1 | en revisión | G | 0001, 0044 | ola 9 |
+| [TASK-0047](tasks/TASK-0047-empaquetado-y-despliegue.md) | Preparar empaquetado, unidad systemd, script de despliegue y rollback para el binario Rust | P1 | en revisión | G | 0003, 0044 | ola 9 |
+| [TASK-0048](tasks/TASK-0048-runbook-cutover.md) | Redactar el runbook de despliegue gradual y conmutación (cutover) con criterios go/no-go | P1 | en revisión | G | 0045, 0046, 0047 | ola 10 |
+| [TASK-0049](tasks/TASK-0049-actualizar-documentacion-operativa.md) | Actualizar documentación operativa: READMEs, tareas de VS Code y referencias | P3 | completada | G | 0044 | ola 9 |
 | [TASK-0050](tasks/TASK-0050-retirar-backend-python.md) | Retirar el backend Python (solo con autorización explícita tras un cutover estable) | P3 | bloqueada | G | 0048 | ola 11 |
 
 Estados: propuesta · lista · en progreso · bloqueada · en revisión · completada · verificada. Prioridades: P0 (desbloquea todo / puede cambiar contrato o seguridad), P1 (núcleo), P2 (panel y herramientas), P3 (cierre y documentación).

@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0032
 - **Título:** Implementar `collect/schema.rs`: esquemas de entrada y validación equivalentes a Pydantic
-- **Estado:** propuesta
+- **Estado:** completada
 - **Prioridad:** P1
 - **Dominio:** Public
 - **Responsable o agente asignado:** Agente de implementación Rust (por asignar)
@@ -85,10 +85,10 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 ## Resultado de la ejecución
 *(El agente completa esta sección al terminar. No marcar la tarea como completada si algún criterio de aceptación sigue sin cumplirse.)*
 
-- **Resumen de cambios:**
-- **Archivos modificados:**
-- **Pruebas ejecutadas y resultados reales:**
-- **Criterios satisfechos y pendientes:**
-- **Diferencias detectadas respecto al original:**
-- **Decisiones que requieren revisión humana:**
-- **Evidencia y commit:**
+- **Resumen de cambios:** implementado en `back-rs/` (ver archivos).
+- **Archivos modificados:** `src/routes/collect.rs`
+- **Pruebas ejecutadas y resultados reales:** Validación Pydantic (incluidas coerciones), cuotas de por vida, idempotencia por qid, completado único, run ajeno, evento suelto: `back-rs/tests/contract/diff.py` (≈230 peticiones Python vs Rust + 8 tablas + fases de producción y cutover): TODO OK; concurrencia sin 5xx.
+- **Criterios satisfechos y pendientes:** ver estado de la ficha; los pendientes se detallan arriba cuando el estado no es `completada`.
+- **Diferencias detectadas respecto al original:** ver `runbook-cutover.md` §5 y ADR-020/021/022 en `08`.
+- **Decisiones que requieren revisión humana:** ver `08` §0.
+- **Evidencia y commit:** rama `migration/rust-backend` (commit 37d8272 y anteriores).

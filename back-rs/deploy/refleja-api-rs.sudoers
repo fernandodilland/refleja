@@ -1,0 +1,5 @@
+# /etc/sudoers.d/refleja-api-rs   (permisos 0440)
+# Permite al usuario del servicio gestionar SOLO su servicio Rust, sin contraseña.
+#   sudo install -m 0440 back-rs/deploy/refleja-api-rs.sudoers /etc/sudoers.d/refleja-api-rs && sudo visudo -c
+# Ajusta las rutas de systemctl/journalctl si `which` devuelve otras.
+refleja-api ALL=(root) NOPASSWD: /usr/bin/systemctl restart refleja-api-rs.service, /usr/bin/systemctl start refleja-api-rs.service, /usr/bin/systemctl stop refleja-api-rs.service, /usr/bin/systemctl status refleja-api-rs.service, /usr/bin/systemctl status refleja-api-rs.service --no-pager -l, /usr/bin/journalctl -u refleja-api-rs.service -n 120 --no-pager

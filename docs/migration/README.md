@@ -1,7 +1,8 @@
 # Migración del backend de Refleja a Rust — índice
 
-> **Fase actual: A — Descubrimiento y planificación (completa, pendiente de aprobación).** No se ha modificado el backend ni se ha creado código Rust.
-> Análisis del 2026-10-18 sobre `main` @ `f4d996c`. La implementación **no debe empezar** hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004).
+> **Fase actual: B — Implementación local COMPLETA; pendiente despliegue.** El backend Rust (`../../back-rs`) implementa las 15 rutas y todo el comportamiento observable del backend Python, verificado con un arnés diferencial (Python vs Rust, misma BD). **No se ha desplegado ni probado contra producción.**
+> Análisis del 2026-10-18 sobre `main` @ `f4d996c`; implementación en la rama `migration/rust-backend`.
+> Lo que sigue (requiere al propietario): TASK-0001/0002/0003/0005 (datos del servidor), revisión de 0045–0048, y el cutover según [`runbook-cutover.md`](runbook-cutover.md).
 
 **Objetivo:** reemplazar el backend FastAPI (`back/`, ≈130 MB de RAM reportados) por un servicio **Rust + Axum + Tokio + Tower** con SQLx/MariaDB, **sin cambiar contratos externos**, dentro de este mismo repositorio (`back-rs/`, ADR-001 propuesto).
 
@@ -22,7 +23,9 @@
 | [`06-runtime-and-deployment.md`](06-runtime-and-deployment.md) | Ejecución, variables, despliegue, observabilidad | completo; producción sin verificar |
 | [`07-test-and-compatibility-plan.md`](07-test-and-compatibility-plan.md) | Estrategia diferencial y catálogo CT-xxx | completo |
 | [`08-decisions-and-open-questions.md`](08-decisions-and-open-questions.md) | 19 ADR (todos `propuesta`) y 23 incógnitas/contradicciones (16 Q + 7 C) | vivo |
-| [`09-task-plan.md`](09-task-plan.md) | 50 tareas, dependencias, olas | **propuesto** |
+| [`09-task-plan.md`](09-task-plan.md) | 50 tareas, dependencias, olas | ejecutado en local (ver estados) |
+| [`traceability.md`](traceability.md) | Endpoint → código → pruebas | completo |
+| [`runbook-cutover.md`](runbook-cutover.md) | Despliegue gradual, conmutación y rollback | borrador para aprobación |
 | [`AGENT-GUIDE.md`](AGENT-GUIDE.md) | Reglas y contrato entre agentes | completo |
 | [`tasks/`](tasks/) | Una ficha por tarea (TASK-0001…0050) | propuestas |
 | [`evidence/python-baseline/`](evidence/python-baseline/) | Script de sondas y salida real del backend Python (SQLite local) | evidencia |
@@ -41,11 +44,18 @@ Documentos **no creados a propósito** (se generan durante la ejecución): `trac
 3. **Servidor de producción** (Q-11, Q-03): distro/glibc/toolchain, config efectiva → TASK-0003 (condiciona ADR-003).
 4. **ADR bloqueantes** sin aprobar: 001, 002, 004, 006, 009, 016 → TASK-0004.
 
+## Resultado de la implementación (resumen)
+- 15/15 rutas migradas; `tests/contract/diff.py`: 215 peticiones idénticas + volcado de 8 tablas idéntico + modo producción + fail-closed + compatibilidad de sesiones/tokens Python↔Rust ([`traceability.md`](traceability.md)).
+- Memoria (benchmark local macOS, [`evidence/bench-2026-10-18.md`](evidence/bench-2026-10-18.md)): ≈7 MB en reposo vs 25–150 MB de Python; pico con 8 logins simultáneos 75 MB vs 560–634 MB. **Medir en el servidor Linux** antes de dar la cifra por buena.
+- Hallazgo: bajo carga concurrente en MariaDB ≥11.8 el backend Python produce 500 (error 1020); Rust los evita con `READ COMMITTED` + reintentos (ADR-020).
+
 ## Siguiente paso recomendado
-Aprobar/ajustar el plan y ejecutar la **Ola 0** (TASK-0001…0005; requieren acceso del propietario al servidor, no modifican código). Después TASK-0006 (esqueleto del crate) y TASK-0007 (harness de contrato).
+1. Ejecutar TASK-0002 (esquema real, solo lectura) y TASK-0003 (config/servidor) y comparar con `back-rs/migrations/0001_baseline.sql`.
+2. Ensayar `back-rs/deploy/` en el servidor en puerto alterno (fase *shadow* del runbook).
+3. Aprobar el runbook y conmutar; retirar Python solo con autorización (TASK-0050).
 
 ## Hallazgos que conviene conocer antes de aprobar
 - La documentación del backend está **desactualizada** (6 vs 8 tablas; falta `/platform/logins`).
-- Hay **quirks** que el front ya tolera y que el plan preserva por defecto (clave JSON `"null"`, cookie no borrada en 401 de refresh, `accepted` que cuenta eventos descartados, 307 por barra final…). Ver ADR-009/010.
+- Hay **quirks** que el front ya tolera y que el plan preserva por defecto (clave JSON `"None"`, cookie no borrada en 401 de refresh, `accepted` que cuenta eventos descartados, 307 por barra final…). Ver ADR-009/010.
 - El hash Argon2id cuesta **64 MiB por login** también en Rust: el plan incluye un semáforo para que los picos no anulen el ahorro (ADR-014).
 - `deploy.sh` y `healthcheck` actuales **no son reutilizables tal cual** para un binario Rust (TASK-0047).

@@ -55,13 +55,17 @@ impl AppState {
 const BODY_LIMIT: usize = 256 * 1024;
 
 pub fn build_router(state: AppState) -> Router {
-    routes::router()
+    let inner = routes::router()
         .fallback(routes::fallback)
         .method_not_allowed_fallback(routes::method_not_allowed)
         .layer(DefaultBodyLimit::max(BODY_LIMIT))
+        .with_state(state.clone());
+    // Las capas envuelven al router completo (no a cada MethodRouter) para que el preflight CORS
+    // salga sin la cabecera `Allow` que axum añade a sus 405.
+    Router::new()
+        .fallback_service(inner)
         // El guard va ANTES (más interno) que CORS: así su 403 también lleva cabeceras CORS.
         .layer(middleware::from_fn_with_state(state.clone(), origin_guard::origin_guard))
         .layer(middleware::from_fn_with_state(state.clone(), cors::cors))
         .layer(middleware::from_fn(crate::http::access_log))
-        .with_state(state)
 }

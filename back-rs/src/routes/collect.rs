@@ -117,7 +117,7 @@ fn parse_batch(v: &Value) -> Result<Vec<Event>, AppError> {
     let mut errs = Errs::new();
     let arr = match obj.get("events") {
         None => {
-            errs.missing(&base, "events");
+            errs.missing(&base, "events", obj);
             return errs.into_result(vec![]);
         }
         Some(Value::Array(a)) => a,

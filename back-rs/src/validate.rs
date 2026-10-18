@@ -22,15 +22,16 @@ impl Errs {
         if self.0.is_empty() { Ok(ok) } else { Err(AppError::Validation(self.0)) }
     }
 
-    pub fn missing(&mut self, base: &[Value], key: &str) {
-        self.push("missing", loc_of(base, key), "Field required", Value::Null, None);
+    /// `input` de un campo ausente es el objeto que lo contiene (como Pydantic).
+    pub fn missing(&mut self, base: &[Value], key: &str, parent: &Map<String, Value>) {
+        self.push("missing", loc_of(base, key), "Field required", Value::Object(parent.clone()), None);
     }
 
     /// Cadena opcional/obligatoria con límites de longitud en caracteres.
     pub fn string(&mut self, obj: &Map<String, Value>, base: &[Value], key: &str, min: usize, max: usize, required: bool) -> Option<String> {
         match obj.get(key) {
             None => {
-                if required { self.missing(base, key); }
+                if required { self.missing(base, key, obj); }
                 None
             }
             Some(Value::Null) if !required => None,
@@ -69,7 +70,8 @@ impl Errs {
                     }
                 } else { None }
             }
-            Value::String(s) => match s.trim().parse::<i64>() {
+            Value::Bool(b) => Some(*b as i64),
+            Value::String(s) => match parse_int_str(s).ok_or(()) {
                 Ok(i) => Some(i),
                 Err(_) => {
                     self.push("int_parsing", loc_of(base, key), "Input should be a valid integer, unable to parse string as an integer", v.clone(), None);
@@ -95,7 +97,7 @@ impl Errs {
     /// Literal cerrado opcional.
     pub fn literal(&mut self, obj: &Map<String, Value>, base: &[Value], key: &str, allowed: &[&str], required: bool) -> Option<String> {
         match obj.get(key) {
-            None => { if required { self.missing(base, key); } None }
+            None => { if required { self.missing(base, key, obj); } None }
             Some(Value::Null) if !required => None,
             Some(v) => {
                 if let Value::String(s) = v {
@@ -110,6 +112,19 @@ impl Errs {
             }
         }
     }
+}
+
+/// Cadena -> entero como Pydantic "lax": enteros con signo/espacios y decimales sin parte fraccionaria ("5.0").
+pub fn parse_int_str(s: &str) -> Option<i64> {
+    let t = s.trim();
+    if let Ok(i) = t.parse::<i64>() {
+        return Some(i);
+    }
+    let (int_part, frac) = t.split_once('.')?;
+    if !frac.chars().all(|c| c == '0') || int_part.is_empty() && frac.is_empty() {
+        return None;
+    }
+    int_part.parse::<i64>().ok()
 }
 
 /// Parsea el cuerpo JSON como lo hace FastAPI (content-type JSON o ausente).

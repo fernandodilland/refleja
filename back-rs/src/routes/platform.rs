@@ -41,28 +41,40 @@ impl Query {
 
     fn date(&mut self, name: &str) -> Option<NaiveDate> {
         let raw = self.map.get(name)?.clone();
+        if raw.len() < 10 && !(raw.chars().all(|c| c.is_ascii_digit()) && !raw.is_empty()) {
+            self.err("date_from_datetime_parsing", name, "Input should be a valid date or datetime, input is too short".into(), &raw, Some(json!({"error": "input is too short"})));
+            return None;
+        }
+        // Solo dígitos: Pydantic lo interpreta como segundos Unix; solo vale si cae en medianoche UTC.
+        if raw.chars().all(|c| c.is_ascii_digit()) {
+            let n: i64 = raw.parse().unwrap_or(1);
+            if n % 86400 == 0 {
+                return NaiveDate::from_ymd_opt(1970, 1, 1).map(|d| d + Duration::days(n / 86400));
+            }
+            self.err("date_from_datetime_inexact", name, "Datetimes provided to dates should have zero time - e.g. be exact dates".into(), &raw, None);
+            return None;
+        }
         let (d, t) = match raw.split_once(['T', ' ']) {
             Some((d, t)) => (d.to_string(), Some(t.to_string())),
             None => (raw.clone(), None),
         };
-        if raw.len() < 10 {
-            self.err("date_from_datetime_parsing", name, "Input should be a valid date or datetime, input is too short".into(), &raw, Some(json!({"error": "input is too short"})));
+        let Some(parsed) = NaiveDate::parse_from_str(&d, "%Y-%m-%d").ok() else {
+            self.err("date_from_datetime_parsing", name, "Input should be a valid date or datetime, invalid date".into(), &raw, Some(json!({"error": "invalid date"})));
             return None;
-        }
-        let parsed = NaiveDate::parse_from_str(&d, "%Y-%m-%d").ok();
-        let time_ok = t.map_or(true, |t| t.trim_end_matches('Z').trim_end_matches("+00:00").chars().all(|c| c == '0' || c == ':' || c == '.'));
-        match parsed {
-            Some(p) if time_ok => Some(p),
-            _ => {
-                self.err("date_from_datetime_parsing", name, "Input should be a valid date or datetime, invalid character in year".into(), &raw, Some(json!({"error": "invalid character in year"})));
-                None
+        };
+        if let Some(t) = t {
+            let t = t.trim_end_matches('Z').trim_end_matches("+00:00");
+            if !t.chars().all(|c| c == '0' || c == ':' || c == '.') {
+                self.err("date_from_datetime_inexact", name, "Datetimes provided to dates should have zero time - e.g. be exact dates".into(), &raw, None);
+                return None;
             }
         }
+        Some(parsed)
     }
 
     fn int(&mut self, name: &str, default: i64, min: i64, max: i64) -> i64 {
         let Some(raw) = self.map.get(name).cloned() else { return default };
-        match raw.trim().parse::<i64>() {
+        match crate::validate::parse_int_str(&raw).ok_or(()) {
             Err(_) => {
                 self.err("int_parsing", name, "Input should be a valid integer, unable to parse string as an integer".into(), &raw, None);
                 default
@@ -175,7 +187,7 @@ pub async fn overview(State(st): State<AppState>, _a: Admin, RawQuery(raw): RawQ
     })))
 }
 
-/// Agrupa por una columna nullable; la clave `NULL` se serializa como `"null"` (como Python).
+/// Agrupa por una columna nullable; la clave `NULL` se serializa como `"None"` (como FastAPI).
 async fn group_counts(st: &AppState, col: &str, cutoff: chrono::NaiveDateTime) -> Result<Value, sqlx::Error> {
     let sql = format!("SELECT {col} AS k, COUNT(id) AS n FROM visitor WHERE last_seen_at >= ? GROUP BY {col}");
     let rows = sqlx::query(&sql).bind(cutoff).fetch_all(&st.pool).await?;
@@ -183,7 +195,7 @@ async fn group_counts(st: &AppState, col: &str, cutoff: chrono::NaiveDateTime) -
     for r in rows {
         let k: Option<String> = r.try_get("k")?;
         let n: i64 = r.try_get("n")?;
-        m.insert(k.unwrap_or_else(|| "null".into()), json!(n));
+        m.insert(k.unwrap_or_else(|| "None".into()), json!(n)); // FastAPI serializa la clave None como "None"
     }
     Ok(Value::Object(m))
 }

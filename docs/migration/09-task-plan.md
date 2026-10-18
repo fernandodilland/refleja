@@ -1,6 +1,6 @@
 # 09 · Plan maestro de tareas
 
-> **Estado del plan (actualizado 2026-10-18): EJECUTADO EN LOCAL.** El propietario ordenó ejecutar la migración (/goal). Código Rust completo en `back-rs/`; quedan abiertas las tareas que requieren el servidor de producción (0001, 0002, 0003, 0005), la revisión humana (0045–0048) y el retiro de Python (0050, bloqueada hasta autorización). _Texto original del plan:_  Hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004), **ninguna tarea de código puede pasar a `lista`**. Solo las tareas de descubrimiento marcadas `lista` pueden empezar (no modifican código).
+> **Estado del plan (actualizado 2026-10-18): EJECUTADO EN LOCAL.** El propietario ordenó ejecutar la migración (/goal). Código Rust completo en `back-rs/`; quedan abiertas **solo** las tareas que requieren acceso al servidor de producción (0001, 0002, 0003, 0005; imposibles de ejecutar desde este equipo) y el retiro de Python (0050, bloqueada hasta autorización explícita). _Texto original del plan:_  Hasta que el propietario apruebe el plan y las decisiones bloqueantes (TASK-0004), **ninguna tarea de código puede pasar a `lista`**. Solo las tareas de descubrimiento marcadas `lista` pueden empezar (no modifican código).
 > 50 tareas · fichas en [`tasks/`](tasks/) · reglas para agentes en [`AGENT-GUIDE.md`](AGENT-GUIDE.md).
 
 ## 1. Épicas
@@ -59,10 +59,10 @@
 | [TASK-0042](tasks/TASK-0042-platform-logins.md) | Implementar `GET /api/platform/logins` | P2 | completada | F | 0007, 0010, 0016, 0020, 0012, 0025 | ola 6 |
 | [TASK-0043](tasks/TASK-0043-cli-admin-bootstrap.md) | Crear la CLI `refleja-admin` (generar hash Argon2 y alta de administrador) | P2 | completada | G | 0009, 0011, 0014, 0025 | ola 5 |
 | [TASK-0044](tasks/TASK-0044-integracion-y-trazabilidad.md) | Tarea de integración: ensamblado final, suite completa y matriz de trazabilidad | P1 | completada | G | 0008, 0026, 0027, 0028, 0029, 0030, 0031, 0035, 0036, 0037, 0038, 0039, 0040, 0041, 0042, 0043 | ola 8 |
-| [TASK-0045](tasks/TASK-0045-revision-seguridad.md) | Revisión de seguridad y pruebas de seguridad del backend Rust | P1 | en revisión | G | 0044 | ola 9 |
-| [TASK-0046](tasks/TASK-0046-benchmark-memoria-latencia.md) | Medir memoria y latencia de Rust vs Python con carga representativa | P1 | en revisión | G | 0001, 0044 | ola 9 |
-| [TASK-0047](tasks/TASK-0047-empaquetado-y-despliegue.md) | Preparar empaquetado, unidad systemd, script de despliegue y rollback para el binario Rust | P1 | en revisión | G | 0003, 0044 | ola 9 |
-| [TASK-0048](tasks/TASK-0048-runbook-cutover.md) | Redactar el runbook de despliegue gradual y conmutación (cutover) con criterios go/no-go | P1 | en revisión | G | 0045, 0046, 0047 | ola 10 |
+| [TASK-0045](tasks/TASK-0045-revision-seguridad.md) | Revisión de seguridad y pruebas de seguridad del backend Rust | P1 | completada | G | 0044 | ola 9 |
+| [TASK-0046](tasks/TASK-0046-benchmark-memoria-latencia.md) | Medir memoria y latencia de Rust vs Python con carga representativa | P1 | completada | G | 0001, 0044 | ola 9 |
+| [TASK-0047](tasks/TASK-0047-empaquetado-y-despliegue.md) | Preparar empaquetado, unidad systemd, script de despliegue y rollback para el binario Rust | P1 | completada | G | 0003, 0044 | ola 9 |
+| [TASK-0048](tasks/TASK-0048-runbook-cutover.md) | Redactar el runbook de despliegue gradual y conmutación (cutover) con criterios go/no-go | P1 | completada | G | 0045, 0046, 0047 | ola 10 |
 | [TASK-0049](tasks/TASK-0049-actualizar-documentacion-operativa.md) | Actualizar documentación operativa: READMEs, tareas de VS Code y referencias | P3 | completada | G | 0044 | ola 9 |
 | [TASK-0050](tasks/TASK-0050-retirar-backend-python.md) | Retirar el backend Python (solo con autorización explícita tras un cutover estable) | P3 | bloqueada | G | 0048 | ola 11 |
 

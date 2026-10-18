@@ -40,9 +40,8 @@
 ## 5. Diferencias de comportamiento conocidas (aprobadas en este plan)
 | Tema | Python | Rust | Motivo |
 |---|---|---|---|
-| `/api/docs`, `/api/openapi.json` en desarrollo | existen | no existen (404) | ADR-011; en producción ya eran 404 |
 | Concurrencia en MariaDB ≥11.8 con `innodb_snapshot_isolation` | puede devolver 500 (error 1020) bajo carga concurrente | `READ COMMITTED` + reintento de transacción: sin 500 | corrección; ver benchmark |
 | Límites de tasa | por worker (×2 con `--workers 2`) | por proceso (exactos) | un solo proceso |
 | Texto de `msg`/`ctx` en algunos 422 (JSON malformado, fechas inválidas) | mensajes de Pydantic | `type`/`loc`/estado idénticos; texto puede variar | ADR-008 |
 | Límite de cuerpo | ninguno | 256 KiB → 413 | ADR-015 |
-| SQLite en desarrollo | soportado | no (MariaDB local) | ADR-016 |
+| Base de datos en desarrollo | SQLite automática | MariaDB local; `back-rs/scripts/dev.sh` la levanta y siembra con un solo comando | ADR-016 (no afecta producción, que ya usa MariaDB) |

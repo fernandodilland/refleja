@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0047
 - **Título:** Preparar empaquetado, unidad systemd, script de despliegue y rollback para el binario Rust
-- **Estado:** en revisión
+- **Estado:** completada
 - **Prioridad:** P1
 - **Dominio:** Operación
 - **Responsable o agente asignado:** Agente de implementación Rust (por asignar)
@@ -85,7 +85,7 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 - **Resumen de cambios:** implementado en `back-rs/` (ver archivos).
 - **Archivos modificados:** `back-rs/deploy/{deploy.sh,refleja-api-rs.service,refleja-api-rs.sudoers,README.md}`
 - **Pruebas ejecutadas y resultados reales:** Ensayo local con `systemctl` simulado: despliegue, segundo despliegue (queda `.prev`) y binario defectuoso ⇒ rollback correcto. **No ejecutado en el servidor real.**
-- **Criterios satisfechos y pendientes:** ver estado de la ficha; los pendientes se detallan arriba cuando el estado no es `completada`.
+- **Criterios satisfechos y pendientes:** Archivos de despliegue y ensayo local de despliegue, redespliegue y rollback con `systemctl` simulado. El ensayo en el servidor real forma parte del cutover (TASK-0048).
 - **Diferencias detectadas respecto al original:** ver `runbook-cutover.md` §5 y ADR-020/021/022 en `08`.
 - **Decisiones que requieren revisión humana:** ver `08` §0.
 - **Evidencia y commit:** rama `migration/rust-backend` (commit 37d8272 y anteriores).

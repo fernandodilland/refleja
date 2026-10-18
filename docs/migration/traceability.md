@@ -1,7 +1,7 @@
 # Matriz de trazabilidad (TASK-0044)
 
 Estado real al 2026-10-18. «Prueba» = etiquetas de `back-rs/tests/contract/diff.py` (petición idéntica contra Python y Rust, respuesta y tablas comparadas) y `back-rs/tests/vectors.rs`.
-Resultado de la última ejecución completa: **215 peticiones (fase 1) + 19 (modo producción) + 4 arranques fail-closed + 8 comprobaciones de cutover: TODO OK**, 19 pruebas de Rust en verde (14 unitarias + 5 de vectores de Python) (`cargo test --release`), `clippy -D warnings` limpio.
+Resultado de la última ejecución completa: **223 peticiones (fase 1) + 19 (modo producción) + 4 arranques fail-closed + 8 comprobaciones de cutover: TODO OK**, 19 pruebas de Rust en verde (14 unitarias + 5 de vectores de Python) (`cargo test --release`), `clippy -D warnings` limpio.
 
 | Endpoint | Implementación | Pruebas (etiquetas del arnés) | Tareas |
 |---|---|---|---|
@@ -20,7 +20,7 @@ Resultado de la última ejecución completa: **215 peticiones (fase 1) + 19 (mod
 | EP-013 `GET /platform/municipios` | `routes/platform.rs` | municipios ×6 + final | 0040 |
 | EP-014 `GET /platform/logins` | `routes/platform.rs` | logins ×5 + final | 0042 |
 | EP-015 `GET /platform/timeseries` | `routes/platform.rs` | timeseries ×5 + final | 0041 |
-| EP-016 `/api/docs`, `/api/openapi.json` | **no migrado** (ADR-011) | prod: 404 en ambos | — |
+| EP-016 `/api/docs`, `/api/openapi.json`, `/docs/oauth2-redirect` | `routes/docs.rs` (assets capturados de FastAPI; solo `ENV`≠prod) | dev ×8 (contenido idéntico byte a byte, 404 en `/api/redoc`, 405 `HEAD, GET`); prod: 404 en ambos | — |
 | EP-IMP-1…4 (307, 404/405, CORS, guard) | `routes/mod.rs`, `http/cors.rs`, `http/origin_guard.rs` | preflight ×6, origen válido/ inválido, 404 con Origin, guard ×8 | 0016 |
 
 | Flujo / control | Evidencia |
@@ -35,5 +35,5 @@ Resultado de la última ejecución completa: **215 peticiones (fase 1) + 19 (mod
 - Esquema, configuración, tráfico y RAM **de producción** (TASK-0001/2/3/5): requieren acceso al servidor.
 - Turnstile real de Cloudflare (se probó con un mock local).
 - MariaDB 11.x concreta de producción (se probó con 12.3 local).
-- `cargo audit/deny`, medición en Linux, ensayo de `deploy.sh` en el servidor real.
-- Rutas fuera del contrato (p. ej. cuerpos >256 KiB → 413) sin equivalente en Python.
+- Medición de RAM en Linux/servidor y ensayo de `deploy.sh` en el servidor real (`cargo audit`: ver `05` §5, hecho).
+- Límite de cuerpo 256 KiB → 413: mejora sin equivalente en Python.

@@ -13,6 +13,8 @@ efectos en MariaDB, mismas variables de entorno. Documentación completa de la m
 
 ## Desarrollo local (macOS/Linux)
 
+Atajo cero configuración (equivale a `python -m app.seed` + uvicorn): `back-rs/scripts/dev.sh` — arranca MariaDB local, aplica el esquema, crea el admin de desarrollo (`admin` / `admin-dev-local`) y sirve la API en `127.0.0.1:20832` con `/api/docs` disponible (solo `ENV` ≠ producción). Paso a paso:
+
 Requiere Rust estable (`cargo`) y MariaDB local. Sin Docker:
 
 ```bash
@@ -34,6 +36,7 @@ printf '%s' 'contraseña' | cargo run --release --bin refleja-admin -- hash-pass
 
 ```bash
 cargo fmt --check && cargo clippy --release --all-targets -- -D warnings
+cargo audit                                # dependencias (excepción justificada en .cargo/audit.toml)
 cargo test --release                       # unitarias + vectores generados con Python (PyJWT, argon2-cffi, analytics.py)
 cargo build --release && RS_PROFILE=release python3 tests/contract/diff.py
 ```

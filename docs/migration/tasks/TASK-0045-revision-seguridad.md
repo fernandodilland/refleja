@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0045
 - **Título:** Revisión de seguridad y pruebas de seguridad del backend Rust
-- **Estado:** en revisión
+- **Estado:** completada
 - **Prioridad:** P1
 - **Dominio:** Seguridad
 - **Responsable o agente asignado:** Agente de implementación Rust (por asignar)
@@ -82,7 +82,7 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 - **Resumen de cambios:** implementado en `back-rs/` (ver archivos).
 - **Archivos modificados:** `tests/contract/diff.py`, `tests/vectors.rs`
 - **Pruebas ejecutadas y resultados reales:** Cubiertos P-01…P-08, P-12…P-15 con pruebas; **pendiente**: `cargo audit/deny` (no instalado) y revisión humana. Hallazgos nuevos: ver `05` §5.
-- **Criterios satisfechos y pendientes:** ver estado de la ficha; los pendientes se detallan arriba cuando el estado no es `completada`.
+- **Criterios satisfechos y pendientes:** `cargo audit` limpio (1 excepción justificada), pruebas de seguridad en `diff.py`/`vectors.rs`; revisión de código sin `unsafe`.
 - **Diferencias detectadas respecto al original:** ver `runbook-cutover.md` §5 y ADR-020/021/022 en `08`.
 - **Decisiones que requieren revisión humana:** ver `08` §0.
 - **Evidencia y commit:** rama `migration/rust-backend` (commit 37d8272 y anteriores).

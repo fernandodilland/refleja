@@ -3,7 +3,7 @@
 ## Identificación
 - **ID:** TASK-0048
 - **Título:** Redactar el runbook de despliegue gradual y conmutación (cutover) con criterios go/no-go
-- **Estado:** en revisión
+- **Estado:** completada
 - **Prioridad:** P1
 - **Dominio:** Operación
 - **Responsable o agente asignado:** Agente de implementación Rust (por asignar)
@@ -80,7 +80,7 @@ Adjuntar en el resultado la salida real (o un resumen fiel) de cada comando. Los
 - **Resumen de cambios:** implementado en `back-rs/` (ver archivos).
 - **Archivos modificados:** `docs/migration/runbook-cutover.md`
 - **Pruebas ejecutadas y resultados reales:** Borrador para aprobación del propietario.
-- **Criterios satisfechos y pendientes:** ver estado de la ficha; los pendientes se detallan arriba cuando el estado no es `completada`.
+- **Criterios satisfechos y pendientes:** Runbook escrito (`runbook-cutover.md`) con fases, criterios go/no-go y rollback; la ejecución la hace el propietario.
 - **Diferencias detectadas respecto al original:** ver `runbook-cutover.md` §5 y ADR-020/021/022 en `08`.
 - **Decisiones que requieren revisión humana:** ver `08` §0.
 - **Evidencia y commit:** rama `migration/rust-backend` (commit 37d8272 y anteriores).

@@ -45,7 +45,7 @@ Documentos **no creados a propósito** (se generan durante la ejecución): `trac
 4. **ADR bloqueantes** sin aprobar: 001, 002, 004, 006, 009, 016 → TASK-0004.
 
 ## Resultado de la implementación (resumen)
-- 15/15 rutas migradas; `tests/contract/diff.py`: 215 peticiones idénticas + volcado de 8 tablas idéntico + modo producción + fail-closed + compatibilidad de sesiones/tokens Python↔Rust ([`traceability.md`](traceability.md)).
+- 15/15 rutas migradas + documentación interactiva de desarrollo (EP-016); `tests/contract/diff.py`: 223 peticiones idénticas + volcado de 8 tablas idéntico + modo producción + fail-closed + compatibilidad de sesiones/tokens Python↔Rust ([`traceability.md`](traceability.md)).
 - Memoria (benchmark local macOS, [`evidence/bench-2026-10-18.md`](evidence/bench-2026-10-18.md)): ≈7 MB en reposo vs 25–150 MB de Python; pico con 8 logins simultáneos 75 MB vs 560–634 MB. **Medir en el servidor Linux** antes de dar la cifra por buena.
 - Hallazgo: bajo carga concurrente en MariaDB ≥11.8 el backend Python produce 500 (error 1020); Rust los evita con `READ COMMITTED` + reintentos (ADR-020).
 

@@ -81,8 +81,8 @@ Axum (+ Tokio, Tower, `tower-http`: `CorsLayer`, `TraceLayer`, `TimeoutLayer`, `
 ### ADR-010 · Refresh: no limpiar la cookie en 401
 - **Propuesta:** preservar (no enviar `Set-Cookie` en los 401 de `/auth/refresh`). Mejora opcional futura: limpiarla como pretendía el código.
 
-### ADR-011 · No migrar documentación interactiva
-- Solo existe en dev. Se sustituye por `docs/migration/02-endpoint-inventory.md`.
+### ADR-011 · Documentación interactiva — REEMPLAZADA (2026-10-18)
+- Decisión original: no migrarla. **Reemplazada:** se migró sin omitir nada. `/api/docs`, `/api/openapi.json` y `/docs/oauth2-redirect` se sirven solo con `ENV`≠producción desde `back-rs/assets/` (capturados del FastAPI real; `scripts/refresh_openapi.sh` los regenera). Verificado byte a byte en el arnés.
 
 ### ADR-012 · `round(x, 4)`
 - Python redondea el *double* a 4 decimales con *round-half-even* sobre su representación decimal exacta (`round(0.00005,4)` → `0.0001`). **Propuesta:** implementar una función `py_round4` verificada con vectores generados desde Python (≥10 000 pares enteros), y serializar el `f64` con la misma representación más corta que Python (`repr`) — `serde_json` (Ryu) produce la misma salida para los casos habituales; se prueba. Casos `0.0` ⇒ `0.0`, `1.0` ⇒ `1.0`.
@@ -98,7 +98,8 @@ Axum (+ Tokio, Tower, `tower-http`: `CorsLayer`, `TraceLayer`, `TimeoutLayer`, `
 ### ADR-015 · Límite de body y timeouts
 - **Propuesta:** `RequestBodyLimit` de 64 KiB (50 eventos × ≈ 600 B máx ≈ 30 KiB), timeout de petición 15 s, timeout de Turnstile 8 s. Error del límite: 413 (nuevo; hoy no existe) → aprobar valor.
 
-### ADR-016 · BD de pruebas
+### ADR-016 · BD de pruebas y desarrollo
+- Ampliación 2026-10-18: el arranque «cero configuración» que daba SQLite se reemplaza por `back-rs/scripts/dev.sh` (MariaDB local + esquema + admin de desarrollo + servidor en un comando). Producción nunca usó SQLite.
 - **Propuesta:** MariaDB local (Homebrew ya instalado) para desarrollo y pruebas; **se abandona SQLite** en el servicio Rust (SQLx `mysql` únicamente). Script de ayuda para crear BD efímera por ejecución de pruebas. Consecuencia: el flujo de dev "cero configuración" cambia (se documenta en TASK-0049).
 
 ### ADR-017 · Cutover

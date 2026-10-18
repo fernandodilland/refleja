@@ -1,0 +1,10 @@
+# cargo audit — excepciones justificadas
+[advisories]
+ignore = [
+  # RUSTSEC-2023-0071 (Marvin, rsa 0.9): afecta operaciones con CLAVE PRIVADA RSA (descifrado/firma).
+  # `rsa` entra solo vía sqlx-mysql, que únicamente CIFRA la contraseña con la clave PÚBLICA del servidor
+  # durante la autenticación (caching_sha2/sha256_password); este servicio no posee ni usa claves privadas RSA
+  # y se conecta a MariaDB por loopback (127.0.0.1) con mysql_native_password. No existe versión corregida.
+  # Revisar al actualizar sqlx.
+  "RUSTSEC-2023-0071",
+]

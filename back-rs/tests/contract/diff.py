@@ -183,7 +183,7 @@ class Client:
             bodyn = ("json", norm_json(j))
             self.last_json = j
         except Exception:
-            bodyn = ("text", txt if "<html" not in txt.lower() else "<html>")
+            bodyn = ("text", txt)
             self.last_json = None
         self.last_headers = hd
         if record:
@@ -197,6 +197,10 @@ def scenario(c, ext):
     ORIGIN = {"Origin": "https://refleja.org"}
     # ---- meta / framework
     c.req("health", "GET", "/api/health")
+    for d in ("/api/docs", "/api/openapi.json", "/docs/oauth2-redirect", "/api/docs/", "/api/redoc", "/api/docs/oauth2-redirect"):
+        c.req("dev " + d, "GET", d)
+    c.req("docs POST", "POST", "/api/docs")
+    c.req("docs HEAD", "HEAD", "/api/docs")
     c.req("nope", "GET", "/api/nope")
     c.req("health PUT", "PUT", "/api/health")
     c.req("health POST", "POST", "/api/health")

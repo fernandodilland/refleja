@@ -64,4 +64,6 @@ Severidad: Alta / Media / Baja / Informativa. "Preservar" = comportamiento de se
 - **S-01/S-02:** el semáforo de Argon2 (`ARGON2_CONCURRENCY=1`) acota el pico de memoria de logins simultáneos (75 MB vs 560–634 MB en Python, benchmark local). No se añadió rate limit de login (cambiaría el contrato).
 - **S-03:** límite de cuerpo 256 KiB (413). **S-07:** comparación en tiempo constante del secreto de origen. **S-12:** el healthcheck de `back-rs/deploy/deploy.sh` envía `ORIGIN_SECRET` si está definido.
 - **Nuevo (S-16, informativo):** bajo MariaDB con `innodb_snapshot_isolation`, el backend Python produce 500 por conflictos de concurrencia (ver ADR-020); Rust no.
-- **Pendiente:** `cargo audit`/`cargo deny` (no instalados en este equipo), revisión humana de `unsafe` (0 usos) y de `expect()` (solo en invariantes de arranque).
+- **`cargo audit` ejecutado (2026-10-18, 1 338 avisos, 263 crates):** 0 vulnerabilidades abiertas. `lru` actualizado a 0.18 (corrige 2 avisos de *unsoundness*). Excepción justificada en `back-rs/.cargo/audit.toml`: RUSTSEC-2023-0071 (`rsa`, vía `sqlx-mysql`; solo cifra con clave pública, sin clave privada ni versión corregida).
+- **Revisión de código:** 0 usos de `unsafe`; `expect()` solo en invariantes de arranque/constantes; ninguna ruta de petición hace `unwrap`.
+- **Pendiente (humano):** segunda lectura por el propietario.

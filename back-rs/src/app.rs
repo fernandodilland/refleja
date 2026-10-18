@@ -68,7 +68,12 @@ impl AppState {
 const BODY_LIMIT: usize = 256 * 1024;
 
 pub fn build_router(state: AppState) -> Router {
-    let inner = routes::router()
+    let mut api = routes::router();
+    // Documentación interactiva solo fuera de producción (como `docs_url`/`openapi_url` de FastAPI).
+    if !state.settings.is_prod() {
+        api = api.merge(routes::docs::router());
+    }
+    let inner = api
         .fallback(routes::fallback)
         .method_not_allowed_fallback(routes::method_not_allowed)
         .layer(DefaultBodyLimit::max(BODY_LIMIT))

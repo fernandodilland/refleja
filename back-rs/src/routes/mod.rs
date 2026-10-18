@@ -1,6 +1,7 @@
 //! Rutas bajo `/api`. Replica el registro de routers de `main.py:65-72`.
 pub mod auth;
 pub mod collect;
+pub mod docs;
 pub mod platform;
 pub mod public;
 
@@ -77,11 +78,14 @@ async fn health(
 }
 
 /// 404 JSON; si existe la ruta sin la barra final, 307 hacia ella (como Starlette `redirect_slashes`).
-pub async fn fallback(req: Request) -> Response {
+pub async fn fallback(
+    axum::extract::State(st): axum::extract::State<AppState>,
+    req: Request,
+) -> Response {
     let path = req.uri().path();
     if path.len() > 1 && path.ends_with('/') {
         let alt = &path[..path.len() - 1];
-        if ROUTE_PATHS.contains(&alt) {
+        if ROUTE_PATHS.contains(&alt) || (!st.settings.is_prod() && docs::PATHS.contains(&alt)) {
             let host = req
                 .headers()
                 .get(header::HOST)
@@ -108,7 +112,10 @@ pub async fn fallback(req: Request) -> Response {
 }
 
 pub async fn method_not_allowed(req: Request) -> Response {
-    let allow = if GET_ROUTES.contains(&req.uri().path()) {
+    let path = req.uri().path();
+    let allow = if docs::PATHS.contains(&path) {
+        "HEAD, GET"
+    } else if GET_ROUTES.contains(&path) {
         "GET"
     } else {
         "POST"

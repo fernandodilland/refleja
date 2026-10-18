@@ -28,7 +28,10 @@ pub async fn session(
 
     // Límite por IP: evita emisión masiva de tokens aunque se resuelva Turnstile en bucle.
     let ip = client_ip(&headers, Some(peer)).unwrap_or_else(|| "unknown".into());
-    if !st.limiter.allow(&format!("sess:{ip}"), st.settings.session_rate_per_min) {
+    if !st
+        .limiter
+        .allow(&format!("sess:{ip}"), st.settings.session_rate_per_min)
+    {
         return Err(AppError::too_many("Demasiadas solicitudes."));
     }
     if !st.turnstile.verify_invisible(Some(&token), Some(&ip)).await {
@@ -41,12 +44,34 @@ pub async fn session(
     let device = device_from_ua(ua.as_deref());
     let country = client_country(&headers);
 
-    let mut tx = st.pool.begin().await?;
-    let (_, created) = visitor::get_or_create(&mut tx, &vid_h, country.as_deref(), Some(device)).await?;
-    if created {
-        counters::bump_daily(&mut tx, counters::DailyDeltas { new_visitors: 1, ..Default::default() }).await?;
+    let mut attempt = 0;
+    loop {
+        let r: Result<(), sqlx::Error> = async {
+            let mut tx = st.pool.begin().await?;
+            let (_, created) =
+                visitor::get_or_create(&mut tx, &vid_h, country.as_deref(), Some(device)).await?;
+            if created {
+                counters::bump_daily(
+                    &mut tx,
+                    counters::DailyDeltas {
+                        new_visitors: 1,
+                        ..Default::default()
+                    },
+                )
+                .await?;
+            }
+            tx.commit().await
+        }
+        .await;
+        match r {
+            Ok(()) => break,
+            Err(e) if crate::db::is_retryable(&e) && attempt + 1 < crate::db::MAX_TX_ATTEMPTS => {
+                attempt += 1;
+                crate::db::backoff(attempt).await;
+            }
+            Err(e) => return Err(e.into()),
+        }
     }
-    tx.commit().await?;
 
     let ttl_days = st.settings.public_token_ttl_days;
     let token = encode_jwt(
@@ -63,7 +88,10 @@ pub async fn ping(
     headers: HeaderMap,
 ) -> AppResult<Json<Value>> {
     let vid_h = hmac_vid(&st.settings.vid_hmac_key, &vid);
-    if !st.limiter.allow(&format!("ping:{vid_h}"), st.settings.ping_rate_per_min) {
+    if !st
+        .limiter
+        .allow(&format!("ping:{vid_h}"), st.settings.ping_rate_per_min)
+    {
         return Err(AppError::too_many("Demasiadas señales."));
     }
     let country = client_country(&headers);

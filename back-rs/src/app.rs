@@ -13,6 +13,10 @@ use sqlx::MySqlPool;
 use std::ops::Deref;
 use std::sync::Arc;
 
+/// Hash Argon2id (mismos parámetros que los reales) de una contraseña desechable: sirve de señuelo para
+/// igualar tiempos cuando el usuario no existe. No es un secreto. Precalculado para no gastar 64 MiB al arrancar.
+const DUMMY_HASH: &str = "$argon2id$v=19$m=65536,t=3,p=4$OSk5iJQwGsk28xm3T1VN8Q$aKyZm7yZlQwvGpKKZMywuYPMo30UDHyvB9wbAgsskDQ";
+
 pub struct Inner {
     pub settings: Settings,
     pub pool: MySqlPool,
@@ -44,10 +48,19 @@ impl AppState {
             settings.turnstile_secret_invisible.clone(),
         );
         let passwords = Passwords::new(settings.argon_concurrency);
-        let dummy_hash = passwords.hash("refleja-timing-dummy-not-a-real-password".into()).await;
+        let dummy_hash = DUMMY_HASH.to_string();
         let form = FormMeta::load(&settings.formulario_path);
         let cors = settings.cors_list();
-        AppState(Arc::new(Inner { settings, pool, turnstile, limiter: RateLimiter::new(), form, passwords, dummy_hash, cors }))
+        AppState(Arc::new(Inner {
+            settings,
+            pool,
+            turnstile,
+            limiter: RateLimiter::new(),
+            form,
+            passwords,
+            dummy_hash,
+            cors,
+        }))
     }
 }
 
@@ -65,7 +78,10 @@ pub fn build_router(state: AppState) -> Router {
     Router::new()
         .fallback_service(inner)
         // El guard va ANTES (más interno) que CORS: así su 403 también lleva cabeceras CORS.
-        .layer(middleware::from_fn_with_state(state.clone(), origin_guard::origin_guard))
+        .layer(middleware::from_fn_with_state(
+            state.clone(),
+            origin_guard::origin_guard,
+        ))
         .layer(middleware::from_fn_with_state(state.clone(), cors::cors))
         .layer(middleware::from_fn(crate::http::access_log))
 }

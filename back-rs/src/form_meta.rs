@@ -16,7 +16,10 @@ pub struct FormMeta {
 }
 
 fn flow_of_key(key: &str) -> Option<&'static str> {
-    FLOWS.iter().copied().find(|f| key.starts_with(&format!("{f}_")))
+    FLOWS
+        .iter()
+        .copied()
+        .find(|f| key.starts_with(&format!("{f}_")))
 }
 
 impl FormMeta {
@@ -34,28 +37,52 @@ impl FormMeta {
             }
             flow_order.push((f, v));
         }
-        FormMeta::finish(qids, qid_flow, flow_order, vec!["age".into(), "start".into()])
+        FormMeta::finish(
+            qids,
+            qid_flow,
+            flow_order,
+            vec!["age".into(), "start".into()],
+        )
     }
 
-    fn finish(mut qids: HashSet<String>, qid_flow: HashMap<String, &'static str>, flow_order: Vec<(&'static str, Vec<String>)>, intro_order: Vec<String>) -> FormMeta {
+    fn finish(
+        mut qids: HashSet<String>,
+        qid_flow: HashMap<String, &'static str>,
+        flow_order: Vec<(&'static str, Vec<String>)>,
+        intro_order: Vec<String>,
+    ) -> FormMeta {
         for t in TERMINALS {
             qids.insert(t.to_string());
         }
-        FormMeta { valid_question_ids: qids, qid_flow, flow_order, intro_order }
+        FormMeta {
+            valid_question_ids: qids,
+            qid_flow,
+            flow_order,
+            intro_order,
+        }
     }
 
     fn parse(text: &str) -> Result<FormMeta, String> {
         let data: Value = serde_json::from_str(text).map_err(|e| e.to_string())?;
-        let questions = data.get("questions").and_then(|q| q.as_object()).ok_or("sin preguntas")?;
+        let questions = data
+            .get("questions")
+            .and_then(|q| q.as_object())
+            .ok_or("sin preguntas")?;
         if questions.is_empty() {
             return Err("sin preguntas".into());
         }
         let mut qids: HashSet<String> = INTRO.iter().map(|s| s.to_string()).collect();
         let mut qid_flow = HashMap::new();
-        let mut order: Vec<(&'static str, Vec<String>)> = FLOWS.iter().map(|f| (*f, Vec::new())).collect();
+        let mut order: Vec<(&'static str, Vec<String>)> =
+            FLOWS.iter().map(|f| (*f, Vec::new())).collect();
         let mut intro_order = Vec::new();
         for (key, q) in questions {
-            let qid = q.get("qid").and_then(|x| x.as_str()).filter(|s| !s.is_empty()).unwrap_or(key).to_string();
+            let qid = q
+                .get("qid")
+                .and_then(|x| x.as_str())
+                .filter(|s| !s.is_empty())
+                .unwrap_or(key)
+                .to_string();
             qids.insert(qid.clone());
             if let Some(f) = flow_of_key(key) {
                 qid_flow.insert(qid.clone(), f);
@@ -73,7 +100,10 @@ impl FormMeta {
     /// Carga desde `FORMULARIO_PATH` o `../front/src/formulario.json` / `front/src/formulario.json`.
     pub fn load(configured: &str) -> FormMeta {
         let candidates: Vec<PathBuf> = if configured.is_empty() {
-            vec!["../front/src/formulario.json".into(), "front/src/formulario.json".into()]
+            vec![
+                "../front/src/formulario.json".into(),
+                "front/src/formulario.json".into(),
+            ]
         } else {
             vec![configured.into()]
         };
@@ -81,7 +111,9 @@ impl FormMeta {
             if let Ok(text) = std::fs::read_to_string(p) {
                 match FormMeta::parse(&text) {
                     Ok(m) => return m,
-                    Err(e) => tracing::warn!("formulario.json inválido ({e}); usando estructura de respaldo"),
+                    Err(e) => tracing::warn!(
+                        "formulario.json inválido ({e}); usando estructura de respaldo"
+                    ),
                 }
                 return FormMeta::fallback();
             }
@@ -102,7 +134,7 @@ impl FormMeta {
         }
         match self.qid_flow.get(qid) {
             None => false,
-            Some(fq) => flow.map_or(true, |f| f == *fq),
+            Some(fq) => flow.is_none_or(|f| f == *fq),
         }
     }
 }

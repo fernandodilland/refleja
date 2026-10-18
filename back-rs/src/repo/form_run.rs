@@ -45,10 +45,13 @@ struct Row {
 
 impl From<Row> for FormRun {
     fn from(r: Row) -> Self {
-        let counted = r.counted.and_then(|s| serde_json::from_str::<Value>(&s).ok()).and_then(|v| match v {
-            Value::Object(m) => Some(m),
-            _ => None,
-        });
+        let counted = r
+            .counted
+            .and_then(|s| serde_json::from_str::<Value>(&s).ok())
+            .and_then(|v| match v {
+                Value::Object(m) => Some(m),
+                _ => None,
+            });
         FormRun {
             id: r.id,
             age_bucket: r.age_bucket,
@@ -74,24 +77,40 @@ const COLS: &str = "id, age_bucket, flow_type, started, max_step, last_question_
     score_psicologica, score_fisica, score_economica, score_patrimonial, score_sexual, score_intimidacion, \
     CAST(counted AS CHAR) AS counted";
 
-pub async fn get_by_uid(conn: &mut MySqlConnection, run_uid: &str) -> Result<Option<FormRun>, sqlx::Error> {
+pub async fn get_by_uid(
+    conn: &mut MySqlConnection,
+    run_uid: &str,
+) -> Result<Option<FormRun>, sqlx::Error> {
     let q = format!("SELECT {COLS} FROM form_run WHERE run_uid = ?");
-    Ok(sqlx::query_as::<_, Row>(&q).bind(run_uid).fetch_optional(conn).await?.map(Into::into))
+    Ok(sqlx::query_as::<_, Row>(&q)
+        .bind(run_uid)
+        .fetch_optional(conn)
+        .await?
+        .map(Into::into))
 }
 
 /// Crea el run (tolerando que otro lo haya creado a la vez) y lo devuelve.
-pub async fn create(conn: &mut MySqlConnection, run_uid: &str, visitor_id: i64) -> Result<FormRun, sqlx::Error> {
+pub async fn create(
+    conn: &mut MySqlConnection,
+    run_uid: &str,
+    visitor_id: i64,
+) -> Result<FormRun, sqlx::Error> {
     sqlx::query("INSERT IGNORE INTO form_run (run_uid, visitor_id) VALUES (?, ?)")
         .bind(run_uid)
         .bind(visitor_id)
         .execute(&mut *conn)
         .await?;
-    get_by_uid(conn, run_uid).await?.ok_or(sqlx::Error::RowNotFound)
+    get_by_uid(conn, run_uid)
+        .await?
+        .ok_or(sqlx::Error::RowNotFound)
 }
 
 /// UPDATE completo del run; fija `updated_at` (ordena "tiempo real" en el panel).
 pub async fn save(conn: &mut MySqlConnection, r: &FormRun) -> Result<(), sqlx::Error> {
-    let counted = r.counted.as_ref().map(|m| serde_json::to_string(m).unwrap_or_default());
+    let counted = r
+        .counted
+        .as_ref()
+        .map(|m| serde_json::to_string(m).unwrap_or_default());
     sqlx::query(
         "UPDATE form_run SET age_bucket=?, flow_type=?, started=?, max_step=?, last_question_id=?, completed=?, \
          municipio=?, risk_level=?, score_psicologica=?, score_fisica=?, score_economica=?, score_patrimonial=?, \

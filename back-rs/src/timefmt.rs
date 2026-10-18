@@ -37,12 +37,20 @@ mod tests {
     }
     #[test]
     fn iso() {
-        let d = NaiveDate::from_ymd_opt(2026, 10, 18).unwrap().and_hms_micro_opt(6, 15, 34, 573642).unwrap();
+        let d = NaiveDate::from_ymd_opt(2026, 10, 18)
+            .unwrap()
+            .and_hms_micro_opt(6, 15, 34, 573642)
+            .unwrap();
         assert_eq!(isoformat(&d), "2026-10-18T06:15:34.573642");
         assert_eq!(isoformat(&d.with_nanosecond_zero()), "2026-10-18T06:15:34");
     }
-    trait Z { fn with_nanosecond_zero(&self) -> NaiveDateTime; }
+    trait Z {
+        fn with_nanosecond_zero(&self) -> NaiveDateTime;
+    }
     impl Z for NaiveDateTime {
-        fn with_nanosecond_zero(&self) -> NaiveDateTime { use chrono::Timelike; self.with_nanosecond(0).unwrap() }
+        fn with_nanosecond_zero(&self) -> NaiveDateTime {
+            use chrono::Timelike;
+            self.with_nanosecond(0).unwrap()
+        }
     }
 }

@@ -11,11 +11,16 @@ pub struct Visitor {
     pub action_count: i32,
 }
 
-pub async fn find_by_hash(conn: &mut MySqlConnection, vid_hash: &str) -> Result<Option<Visitor>, sqlx::Error> {
-    sqlx::query_as::<_, Visitor>("SELECT id, events_count, run_count, action_count FROM visitor WHERE vid_hash = ?")
-        .bind(vid_hash)
-        .fetch_optional(conn)
-        .await
+pub async fn find_by_hash(
+    conn: &mut MySqlConnection,
+    vid_hash: &str,
+) -> Result<Option<Visitor>, sqlx::Error> {
+    sqlx::query_as::<_, Visitor>(
+        "SELECT id, events_count, run_count, action_count FROM visitor WHERE vid_hash = ?",
+    )
+    .bind(vid_hash)
+    .fetch_optional(conn)
+    .await
 }
 
 /// Devuelve `(visitante, creado)`. Tolera la carrera de dos creaciones simultáneas.
@@ -39,7 +44,9 @@ pub async fn get_or_create(
     .execute(&mut *conn)
     .await?;
     let created = res.rows_affected() == 1;
-    let v = find_by_hash(conn, vid_hash).await?.ok_or(sqlx::Error::RowNotFound)?;
+    let v = find_by_hash(conn, vid_hash)
+        .await?
+        .ok_or(sqlx::Error::RowNotFound)?;
     Ok((v, created))
 }
 

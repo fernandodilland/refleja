@@ -9,29 +9,63 @@ pub fn loc_of(base: &[Value], key: &str) -> Vec<Value> {
     l
 }
 
+#[derive(Default)]
 pub struct Errs(pub Vec<ValErr>);
 
 impl Errs {
     pub fn new() -> Self {
         Errs(Vec::new())
     }
-    pub fn push(&mut self, typ: &'static str, loc: Vec<Value>, msg: impl Into<String>, input: Value, ctx: Option<Value>) {
-        self.0.push(ValErr { typ, loc, msg: msg.into(), input, ctx });
+    pub fn push(
+        &mut self,
+        typ: &'static str,
+        loc: Vec<Value>,
+        msg: impl Into<String>,
+        input: Value,
+        ctx: Option<Value>,
+    ) {
+        self.0.push(ValErr {
+            typ,
+            loc,
+            msg: msg.into(),
+            input,
+            ctx,
+        });
     }
     pub fn into_result<T>(self, ok: T) -> Result<T, AppError> {
-        if self.0.is_empty() { Ok(ok) } else { Err(AppError::Validation(self.0)) }
+        if self.0.is_empty() {
+            Ok(ok)
+        } else {
+            Err(AppError::Validation(self.0))
+        }
     }
 
     /// `input` de un campo ausente es el objeto que lo contiene (como Pydantic).
     pub fn missing(&mut self, base: &[Value], key: &str, parent: &Map<String, Value>) {
-        self.push("missing", loc_of(base, key), "Field required", Value::Object(parent.clone()), None);
+        self.push(
+            "missing",
+            loc_of(base, key),
+            "Field required",
+            Value::Object(parent.clone()),
+            None,
+        );
     }
 
     /// Cadena opcional/obligatoria con límites de longitud en caracteres.
-    pub fn string(&mut self, obj: &Map<String, Value>, base: &[Value], key: &str, min: usize, max: usize, required: bool) -> Option<String> {
+    pub fn string(
+        &mut self,
+        obj: &Map<String, Value>,
+        base: &[Value],
+        key: &str,
+        min: usize,
+        max: usize,
+        required: bool,
+    ) -> Option<String> {
         match obj.get(key) {
             None => {
-                if required { self.missing(base, key, obj); }
+                if required {
+                    self.missing(base, key, obj);
+                }
                 None
             }
             Some(Value::Null) if !required => None,
@@ -39,55 +73,117 @@ impl Errs {
                 let n = s.chars().count();
                 if n < min {
                     let plural = if min == 1 { "character" } else { "characters" };
-                    self.push("string_too_short", loc_of(base, key), format!("String should have at least {min} {plural}"), json!(s), Some(json!({"min_length": min})));
+                    self.push(
+                        "string_too_short",
+                        loc_of(base, key),
+                        format!("String should have at least {min} {plural}"),
+                        json!(s),
+                        Some(json!({"min_length": min})),
+                    );
                     None
                 } else if n > max {
                     let plural = if max == 1 { "character" } else { "characters" };
-                    self.push("string_too_long", loc_of(base, key), format!("String should have at most {max} {plural}"), json!(s), Some(json!({"max_length": max})));
+                    self.push(
+                        "string_too_long",
+                        loc_of(base, key),
+                        format!("String should have at most {max} {plural}"),
+                        json!(s),
+                        Some(json!({"max_length": max})),
+                    );
                     None
                 } else {
                     Some(s.clone())
                 }
             }
             Some(v) => {
-                self.push("string_type", loc_of(base, key), "Input should be a valid string", v.clone(), None);
+                self.push(
+                    "string_type",
+                    loc_of(base, key),
+                    "Input should be a valid string",
+                    v.clone(),
+                    None,
+                );
                 None
             }
         }
     }
 
     /// Entero con coerción "lax" (enteros, floats sin parte fraccionaria, strings numéricos).
-    pub fn int(&mut self, obj: &Map<String, Value>, base: &[Value], key: &str, min: i64, max: i64) -> Option<i64> {
+    pub fn int(
+        &mut self,
+        obj: &Map<String, Value>,
+        base: &[Value],
+        key: &str,
+        min: i64,
+        max: i64,
+    ) -> Option<i64> {
         let v = obj.get(key)?;
-        if v.is_null() { return None; }
+        if v.is_null() {
+            return None;
+        }
         let n = match v {
             Value::Number(n) => {
-                if let Some(i) = n.as_i64() { Some(i) }
-                else if let Some(f) = n.as_f64() {
-                    if f.fract() == 0.0 && f.abs() < 9e15 { Some(f as i64) } else {
-                        self.push("int_from_float", loc_of(base, key), "Input should be a valid integer, got a number with a fractional part", v.clone(), None);
+                if let Some(i) = n.as_i64() {
+                    Some(i)
+                } else if let Some(f) = n.as_f64() {
+                    if f.fract() == 0.0 && f.abs() < 9e15 {
+                        Some(f as i64)
+                    } else {
+                        self.push(
+                            "int_from_float",
+                            loc_of(base, key),
+                            "Input should be a valid integer, got a number with a fractional part",
+                            v.clone(),
+                            None,
+                        );
                         return None;
                     }
-                } else { None }
+                } else {
+                    None
+                }
             }
             Value::Bool(b) => Some(*b as i64),
             Value::String(s) => match parse_int_str(s).ok_or(()) {
                 Ok(i) => Some(i),
                 Err(_) => {
-                    self.push("int_parsing", loc_of(base, key), "Input should be a valid integer, unable to parse string as an integer", v.clone(), None);
+                    self.push(
+                        "int_parsing",
+                        loc_of(base, key),
+                        "Input should be a valid integer, unable to parse string as an integer",
+                        v.clone(),
+                        None,
+                    );
                     return None;
                 }
             },
             _ => {
-                self.push("int_type", loc_of(base, key), "Input should be a valid integer", v.clone(), None);
+                self.push(
+                    "int_type",
+                    loc_of(base, key),
+                    "Input should be a valid integer",
+                    v.clone(),
+                    None,
+                );
                 return None;
             }
         }?;
         if n < min {
-            self.push("greater_than_equal", loc_of(base, key), format!("Input should be greater than or equal to {min}"), v.clone(), Some(json!({"ge": min})));
+            self.push(
+                "greater_than_equal",
+                loc_of(base, key),
+                format!("Input should be greater than or equal to {min}"),
+                v.clone(),
+                Some(json!({"ge": min})),
+            );
             None
         } else if n > max {
-            self.push("less_than_equal", loc_of(base, key), format!("Input should be less than or equal to {max}"), v.clone(), Some(json!({"le": max})));
+            self.push(
+                "less_than_equal",
+                loc_of(base, key),
+                format!("Input should be less than or equal to {max}"),
+                v.clone(),
+                Some(json!({"le": max})),
+            );
             None
         } else {
             Some(n)
@@ -95,19 +191,45 @@ impl Errs {
     }
 
     /// Literal cerrado opcional.
-    pub fn literal(&mut self, obj: &Map<String, Value>, base: &[Value], key: &str, allowed: &[&str], required: bool) -> Option<String> {
+    pub fn literal(
+        &mut self,
+        obj: &Map<String, Value>,
+        base: &[Value],
+        key: &str,
+        allowed: &[&str],
+        required: bool,
+    ) -> Option<String> {
         match obj.get(key) {
-            None => { if required { self.missing(base, key, obj); } None }
+            None => {
+                if required {
+                    self.missing(base, key, obj);
+                }
+                None
+            }
             Some(Value::Null) if !required => None,
             Some(v) => {
                 if let Value::String(s) = v {
-                    if allowed.contains(&s.as_str()) { return Some(s.clone()); }
+                    if allowed.contains(&s.as_str()) {
+                        return Some(s.clone());
+                    }
                 }
                 let quoted: Vec<String> = allowed.iter().map(|a| format!("'{a}'")).collect();
                 let expected = if quoted.len() > 1 {
-                    format!("{} or {}", quoted[..quoted.len() - 1].join(", "), quoted[quoted.len() - 1])
-                } else { quoted.join("") };
-                self.push("literal_error", loc_of(base, key), format!("Input should be {expected}"), v.clone(), Some(json!({"expected": expected})));
+                    format!(
+                        "{} or {}",
+                        quoted[..quoted.len() - 1].join(", "),
+                        quoted[quoted.len() - 1]
+                    )
+                } else {
+                    quoted.join("")
+                };
+                self.push(
+                    "literal_error",
+                    loc_of(base, key),
+                    format!("Input should be {expected}"),
+                    v.clone(),
+                    Some(json!({"expected": expected})),
+                );
                 None
             }
         }
@@ -129,13 +251,23 @@ pub fn parse_int_str(s: &str) -> Option<i64> {
 
 /// Parsea el cuerpo JSON como lo hace FastAPI (content-type JSON o ausente).
 pub fn parse_json_body(headers: &HeaderMap, body: &[u8]) -> Result<Value, AppError> {
-    let ct = headers.get(header::CONTENT_TYPE).and_then(|v| v.to_str().ok()).unwrap_or("");
+    let ct = headers
+        .get(header::CONTENT_TYPE)
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("");
     if body.is_empty() {
-        return Err(AppError::Validation(vec![ValErr { typ: "missing", loc: vec![json!("body")], msg: "Field required".into(), input: Value::Null, ctx: None }]));
+        return Err(AppError::Validation(vec![ValErr {
+            typ: "missing",
+            loc: vec![json!("body")],
+            msg: "Field required".into(),
+            input: Value::Null,
+            ctx: None,
+        }]));
     }
     if !ct.is_empty() {
         let main = ct.split(';').next().unwrap_or("").trim().to_lowercase();
-        let ok = main == "application/json" || (main.starts_with("application/") && main.ends_with("+json"));
+        let ok = main == "application/json"
+            || (main.starts_with("application/") && main.ends_with("+json"));
         if !ok {
             return Err(AppError::Validation(vec![ValErr {
                 typ: "model_attributes_type",

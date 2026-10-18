@@ -14,6 +14,12 @@ pub async fn access_log(req: Request, next: Next) -> Response {
     let path = req.uri().path().to_string();
     let t = Instant::now();
     let resp = next.run(req).await;
-    tracing::info!("{} {} -> {} ({} ms)", method, path, resp.status().as_u16(), t.elapsed().as_millis());
+    tracing::info!(
+        "{} {} -> {} ({} ms)",
+        method,
+        path,
+        resp.status().as_u16(),
+        t.elapsed().as_millis()
+    );
     resp
 }

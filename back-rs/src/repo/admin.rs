@@ -23,21 +23,33 @@ pub struct AdminSession {
 
 const USER_COLS: &str = "id, username, password_hash, is_active, last_login_at";
 
-pub async fn user_by_username(conn: &mut MySqlConnection, username: &str) -> Result<Option<AdminUser>, sqlx::Error> {
-    sqlx::query_as::<_, AdminUser>(&format!("SELECT {USER_COLS} FROM admin_user WHERE username = ?"))
-        .bind(username)
-        .fetch_optional(conn)
-        .await
+pub async fn user_by_username(
+    conn: &mut MySqlConnection,
+    username: &str,
+) -> Result<Option<AdminUser>, sqlx::Error> {
+    sqlx::query_as::<_, AdminUser>(&format!(
+        "SELECT {USER_COLS} FROM admin_user WHERE username = ?"
+    ))
+    .bind(username)
+    .fetch_optional(conn)
+    .await
 }
 
-pub async fn user_by_id(conn: &mut MySqlConnection, id: i64) -> Result<Option<AdminUser>, sqlx::Error> {
+pub async fn user_by_id(
+    conn: &mut MySqlConnection,
+    id: i64,
+) -> Result<Option<AdminUser>, sqlx::Error> {
     sqlx::query_as::<_, AdminUser>(&format!("SELECT {USER_COLS} FROM admin_user WHERE id = ?"))
         .bind(id)
         .fetch_optional(conn)
         .await
 }
 
-pub async fn set_login(conn: &mut MySqlConnection, id: i64, new_hash: Option<&str>) -> Result<(), sqlx::Error> {
+pub async fn set_login(
+    conn: &mut MySqlConnection,
+    id: i64,
+    new_hash: Option<&str>,
+) -> Result<(), sqlx::Error> {
     match new_hash {
         Some(h) => sqlx::query("UPDATE admin_user SET password_hash = ?, last_login_at = ?, updated_at = NOW() WHERE id = ?")
             .bind(h).bind(utcnow()).bind(id).execute(conn).await?,
@@ -78,21 +90,35 @@ pub async fn insert_session(
     Ok(())
 }
 
-pub async fn session_by_jti(conn: &mut MySqlConnection, jti: &str) -> Result<Option<AdminSession>, sqlx::Error> {
+pub async fn session_by_jti(
+    conn: &mut MySqlConnection,
+    jti: &str,
+) -> Result<Option<AdminSession>, sqlx::Error> {
     sqlx::query_as::<_, AdminSession>("SELECT id, admin_user_id, token_hash, expires_at, revoked_at FROM admin_session WHERE refresh_jti = ?")
         .bind(jti)
         .fetch_optional(conn)
         .await
 }
 
-pub async fn revoke_session(conn: &mut MySqlConnection, id: i64, now: NaiveDateTime) -> Result<(), sqlx::Error> {
+pub async fn revoke_session(
+    conn: &mut MySqlConnection,
+    id: i64,
+    now: NaiveDateTime,
+) -> Result<(), sqlx::Error> {
     sqlx::query("UPDATE admin_session SET revoked_at = ?, updated_at = NOW() WHERE id = ?")
-        .bind(now).bind(id).execute(conn).await?;
+        .bind(now)
+        .bind(id)
+        .execute(conn)
+        .await?;
     Ok(())
 }
 
 /// Revoca todas las sesiones activas del usuario (reuso de refresh detectado).
-pub async fn revoke_all_active(conn: &mut MySqlConnection, user_id: i64, now: NaiveDateTime) -> Result<(), sqlx::Error> {
+pub async fn revoke_all_active(
+    conn: &mut MySqlConnection,
+    user_id: i64,
+    now: NaiveDateTime,
+) -> Result<(), sqlx::Error> {
     sqlx::query("UPDATE admin_session SET revoked_at = ?, updated_at = NOW() WHERE admin_user_id = ? AND revoked_at IS NULL")
         .bind(now).bind(user_id).execute(conn).await?;
     Ok(())

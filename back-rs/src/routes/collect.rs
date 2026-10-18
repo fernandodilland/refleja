@@ -18,10 +18,24 @@ use sqlx::MySqlConnection;
 use std::collections::HashMap;
 
 const EVENT_TYPES: [&str; 10] = [
-    "page_view", "run_start", "answer", "minor", "municipio", "result",
-    "urgent_click", "hide_click", "restart", "directory_municipio",
+    "page_view",
+    "run_start",
+    "answer",
+    "minor",
+    "municipio",
+    "result",
+    "urgent_click",
+    "hide_click",
+    "restart",
+    "directory_municipio",
 ];
-const ACTION_EVENTS: [&str; 5] = ["page_view", "urgent_click", "hide_click", "restart", "directory_municipio"];
+const ACTION_EVENTS: [&str; 5] = [
+    "page_view",
+    "urgent_click",
+    "hide_click",
+    "restart",
+    "directory_municipio",
+];
 
 struct Scores {
     psicologica: i64,
@@ -71,7 +85,13 @@ fn parse_event(v: &Value, base: &[Value], errs: &mut Errs) -> Option<Event> {
     let next_id = errs.string(obj, base, "next_id", 0, 32, false);
     let step = errs.int(obj, base, "step", 0, 20);
     let flow_type = errs.literal(obj, base, "flow_type", &["pareja", "fam", "trab"], false);
-    let age_bucket = errs.literal(obj, base, "age_bucket", &["minor", "18-25", "26-40", "41+"], false);
+    let age_bucket = errs.literal(
+        obj,
+        base,
+        "age_bucket",
+        &["minor", "18-25", "26-40", "41+"],
+        false,
+    );
     let municipio = errs.string(obj, base, "municipio", 0, 48, false);
     let risk_level = errs.literal(obj, base, "risk_level", &["low", "medium", "high"], false);
     let device = errs.literal(obj, base, "device", &["mobile", "desktop", "tablet"], false);
@@ -97,7 +117,19 @@ fn parse_event(v: &Value, base: &[Value], errs: &mut Errs) -> Option<Event> {
     if errs.0.len() > before {
         return None;
     }
-    Some(Event { typ: typ?, run_uid, question_id, next_id, step, flow_type, age_bucket, municipio, risk_level, scores, device })
+    Some(Event {
+        typ: typ?,
+        run_uid,
+        question_id,
+        next_id,
+        step,
+        flow_type,
+        age_bucket,
+        municipio,
+        risk_level,
+        scores,
+        device,
+    })
 }
 
 /// `CollectBatch`: lote `{"events": [...]}` o evento suelto `{"type": ...}` (compatibilidad).
@@ -122,7 +154,13 @@ fn parse_batch(v: &Value) -> Result<Vec<Event>, AppError> {
         }
         Some(Value::Array(a)) => a,
         Some(other) => {
-            errs.push("list_type", loc_of(&base, "events"), "Input should be a valid list", other.clone(), None);
+            errs.push(
+                "list_type",
+                loc_of(&base, "events"),
+                "Input should be a valid list",
+                other.clone(),
+                None,
+            );
             return errs.into_result(vec![]);
         }
     };
@@ -130,7 +168,10 @@ fn parse_batch(v: &Value) -> Result<Vec<Event>, AppError> {
         errs.push(
             "too_long",
             loc_of(&base, "events"),
-            format!("List should have at most 50 items after validation, not {}", arr.len()),
+            format!(
+                "List should have at most 50 items after validation, not {}",
+                arr.len()
+            ),
             Value::Array(arr.clone()),
             Some(json!({"field_type": "List", "max_length": 50, "actual_length": arr.len()})),
         );
@@ -173,7 +214,11 @@ struct Ctx<'a> {
 
 impl Ctx<'_> {
     /// Run del evento; lo crea si hace falta y la cuota lo permite.
-    async fn run_for(&mut self, conn: &mut MySqlConnection, ev: &Event) -> Result<Option<String>, sqlx::Error> {
+    async fn run_for(
+        &mut self,
+        conn: &mut MySqlConnection,
+        ev: &Event,
+    ) -> Result<Option<String>, sqlx::Error> {
         let uid = match ev.run_uid.as_deref() {
             Some(u) if !u.is_empty() => u.to_string(),
             _ => return Ok(None),
@@ -192,19 +237,34 @@ impl Ctx<'_> {
                 r
             }
         };
-        self.runs.insert(uid.clone(), Entry { orig: run.clone(), run });
+        self.runs.insert(
+            uid.clone(),
+            Entry {
+                orig: run.clone(),
+                run,
+            },
+        );
         Ok(Some(uid))
     }
 
     /// Cuenta reached('r') o answered('a') de un qid UNA vez por run (idempotente).
-    async fn count_q(&mut self, conn: &mut MySqlConnection, uid: &str, qid: Option<&str>, kind: &str) -> Result<(), sqlx::Error> {
+    async fn count_q(
+        &mut self,
+        conn: &mut MySqlConnection,
+        uid: &str,
+        qid: Option<&str>,
+        kind: &str,
+    ) -> Result<(), sqlx::Error> {
         let Some(qid) = qid else { return Ok(()) };
         if qid.is_empty() || !self.st.form.is_valid_question_id(qid) {
             return Ok(());
         }
         let run = &mut self.runs.get_mut(uid).expect("run cargado").run;
         let mut counted = run.counted.clone().unwrap_or_default();
-        let mut seen: Vec<Value> = counted.get(kind).and_then(|v| v.as_array().cloned()).unwrap_or_default();
+        let mut seen: Vec<Value> = counted
+            .get(kind)
+            .and_then(|v| v.as_array().cloned())
+            .unwrap_or_default();
         if seen.iter().any(|s| s.as_str() == Some(qid)) {
             return Ok(());
         }
@@ -229,9 +289,18 @@ impl Ctx<'_> {
             match et {
                 "page_view" => {
                     self.q.d_page_views += 1;
-                    counters::bump_daily(conn, DailyDeltas { page_views: 1, ..Default::default() }).await?;
+                    counters::bump_daily(
+                        conn,
+                        DailyDeltas {
+                            page_views: 1,
+                            ..Default::default()
+                        },
+                    )
+                    .await?;
                 }
-                "urgent_click" | "hide_click" | "restart" => counters::bump_counter(conn, et, 1).await?,
+                "urgent_click" | "hide_click" | "restart" => {
+                    counters::bump_counter(conn, et, 1).await?
+                }
                 _ => {
                     if let Some(m) = normalize_municipio(ev.municipio.as_deref()) {
                         counters::bump_counter(conn, &format!("dir_muni:{m}"), 1).await?;
@@ -242,7 +311,9 @@ impl Ctx<'_> {
         }
 
         // Eventos del formulario: requieren un run (acotado por la cuota de runs).
-        let Some(uid) = self.run_for(conn, ev).await? else { return Ok(()) };
+        let Some(uid) = self.run_for(conn, ev).await? else {
+            return Ok(());
+        };
         match et {
             "run_start" => {
                 let r = &mut self.runs.get_mut(&uid).unwrap().run;
@@ -256,10 +327,15 @@ impl Ctx<'_> {
             "answer" => {
                 let st = self.st;
                 let form = &st.form;
-                let flow: Option<String> = ev.flow_type.clone().or_else(|| self.runs[&uid].run.flow_type.clone());
-                let q_ok = form.qid_ok_for_flow(ev.question_id.as_deref().unwrap_or(""), flow.as_deref());
+                let flow: Option<String> = ev
+                    .flow_type
+                    .clone()
+                    .or_else(|| self.runs[&uid].run.flow_type.clone());
+                let q_ok =
+                    form.qid_ok_for_flow(ev.question_id.as_deref().unwrap_or(""), flow.as_deref());
                 if q_ok {
-                    self.count_q(conn, &uid, ev.question_id.as_deref(), "a").await?;
+                    self.count_q(conn, &uid, ev.question_id.as_deref(), "a")
+                        .await?;
                 }
                 let nxt: Option<&str> = ev
                     .next_id
@@ -286,15 +362,26 @@ impl Ctx<'_> {
                             r.max_step = step as i16;
                         }
                     }
-                    let last = nxt
-                        .map(|s| s.to_string())
-                        .or_else(|| if q_ok { ev.question_id.clone().filter(|s| !s.is_empty()) } else { None });
+                    let last = nxt.map(|s| s.to_string()).or_else(|| {
+                        if q_ok {
+                            ev.question_id.clone().filter(|s| !s.is_empty())
+                        } else {
+                            None
+                        }
+                    });
                     if let Some(l) = last {
                         r.last_question_id = Some(l);
                     }
                 }
                 if bump_start {
-                    counters::bump_daily(conn, DailyDeltas { form_starts: 1, ..Default::default() }).await?;
+                    counters::bump_daily(
+                        conn,
+                        DailyDeltas {
+                            form_starts: 1,
+                            ..Default::default()
+                        },
+                    )
+                    .await?;
                 }
             }
             "minor" => {
@@ -305,7 +392,15 @@ impl Ctx<'_> {
                 if !r.completed {
                     r.completed = true;
                     self.q.d_completions += 1;
-                    counters::bump_daily(conn, DailyDeltas { minors: 1, form_completes: 1, ..Default::default() }).await?;
+                    counters::bump_daily(
+                        conn,
+                        DailyDeltas {
+                            minors: 1,
+                            form_completes: 1,
+                            ..Default::default()
+                        },
+                    )
+                    .await?;
                 }
             }
             "municipio" => {
@@ -336,7 +431,14 @@ impl Ctx<'_> {
                 if !r.completed {
                     r.completed = true;
                     self.q.d_completions += 1;
-                    counters::bump_daily(conn, DailyDeltas { form_completes: 1, ..Default::default() }).await?;
+                    counters::bump_daily(
+                        conn,
+                        DailyDeltas {
+                            form_completes: 1,
+                            ..Default::default()
+                        },
+                    )
+                    .await?;
                 }
             }
             _ => {}
@@ -355,7 +457,10 @@ pub async fn collect(
     let events = parse_batch(&v)?;
 
     let vid_h = hmac_vid(&st.settings.vid_hmac_key, &vid);
-    if !st.limiter.allow(&format!("coll:{vid_h}"), st.settings.collect_rate_per_min) {
+    if !st
+        .limiter
+        .allow(&format!("coll:{vid_h}"), st.settings.collect_rate_per_min)
+    {
         return Err(AppError::too_many("Demasiadas peticiones."));
     }
 
@@ -366,10 +471,32 @@ pub async fn collect(
         device = d;
     }
 
+    let mut attempt = 0;
+    let accepted = loop {
+        match apply_batch(&st, &vid_h, country.as_deref(), &device, &events).await {
+            Ok(n) => break n,
+            Err(e) if crate::db::is_retryable(&e) && attempt + 1 < crate::db::MAX_TX_ATTEMPTS => {
+                attempt += 1;
+                crate::db::backoff(attempt).await;
+            }
+            Err(e) => return Err(e.into()),
+        }
+    };
+    Ok(Json(json!({"ok": true, "accepted": accepted})))
+}
+
+/// Una transacción completa del lote (reintentable: todo el estado se reconstruye en cada intento).
+async fn apply_batch(
+    st: &AppState,
+    vid_h: &str,
+    country: Option<&str>,
+    device: &str,
+    events: &[Event],
+) -> Result<i64, sqlx::Error> {
     let mut tx = st.pool.begin().await?;
-    let (vis, _) = visitor::get_or_create(&mut tx, &vid_h, country.as_deref(), Some(&device)).await?;
+    let (vis, _) = visitor::get_or_create(&mut tx, vid_h, country, Some(device)).await?;
     let mut ctx = Ctx {
-        st: &st,
+        st,
         visitor_id: vis.id,
         q: Quota {
             events: vis.events_count as i64,
@@ -384,7 +511,7 @@ pub async fn collect(
         runs: HashMap::new(),
     };
     let mut accepted = 0;
-    for ev in &events {
+    for ev in events {
         if ctx.q.events + ctx.q.d_events >= st.settings.public_max_events {
             break; // cuota de por vida alcanzada: se ignora el resto
         }
@@ -398,7 +525,16 @@ pub async fn collect(
         }
     }
     let q = &ctx.q;
-    visitor::bump_quota(&mut tx, &vid_h, q.d_events, q.d_runs, q.d_completions, q.d_page_views, q.d_actions).await?;
+    visitor::bump_quota(
+        &mut tx,
+        vid_h,
+        q.d_events,
+        q.d_runs,
+        q.d_completions,
+        q.d_page_views,
+        q.d_actions,
+    )
+    .await?;
     tx.commit().await?;
-    Ok(Json(json!({"ok": true, "accepted": accepted})))
+    Ok(accepted)
 }

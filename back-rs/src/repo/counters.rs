@@ -3,7 +3,13 @@ use crate::form_meta::FormMeta;
 use crate::timefmt::today_utc;
 use sqlx::MySqlConnection;
 
-pub async fn bump_question(conn: &mut MySqlConnection, form: &FormMeta, qid: &str, reached: i64, answered: i64) -> Result<(), sqlx::Error> {
+pub async fn bump_question(
+    conn: &mut MySqlConnection,
+    form: &FormMeta,
+    qid: &str,
+    reached: i64,
+    answered: i64,
+) -> Result<(), sqlx::Error> {
     if !form.is_valid_question_id(qid) || (reached == 0 && answered == 0) {
         return Ok(());
     }
@@ -20,7 +26,11 @@ pub async fn bump_question(conn: &mut MySqlConnection, form: &FormMeta, qid: &st
     Ok(())
 }
 
-pub async fn bump_counter(conn: &mut MySqlConnection, name: &str, n: i64) -> Result<(), sqlx::Error> {
+pub async fn bump_counter(
+    conn: &mut MySqlConnection,
+    name: &str,
+    n: i64,
+) -> Result<(), sqlx::Error> {
     if name.is_empty() || n == 0 {
         return Ok(());
     }
@@ -46,7 +56,12 @@ pub struct DailyDeltas {
 }
 
 pub async fn bump_daily(conn: &mut MySqlConnection, d: DailyDeltas) -> Result<(), sqlx::Error> {
-    if d.page_views == 0 && d.form_starts == 0 && d.form_completes == 0 && d.minors == 0 && d.new_visitors == 0 {
+    if d.page_views == 0
+        && d.form_starts == 0
+        && d.form_completes == 0
+        && d.minors == 0
+        && d.new_visitors == 0
+    {
         return Ok(());
     }
     sqlx::query(

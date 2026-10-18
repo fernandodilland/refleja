@@ -6,7 +6,9 @@ use std::net::SocketAddr;
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt()
-        .with_env_filter(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
+        )
         .with_target(false)
         .init();
 
@@ -28,7 +30,11 @@ async fn main() {
         eprintln!("{e}");
         std::process::exit(1);
     }
-    let (host, port, env) = (settings.app_host.clone(), settings.app_port, settings.env.clone());
+    let (host, port, env) = (
+        settings.app_host.clone(),
+        settings.app_port,
+        settings.env.clone(),
+    );
     let state = AppState::new(settings, pool).await;
     let app = build_router(state);
 
@@ -47,17 +53,23 @@ async fn main() {
         }
     };
     tracing::info!("Refleja API lista (ENV={env}, puerto={port})");
-    axum::serve(listener, app.into_make_service_with_connect_info::<SocketAddr>())
-        .with_graceful_shutdown(shutdown())
-        .await
-        .expect("servidor");
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .with_graceful_shutdown(shutdown())
+    .await
+    .expect("servidor");
 }
 
 async fn shutdown() {
-    let ctrl_c = async { let _ = tokio::signal::ctrl_c().await; };
+    let ctrl_c = async {
+        let _ = tokio::signal::ctrl_c().await;
+    };
     #[cfg(unix)]
     let term = async {
-        if let Ok(mut s) = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate()) {
+        if let Ok(mut s) = tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+        {
             s.recv().await;
         }
     };

@@ -59,7 +59,10 @@ fn parse_bool(name: &str, default: bool) -> Result<bool, String> {
 fn parse_num<T: std::str::FromStr>(name: &str, default: T) -> Result<T, String> {
     match env::var(name) {
         Err(_) => Ok(default),
-        Ok(v) => v.trim().parse::<T>().map_err(|_| format!("{name}: valor numérico inválido: {v:?}")),
+        Ok(v) => v
+            .trim()
+            .parse::<T>()
+            .map_err(|_| format!("{name}: valor numérico inválido: {v:?}")),
     }
 }
 
@@ -71,7 +74,10 @@ impl Settings {
     }
 
     pub fn from_env() -> Result<Settings, String> {
-        let raw_url = s("DATABASE_URL", "mysql://refleja:refleja@127.0.0.1:3306/refleja");
+        let raw_url = s(
+            "DATABASE_URL",
+            "mysql://refleja:refleja@127.0.0.1:3306/refleja",
+        );
         let database_url = if raw_url.starts_with("sqlite") {
             return Err("DATABASE_URL: SQLite no está soportado por el backend Rust; usa mysql://usuario:pass@host:3306/base".into());
         } else {
@@ -110,7 +116,7 @@ impl Settings {
             public_max_events: parse_num("PUBLIC_MAX_EVENTS", 2000)?,
             public_max_runs: parse_num("PUBLIC_MAX_RUNS", 20)?,
             public_max_actions: parse_num("PUBLIC_MAX_ACTIONS", 300)?,
-            argon_concurrency: parse_num("ARGON2_CONCURRENCY", 2usize)?,
+            argon_concurrency: parse_num("ARGON2_CONCURRENCY", 1usize)?,
         };
         st.fail_closed()?;
         Ok(st)
@@ -119,7 +125,11 @@ impl Settings {
     /// En producción no se permite arrancar con secretos por defecto o débiles.
     fn fail_closed(&self) -> Result<(), String> {
         if self.is_prod() {
-            let vals = [&self.jwt_secret, &self.public_token_secret, &self.vid_hmac_key];
+            let vals = [
+                &self.jwt_secret,
+                &self.public_token_secret,
+                &self.vid_hmac_key,
+            ];
             for ((name, default), val) in DEFAULT_SECRETS.iter().zip(vals) {
                 if val == default || val.chars().count() < 32 {
                     return Err(format!(
@@ -136,7 +146,11 @@ impl Settings {
     }
 
     pub fn cors_list(&self) -> Vec<String> {
-        self.cors_origins.split(',').map(|o| o.trim().to_string()).filter(|o| !o.is_empty()).collect()
+        self.cors_origins
+            .split(',')
+            .map(|o| o.trim().to_string())
+            .filter(|o| !o.is_empty())
+            .collect()
     }
 
     /// Nunca se ignora Turnstile en producción.

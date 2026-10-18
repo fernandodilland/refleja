@@ -30,7 +30,11 @@ async fn main() {
             println!("{}", Passwords::new(1).hash(pw).await);
         }
         Some("create-admin") => {
-            let username = match args.iter().position(|a| a == "--username").and_then(|i| args.get(i + 1)) {
+            let username = match args
+                .iter()
+                .position(|a| a == "--username")
+                .and_then(|i| args.get(i + 1))
+            {
                 Some(u) if !u.is_empty() && u.chars().count() <= 64 => u.clone(),
                 _ => {
                     eprintln!("uso: refleja-admin create-admin --username NOMBRE (contraseña por REFLEJA_ADMIN_PASSWORD o stdin)");
@@ -46,10 +50,12 @@ async fn main() {
                 eprintln!("Configuración inválida: {e}");
                 std::process::exit(1);
             });
-            let pool = refleja_api::db::connect(&settings).await.unwrap_or_else(|e| {
-                eprintln!("No se pudo conectar a la base de datos: {e}");
-                std::process::exit(1);
-            });
+            let pool = refleja_api::db::connect(&settings)
+                .await
+                .unwrap_or_else(|e| {
+                    eprintln!("No se pudo conectar a la base de datos: {e}");
+                    std::process::exit(1);
+                });
             let hash = Passwords::new(1).hash(pw).await;
             let res = sqlx::query(
                 "INSERT INTO admin_user (username, password_hash, is_active) \

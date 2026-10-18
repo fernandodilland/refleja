@@ -12,8 +12,17 @@ pub struct Turnstile {
 
 impl Turnstile {
     pub fn new(url: String, bypass: bool, secret_login: String, secret_invisible: String) -> Self {
-        let client = reqwest::Client::builder().timeout(Duration::from_secs(8)).build().expect("cliente http");
-        Turnstile { client, url, bypass, secret_login, secret_invisible }
+        let client = reqwest::Client::builder()
+            .timeout(Duration::from_secs(8))
+            .build()
+            .expect("cliente http");
+        Turnstile {
+            client,
+            url,
+            bypass,
+            secret_login,
+            secret_invisible,
+        }
     }
 
     /// `true` solo si Cloudflare confirma `success`; cualquier error ⇒ `false` (fail-closed).
@@ -30,7 +39,8 @@ impl Turnstile {
         }
         let body = {
             let mut f = form_urlencoded::Serializer::new(String::new());
-            f.append_pair("secret", secret).append_pair("response", token);
+            f.append_pair("secret", secret)
+                .append_pair("response", token);
             if let Some(ip) = remote_ip {
                 if !ip.is_empty() {
                     f.append_pair("remoteip", ip);
@@ -49,15 +59,24 @@ impl Turnstile {
         if !resp.status().is_success() {
             return false;
         }
-        match resp.bytes().await.ok().and_then(|b| serde_json::from_slice::<serde_json::Value>(&b).ok()).ok_or(()) {
-            Ok(v) => v.get("success").map(|s| match s {
-                serde_json::Value::Bool(b) => *b,
-                serde_json::Value::Null => false,
-                serde_json::Value::Number(n) => n.as_f64().map(|x| x != 0.0).unwrap_or(false),
-                serde_json::Value::String(s) => !s.is_empty(),
-                serde_json::Value::Array(a) => !a.is_empty(),
-                serde_json::Value::Object(o) => !o.is_empty(),
-            }).unwrap_or(false),
+        match resp
+            .bytes()
+            .await
+            .ok()
+            .and_then(|b| serde_json::from_slice::<serde_json::Value>(&b).ok())
+            .ok_or(())
+        {
+            Ok(v) => v
+                .get("success")
+                .map(|s| match s {
+                    serde_json::Value::Bool(b) => *b,
+                    serde_json::Value::Null => false,
+                    serde_json::Value::Number(n) => n.as_f64().map(|x| x != 0.0).unwrap_or(false),
+                    serde_json::Value::String(s) => !s.is_empty(),
+                    serde_json::Value::Array(a) => !a.is_empty(),
+                    serde_json::Value::Object(o) => !o.is_empty(),
+                })
+                .unwrap_or(false),
             Err(_) => false,
         }
     }

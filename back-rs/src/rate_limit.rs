@@ -13,11 +13,16 @@ pub struct RateLimiter {
 
 impl RateLimiter {
     pub fn new() -> Self {
-        RateLimiter { inner: Mutex::new(LruCache::new(NonZeroUsize::new(MAX_KEYS).unwrap())) }
+        RateLimiter {
+            inner: Mutex::new(LruCache::new(NonZeroUsize::new(MAX_KEYS).unwrap())),
+        }
     }
 
     pub fn allow(&self, key: &str, limit: usize) -> bool {
-        let now = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs_f64()).unwrap_or(0.0);
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_secs_f64())
+            .unwrap_or(0.0);
         self.allow_at(key, limit, now)
     }
 
@@ -48,7 +53,9 @@ mod tests {
     #[test]
     fn window_and_limit() {
         let r = RateLimiter::new();
-        for i in 0..3 { assert!(r.allow_at("k", 3, 100.0 + i as f64)); }
+        for i in 0..3 {
+            assert!(r.allow_at("k", 3, 100.0 + i as f64));
+        }
         assert!(!r.allow_at("k", 3, 110.0));
         assert!(r.allow_at("k", 3, 161.0)); // expiran las marcas de t<=101
         assert!(r.allow_at("otra", 3, 110.0));

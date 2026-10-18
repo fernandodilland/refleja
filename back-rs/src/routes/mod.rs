@@ -40,8 +40,15 @@ where
 }
 
 const GET_ROUTES: [&str; 9] = [
-    "/api/health", "/api/auth/me", "/api/platform/overview", "/api/platform/realtime", "/api/platform/funnel",
-    "/api/platform/violence", "/api/platform/municipios", "/api/platform/logins", "/api/platform/timeseries",
+    "/api/health",
+    "/api/auth/me",
+    "/api/platform/overview",
+    "/api/platform/realtime",
+    "/api/platform/funnel",
+    "/api/platform/violence",
+    "/api/platform/municipios",
+    "/api/platform/logins",
+    "/api/platform/timeseries",
 ];
 
 pub fn router() -> Router<AppState> {
@@ -63,7 +70,9 @@ pub fn router() -> Router<AppState> {
         .route("/api/platform/timeseries", get_only(platform::timeseries))
 }
 
-async fn health(axum::extract::State(st): axum::extract::State<AppState>) -> Json<serde_json::Value> {
+async fn health(
+    axum::extract::State(st): axum::extract::State<AppState>,
+) -> Json<serde_json::Value> {
     Json(json!({"status": "ok", "env": st.settings.env}))
 }
 
@@ -73,8 +82,16 @@ pub async fn fallback(req: Request) -> Response {
     if path.len() > 1 && path.ends_with('/') {
         let alt = &path[..path.len() - 1];
         if ROUTE_PATHS.contains(&alt) {
-            let host = req.headers().get(header::HOST).and_then(|v| v.to_str().ok()).unwrap_or("localhost");
-            let scheme = req.headers().get("x-forwarded-proto").and_then(|v| v.to_str().ok()).unwrap_or("http");
+            let host = req
+                .headers()
+                .get(header::HOST)
+                .and_then(|v| v.to_str().ok())
+                .unwrap_or("localhost");
+            let scheme = req
+                .headers()
+                .get("x-forwarded-proto")
+                .and_then(|v| v.to_str().ok())
+                .unwrap_or("http");
             let mut loc = format!("{scheme}://{host}{alt}");
             if let Some(q) = req.uri().query() {
                 loc.push('?');
@@ -91,8 +108,17 @@ pub async fn fallback(req: Request) -> Response {
 }
 
 pub async fn method_not_allowed(req: Request) -> Response {
-    let allow = if GET_ROUTES.contains(&req.uri().path()) { "GET" } else { "POST" };
-    let mut r = (StatusCode::METHOD_NOT_ALLOWED, Json(json!({"detail": "Method Not Allowed"}))).into_response();
-    r.headers_mut().insert(header::ALLOW, HeaderValue::from_static(allow));
+    let allow = if GET_ROUTES.contains(&req.uri().path()) {
+        "GET"
+    } else {
+        "POST"
+    };
+    let mut r = (
+        StatusCode::METHOD_NOT_ALLOWED,
+        Json(json!({"detail": "Method Not Allowed"})),
+    )
+        .into_response();
+    r.headers_mut()
+        .insert(header::ALLOW, HeaderValue::from_static(allow));
     r
 }

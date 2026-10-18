@@ -23,7 +23,9 @@ pub fn client_ip(h: &HeaderMap, peer: Option<SocketAddr>) -> Option<String> {
 }
 
 pub fn user_agent(h: &HeaderMap) -> Option<String> {
-    h.get("user-agent").and_then(|v| v.to_str().ok()).map(|s| s.to_string())
+    h.get("user-agent")
+        .and_then(|v| v.to_str().ok())
+        .map(|s| s.to_string())
 }
 
 pub fn device_from_ua(ua: Option<&str>) -> &'static str {
@@ -33,7 +35,10 @@ pub fn device_from_ua(ua: Option<&str>) -> &'static str {
     };
     if ua.contains("ipad") || ua.contains("tablet") {
         "tablet"
-    } else if ["mobi", "android", "iphone", "ipod"].iter().any(|k| ua.contains(k)) {
+    } else if ["mobi", "android", "iphone", "ipod"]
+        .iter()
+        .any(|k| ua.contains(k))
+    {
         "mobile"
     } else {
         "desktop"

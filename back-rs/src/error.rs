@@ -31,7 +31,11 @@ impl ValErr {
 #[derive(Debug)]
 pub enum AppError {
     /// `{"detail": <texto>}` con el estado indicado (y `WWW-Authenticate: Bearer` opcional).
-    Detail { status: StatusCode, detail: String, bearer: bool },
+    Detail {
+        status: StatusCode,
+        detail: String,
+        bearer: bool,
+    },
     Validation(Vec<ValErr>),
     PayloadTooLarge,
     Internal(String),
@@ -39,13 +43,21 @@ pub enum AppError {
 
 impl AppError {
     pub fn detail(status: StatusCode, detail: &str) -> Self {
-        AppError::Detail { status, detail: detail.to_string(), bearer: false }
+        AppError::Detail {
+            status,
+            detail: detail.to_string(),
+            bearer: false,
+        }
     }
     pub fn unauthorized(detail: &str) -> Self {
         Self::detail(StatusCode::UNAUTHORIZED, detail)
     }
     pub fn unauthorized_bearer(detail: &str) -> Self {
-        AppError::Detail { status: StatusCode::UNAUTHORIZED, detail: detail.to_string(), bearer: true }
+        AppError::Detail {
+            status: StatusCode::UNAUTHORIZED,
+            detail: detail.to_string(),
+            bearer: true,
+        }
     }
     pub fn forbidden(detail: &str) -> Self {
         Self::detail(StatusCode::FORBIDDEN, detail)
@@ -63,25 +75,39 @@ impl From<sqlx::Error> for AppError {
 
 pub fn text_response(status: StatusCode, body: &str) -> Response {
     let mut r = (status, body.to_string()).into_response();
-    r.headers_mut().insert(header::CONTENT_TYPE, HeaderValue::from_static("text/plain; charset=utf-8"));
+    r.headers_mut().insert(
+        header::CONTENT_TYPE,
+        HeaderValue::from_static("text/plain; charset=utf-8"),
+    );
     r
 }
 
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         match self {
-            AppError::Detail { status, detail, bearer } => {
+            AppError::Detail {
+                status,
+                detail,
+                bearer,
+            } => {
                 let mut r = (status, Json(json!({ "detail": detail }))).into_response();
                 if bearer {
-                    r.headers_mut().insert(header::WWW_AUTHENTICATE, HeaderValue::from_static("Bearer"));
+                    r.headers_mut()
+                        .insert(header::WWW_AUTHENTICATE, HeaderValue::from_static("Bearer"));
                 }
                 r
             }
             AppError::Validation(errs) => {
                 let arr: Vec<Value> = errs.iter().map(|e| e.to_json()).collect();
-                (StatusCode::UNPROCESSABLE_ENTITY, Json(json!({ "detail": arr }))).into_response()
+                (
+                    StatusCode::UNPROCESSABLE_ENTITY,
+                    Json(json!({ "detail": arr })),
+                )
+                    .into_response()
             }
-            AppError::PayloadTooLarge => text_response(StatusCode::PAYLOAD_TOO_LARGE, "Request Entity Too Large"),
+            AppError::PayloadTooLarge => {
+                text_response(StatusCode::PAYLOAD_TOO_LARGE, "Request Entity Too Large")
+            }
             AppError::Internal(msg) => {
                 tracing::error!("error interno: {msg}");
                 text_response(StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error")

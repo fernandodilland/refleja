@@ -1,6 +1,8 @@
 //! Autenticación del administrador. Replica `back/app/routers/auth.py`.
 use crate::app::AppState;
-use crate::client::{browser_from_ua, client_country, client_ip, device_from_ua, os_from_ua, user_agent};
+use crate::client::{
+    browser_from_ua, client_country, client_ip, device_from_ua, os_from_ua, user_agent,
+};
 use crate::error::{AppError, AppResult};
 use crate::http::extract::Admin;
 use crate::repo::admin::{self, NewLogin};
@@ -25,7 +27,12 @@ fn set_refresh_cookie(st: &AppState, token: &str) -> HeaderValue {
     if !s.cookie_domain.is_empty() {
         c.push_str(&format!("; Domain={}", s.cookie_domain));
     }
-    c.push_str(&format!("; HttpOnly; Max-Age={}; Path={}; SameSite={}", s.refresh_token_ttl_days * 86400, COOKIE_PATH, s.cookie_samesite));
+    c.push_str(&format!(
+        "; HttpOnly; Max-Age={}; Path={}; SameSite={}",
+        s.refresh_token_ttl_days * 86400,
+        COOKIE_PATH,
+        s.cookie_samesite
+    ));
     if s.cookie_secure_effective() {
         c.push_str("; Secure");
     }
@@ -39,35 +46,64 @@ fn clear_refresh_cookie(st: &AppState) -> HeaderValue {
         c.push_str(&format!("; Domain={}", s.cookie_domain));
     }
     let exp = chrono::Utc::now().format("%a, %d %b %Y %H:%M:%S GMT");
-    c.push_str(&format!("; expires={exp}; Max-Age=0; Path={COOKIE_PATH}; SameSite=lax"));
+    c.push_str(&format!(
+        "; expires={exp}; Max-Age=0; Path={COOKIE_PATH}; SameSite=lax"
+    ));
     HeaderValue::from_str(&c).expect("cookie válida")
 }
 
 fn token_body(st: &AppState, access: String) -> Json<Value> {
-    Json(json!({"access_token": access, "token_type": "bearer", "expires_in": st.settings.access_token_ttl_min * 60}))
+    Json(
+        json!({"access_token": access, "token_type": "bearer", "expires_in": st.settings.access_token_ttl_min * 60}),
+    )
 }
 
 fn create_access(st: &AppState, user_id: i64, username: &str) -> String {
     encode_jwt(
         &st.settings.jwt_secret,
-        vec![("typ", "access".into()), ("sub", user_id.to_string().into()), ("username", username.into())],
+        vec![
+            ("typ", "access".into()),
+            ("sub", user_id.to_string().into()),
+            ("username", username.into()),
+        ],
         st.settings.access_token_ttl_min * 60,
     )
 }
 
 /// Crea la sesión (refresh) y devuelve `(access_token, Set-Cookie)`.
-async fn issue_session(st: &AppState, conn: &mut MySqlConnection, user_id: i64, username: &str, headers: &HeaderMap) -> Result<(String, HeaderValue), AppError> {
+async fn issue_session(
+    st: &AppState,
+    conn: &mut MySqlConnection,
+    user_id: i64,
+    username: &str,
+    headers: &HeaderMap,
+) -> Result<(String, HeaderValue), AppError> {
     let jti = new_jti();
     let refresh = encode_jwt(
         &st.settings.jwt_secret,
-        vec![("typ", "refresh".into()), ("sub", user_id.to_string().into()), ("jti", jti.clone().into())],
+        vec![
+            ("typ", "refresh".into()),
+            ("sub", user_id.to_string().into()),
+            ("jti", jti.clone().into()),
+        ],
         st.settings.refresh_token_ttl_days * 86400,
     );
     let ua = user_agent(headers);
     let ua_hash = ua.as_deref().filter(|u| !u.is_empty()).map(sha256_hex);
     let expires = utcnow() + chrono::Duration::days(st.settings.refresh_token_ttl_days);
-    admin::insert_session(conn, user_id, &jti, &sha256_hex(&refresh), ua_hash.as_deref(), expires).await?;
-    Ok((create_access(st, user_id, username), set_refresh_cookie(st, &refresh)))
+    admin::insert_session(
+        conn,
+        user_id,
+        &jti,
+        &sha256_hex(&refresh),
+        ua_hash.as_deref(),
+        expires,
+    )
+    .await?;
+    Ok((
+        create_access(st, user_id, username),
+        set_refresh_cookie(st, &refresh),
+    ))
 }
 
 fn with_cookie(mut r: Response, cookie: HeaderValue) -> Response {
@@ -89,7 +125,11 @@ pub async fn login(
     let password = errs.string(obj, &b, "password", 1, 256, true);
     let ts = errs.string(obj, &b, "turnstile_token", 1, 2048, true);
     errs.into_result(())?;
-    let (username, password, ts) = (username.unwrap_or_default(), password.unwrap_or_default(), ts.unwrap_or_default());
+    let (username, password, ts) = (
+        username.unwrap_or_default(),
+        password.unwrap_or_default(),
+        ts.unwrap_or_default(),
+    );
 
     let ip = client_ip(&headers, Some(peer));
     if !st.turnstile.verify_login(Some(&ts), ip.as_deref()).await {
@@ -100,9 +140,15 @@ pub async fn login(
     let user = admin::user_by_username(&mut tx, &username).await?;
     // Siempre se ejecuta un Argon2 (hash real o señuelo): el tiempo no revela si el usuario existe.
     let valid = match &user {
-        Some(u) if u.is_active => st.passwords.verify(u.password_hash.clone(), password.clone()).await,
+        Some(u) if u.is_active => {
+            st.passwords
+                .verify(u.password_hash.clone(), password.clone())
+                .await
+        }
         _ => {
-            st.passwords.verify(st.dummy_hash.clone(), password.clone()).await;
+            st.passwords
+                .verify(st.dummy_hash.clone(), password.clone())
+                .await;
             false
         }
     };
@@ -111,12 +157,19 @@ pub async fn login(
         _ => return Err(AppError::unauthorized("Usuario o contraseña incorrectos.")),
     };
 
-    let new_hash = if needs_rehash(&user.password_hash) { Some(st.passwords.hash(password).await) } else { None };
+    let new_hash = if needs_rehash(&user.password_hash) {
+        Some(st.passwords.hash(password).await)
+    } else {
+        None
+    };
     admin::set_login(&mut tx, user.id, new_hash.as_deref()).await?;
 
     // Historial de inicio de sesión (datos generales, sin IP).
     let ua = user_agent(&headers);
-    let ua255: Option<String> = ua.as_ref().map(|u| u.chars().take(255).collect::<String>()).filter(|u| !u.is_empty());
+    let ua255: Option<String> = ua
+        .as_ref()
+        .map(|u| u.chars().take(255).collect::<String>())
+        .filter(|u| !u.is_empty());
     let country = client_country(&headers);
     admin::insert_login(
         &mut tx,
@@ -154,10 +207,17 @@ fn cookie_value(headers: &HeaderMap, name: &str) -> Option<String> {
 
 pub async fn refresh(State(st): State<AppState>, headers: HeaderMap) -> AppResult<Response> {
     let cookie = cookie_value(&headers, &st.settings.refresh_cookie_name).filter(|c| !c.is_empty());
-    let Some(cookie) = cookie else { return Err(AppError::unauthorized("Sin sesión.")) };
+    let Some(cookie) = cookie else {
+        return Err(AppError::unauthorized("Sin sesión."));
+    };
     // Nota: igual que en Python, los 401 de esta ruta NO envían Set-Cookie (ADR-010).
-    let data = decode_jwt(&st.settings.jwt_secret, &cookie, "refresh").map_err(|_| AppError::unauthorized("Sesión inválida."))?;
-    let jti = data.get("jti").and_then(|j| j.as_str()).unwrap_or("").to_string();
+    let data = decode_jwt(&st.settings.jwt_secret, &cookie, "refresh")
+        .map_err(|_| AppError::unauthorized("Sesión inválida."))?;
+    let jti = data
+        .get("jti")
+        .and_then(|j| j.as_str())
+        .unwrap_or("")
+        .to_string();
 
     let mut tx = st.pool.begin().await?;
     let sess = admin::session_by_jti(&mut tx, &jti).await?;
@@ -171,7 +231,10 @@ pub async fn refresh(State(st): State<AppState>, headers: HeaderMap) -> AppResul
     if sess.revoked_at.is_some() {
         admin::revoke_all_active(&mut tx, sess.admin_user_id, now).await?;
         tx.commit().await?;
-        tracing::warn!("Reuso de refresh token detectado (admin_user_id={}). Familia de sesiones revocada.", sess.admin_user_id);
+        tracing::warn!(
+            "Reuso de refresh token detectado (admin_user_id={}). Familia de sesiones revocada.",
+            sess.admin_user_id
+        );
         return Err(AppError::unauthorized("Sesión revocada por seguridad."));
     }
     if sess.expires_at < now {
@@ -190,7 +253,9 @@ pub async fn refresh(State(st): State<AppState>, headers: HeaderMap) -> AppResul
 }
 
 pub async fn logout(State(st): State<AppState>, headers: HeaderMap) -> AppResult<Response> {
-    if let Some(cookie) = cookie_value(&headers, &st.settings.refresh_cookie_name).filter(|c| !c.is_empty()) {
+    if let Some(cookie) =
+        cookie_value(&headers, &st.settings.refresh_cookie_name).filter(|c| !c.is_empty())
+    {
         if let Ok(data) = decode_jwt(&st.settings.jwt_secret, &cookie, "refresh") {
             let jti = data.get("jti").and_then(|j| j.as_str()).unwrap_or("");
             let mut conn = st.pool.acquire().await?;
@@ -201,10 +266,14 @@ pub async fn logout(State(st): State<AppState>, headers: HeaderMap) -> AppResult
             }
         }
     }
-    Ok(with_cookie(Json(json!({"ok": true})).into_response(), clear_refresh_cookie(&st)))
+    Ok(with_cookie(
+        Json(json!({"ok": true})).into_response(),
+        clear_refresh_cookie(&st),
+    ))
 }
 
 pub async fn me(Admin(u): Admin) -> Json<Value> {
-    Json(json!({"id": u.id, "username": u.username, "last_login_at": u.last_login_at.as_ref().map(isoformat)}))
+    Json(
+        json!({"id": u.id, "username": u.username, "last_login_at": u.last_login_at.as_ref().map(isoformat)}),
+    )
 }
-

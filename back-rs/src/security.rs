@@ -71,7 +71,11 @@ pub fn encode_jwt(secret: &str, claims: Vec<(&str, Value)>, ttl_secs: i64) -> St
 }
 
 /// Valida firma, caducidad y `typ`; devuelve los claims.
-pub fn decode_jwt(secret: &str, token: &str, expected_typ: &str) -> Result<Map<String, Value>, JwtError> {
+pub fn decode_jwt(
+    secret: &str,
+    token: &str,
+    expected_typ: &str,
+) -> Result<Map<String, Value>, JwtError> {
     let parts: Vec<&str> = token.split('.').collect();
     if parts.len() != 3 {
         return Err(JwtError::Invalid);
@@ -84,7 +88,9 @@ pub fn decode_jwt(secret: &str, token: &str, expected_typ: &str) -> Result<Map<S
     if header.get("alg").and_then(|a| a.as_str()) != Some("HS256") {
         return Err(JwtError::Invalid);
     }
-    let sig = URL_SAFE_NO_PAD.decode(parts[2]).map_err(|_| JwtError::Invalid)?;
+    let sig = URL_SAFE_NO_PAD
+        .decode(parts[2])
+        .map_err(|_| JwtError::Invalid)?;
     let mut m = HmacSha256::new_from_slice(secret.as_bytes()).expect("hmac");
     m.update(format!("{}.{}", parts[0], parts[1]).as_bytes());
     m.verify_slice(&sig).map_err(|_| JwtError::Invalid)?;
@@ -138,19 +144,26 @@ fn hash_blocking(password: &str) -> String {
     let mut salt = [0u8; SALT_LEN];
     rand::rngs::OsRng.fill_bytes(&mut salt);
     let salt = SaltString::encode_b64(&salt).expect("salt");
-    hasher().hash_password(password.as_bytes(), &salt).expect("argon2").to_string()
+    hasher()
+        .hash_password(password.as_bytes(), &salt)
+        .expect("argon2")
+        .to_string()
 }
 
 fn verify_blocking(stored: &str, password: &str) -> bool {
     match PasswordHash::new(stored) {
-        Ok(h) => Argon2::default().verify_password(password.as_bytes(), &h).is_ok(),
+        Ok(h) => Argon2::default()
+            .verify_password(password.as_bytes(), &h)
+            .is_ok(),
         Err(_) => false,
     }
 }
 
 /// Equivalente de `PasswordHasher.check_needs_rehash` de argon2-cffi.
 pub fn needs_rehash(stored: &str) -> bool {
-    let Ok(h) = PasswordHash::new(stored) else { return false };
+    let Ok(h) = PasswordHash::new(stored) else {
+        return false;
+    };
     if h.algorithm.as_str() != "argon2id" || h.version != Some(0x13) {
         return true;
     }
@@ -162,7 +175,10 @@ pub fn needs_rehash(stored: &str) -> bool {
         return true;
     }
     let mut buf = [0u8; 64];
-    match h.salt.and_then(|s| s.decode_b64(&mut buf).ok().map(|b| b.len())) {
+    match h
+        .salt
+        .and_then(|s| s.decode_b64(&mut buf).ok().map(|b| b.len()))
+    {
         Some(n) => n != SALT_LEN,
         None => true,
     }
@@ -176,15 +192,21 @@ pub struct Passwords {
 
 impl Passwords {
     pub fn new(concurrency: usize) -> Self {
-        Passwords { sem: Arc::new(Semaphore::new(concurrency.max(1))) }
+        Passwords {
+            sem: Arc::new(Semaphore::new(concurrency.max(1))),
+        }
     }
     pub async fn hash(&self, password: String) -> String {
         let _p = self.sem.acquire().await.expect("semáforo");
-        tokio::task::spawn_blocking(move || hash_blocking(&password)).await.expect("hash")
+        tokio::task::spawn_blocking(move || hash_blocking(&password))
+            .await
+            .expect("hash")
     }
     pub async fn verify(&self, stored: String, password: String) -> bool {
         let _p = self.sem.acquire().await.expect("semáforo");
-        tokio::task::spawn_blocking(move || verify_blocking(&stored, &password)).await.unwrap_or(false)
+        tokio::task::spawn_blocking(move || verify_blocking(&stored, &password))
+            .await
+            .unwrap_or(false)
     }
 }
 
@@ -193,7 +215,11 @@ mod tests {
     use super::*;
     #[test]
     fn jwt_roundtrip_and_typ() {
-        let t = encode_jwt("s3cret", vec![("typ", "access".into()), ("sub", "1".into())], 60);
+        let t = encode_jwt(
+            "s3cret",
+            vec![("typ", "access".into()), ("sub", "1".into())],
+            60,
+        );
         assert!(decode_jwt("s3cret", &t, "access").is_ok());
         assert_eq!(decode_jwt("s3cret", &t, "refresh"), Err(JwtError::Invalid));
         assert_eq!(decode_jwt("otro", &t, "access"), Err(JwtError::Invalid));

@@ -9,7 +9,8 @@ use subtle::ConstantTimeEq;
 
 pub async fn origin_guard(State(st): State<AppState>, req: Request, next: Next) -> Response {
     let secret = &st.settings.origin_secret;
-    if !secret.is_empty() && req.uri().path().starts_with("/api") && req.method() != Method::OPTIONS {
+    if !secret.is_empty() && req.uri().path().starts_with("/api") && req.method() != Method::OPTIONS
+    {
         let provided = req
             .headers()
             .get(st.settings.origin_secret_header.as_str())
@@ -17,7 +18,8 @@ pub async fn origin_guard(State(st): State<AppState>, req: Request, next: Next) 
             .unwrap_or("");
         let ok = !provided.is_empty() && provided.as_bytes().ct_eq(secret.as_bytes()).into();
         if !ok {
-            return AppError::detail(StatusCode::FORBIDDEN, "Origen no autorizado.").into_response();
+            return AppError::detail(StatusCode::FORBIDDEN, "Origen no autorizado.")
+                .into_response();
         }
     }
     next.run(req).await

@@ -18,6 +18,10 @@ pub async fn connect(st: &Settings) -> Result<MySqlPool, sqlx::Error> {
         .after_connect(|conn, _| {
             Box::pin(async move {
                 conn.execute("SET time_zone='+00:00'").await?;
+                // READ COMMITTED evita el error 1020 ("Record has changed since last read") que MariaDB
+                // 11.8+/12 lanza con innodb_snapshot_isolation en los incrementos concurrentes.
+                conn.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED")
+                    .await?;
                 Ok(())
             })
         })
@@ -37,7 +41,9 @@ pub async fn verify_schema(pool: &MySqlPool) -> Result<(), String> {
     for r in rows {
         let t: String = r.try_get("t").unwrap_or_default();
         let c: String = r.try_get("c").unwrap_or_default();
-        have.entry(t.to_lowercase()).or_default().insert(c.to_lowercase());
+        have.entry(t.to_lowercase())
+            .or_default()
+            .insert(c.to_lowercase());
     }
     let mut missing = Vec::new();
     for line in EXPECTED_SCHEMA.lines().filter(|l| !l.trim().is_empty()) {
@@ -56,6 +62,29 @@ pub async fn verify_schema(pool: &MySqlPool) -> Result<(), String> {
     if missing.is_empty() {
         Ok(())
     } else {
-        Err(format!("esquema incompleto, falta: {}. Aplica migrations/0001_baseline.sql", missing.join(", ")))
+        Err(format!(
+            "esquema incompleto, falta: {}. Aplica migrations/0001_baseline.sql",
+            missing.join(", ")
+        ))
     }
 }
+
+/// Errores transitorios de concurrencia (deadlock 1213, espera de bloqueo 1205, conflicto de snapshot 1020):
+/// la petición es reproducible, así que se reintenta la transacción completa.
+pub fn is_retryable(e: &sqlx::Error) -> bool {
+    use sqlx::mysql::MySqlDatabaseError;
+    match e {
+        sqlx::Error::Database(d) => d
+            .try_downcast_ref::<MySqlDatabaseError>()
+            .map(|m| matches!(m.number(), 1213 | 1205 | 1020))
+            .unwrap_or(false),
+        _ => false,
+    }
+}
+
+pub async fn backoff(attempt: u32) {
+    let ms = 8 * (attempt as u64 + 1) + (rand::random::<u64>() % 16);
+    tokio::time::sleep(Duration::from_millis(ms)).await;
+}
+
+pub const MAX_TX_ATTEMPTS: u32 = 5;

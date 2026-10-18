@@ -1,0 +1,63 @@
+### login ok -> 200
+  set-cookie: refleja_rt=eyJhbGciOiJI…; HttpOnly; Max-Age=604800; Path=/api/auth; SameSite=lax
+  {"access_token":"<jwt>","token_type":"bearer","expires_in":900}
+### me -> 200
+  {"id":1,"username":"admin","last_login_at":"<ts>"}
+### public/session -> 200
+  {"token":"<jwt>","expires_in_days":30}
+### collect batch -> 200
+  {"ok":true,"accepted":12}
+### collect legacy single -> 200
+  {"ok":true,"accepted":1}
+### collect invalid type -> 422
+  {"detail":[{"type":"literal_error","loc":["body","events",0,"type"],"msg":"Input should be 'page_view', 'run_start', 'answer', 'minor', 'municipio', 'result', 'urgent_click', 'hide_click', 'restart' or 'directory_municipio'","input":"bogus","ctx":{"expected":"'page_view', 'run_start', 'answer', 'minor', 'municipio', 'result', 'urgent_click', 'hide_click', 'restart' or 'directory_municipio'"}}]}
+### collect 51 events -> 422
+  {"detail":[{"type":"too_long","loc":["body","events"],"msg":"List should have at most 50 items after validation, not 51","input":[{"type":"restart"},{"type":"restart"},{"type":"restart"},{"type":"restart"},{"type":"restart"},{"type":"restart"},{"type":"restart"},{"type":"restart"},{"type":"restart"}
+### collect empty events -> 200
+  {"ok":true,"accepted":0}
+### collect no body -> 422
+  {"detail":[{"type":"missing","loc":["body"],"msg":"Field required","input":null}]}
+### collect malformed json -> 422
+  {"detail":[{"type":"json_invalid","loc":["body",1],"msg":"JSON decode error","input":{},"ctx":{"error":"Expecting property name enclosed in double quotes"}}]}
+### collect wrong token typ (access as public) -> 401
+  {"detail":"Token inválido."}
+### ping -> 200
+  {"ok":true}
+### platform/overview -> 200
+  {"total_visitors":1,"active_now":1,"total_runs":1,"started":1,"completed":1,"minors":0,"entered_not_started":0,"repeat_visitors":0,"urgent_clicks":1,"hide_clicks":1,"restarts":0,"completion_rate":1.0,"start_rate":1.0}
+### platform/realtime -> 200
+  {"window_seconds":90,"active_visitors":1,"by_device":{"mobile":1},"by_country":{"MX":1},"recent_runs":[{"flow_type":"pareja","age_bucket":"18-25","last_question_id":"RESULT","max_step":3,"municipio":"monterrey","started":true,"completed":true,"risk_level":"low","seconds_ago":0}]}
+### platform/funnel -> 200
+  {"intro":[{"question_id":"age","reached":1,"answered":1,"drop":0,"drop_rate":0.0},{"question_id":"start","reached":1,"answered":1,"drop":0,"drop_rate":0.0}],"flows":{"pareja":[{"question_id":"pareja_1","reached":1,"answered":1,"drop":0,"drop_rate":0.0},{"question_id":"pareja_2","reached":1,"answered":0,"drop":1,"drop_rate":1.0},{"question_id":"pareja_3","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_4","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_5","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_6","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_7","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_8","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_9","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_10","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_11","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_12","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"pareja_13","reached":0,"answered":0,"drop":0,"drop_rate":0.0}],"fam":[{"question_id":"fam_1","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"fam_2","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"fam_3","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id":"fam_4","reached":0,"answered":0,"drop":0,"drop_rate":0.0},{"question_id
+### platform/violence -> 200
+  {"totals":{"psicologica":5,"fisica":2,"economica":0,"patrimonial":0,"sexual":0,"intimidacion":0},"present":{"psicologica":1,"fisica":1,"economica":0,"patrimonial":0,"sexual":0,"intimidacion":0},"dominant":{"psicologica":1,"fisica":0,"economica":0,"patrimonial":0,"sexual":0,"intimidacion":0},"completed_runs":1}
+### platform/municipios -> 200
+  {"items":[{"municipio":"monterrey","count":1}],"directory":[{"municipio":"apodaca","count":1}]}
+### platform/timeseries -> 200
+  {"items":[{"date":"2026-10-18","page_views":1,"form_starts":1,"form_completes":1,"minors":0,"new_visitors":1}]}
+### platform/logins -> 200
+  {"items":[{"username":"admin","browser":"Otro","os":"Otro","device":"desktop","country":null,"user_agent":"Python-urllib/3.10","created_at":"<ts>"}]}
+### overview bad date -> 422
+  {"detail":[{"type":"date_from_datetime_parsing","loc":["query","date_from"],"msg":"Input should be a valid date or datetime, input is too short","input":"bad","ctx":{"error":"input is too short"}}]}
+### realtime limit=0 -> 422
+  {"detail":[{"type":"greater_than_equal","loc":["query","limit"],"msg":"Input should be greater than or equal to 1","input":"0","ctx":{"ge":1}}]}
+### overview flow_type=zzz -> 200
+  {"total_visitors":1,"active_now":1,"total_runs":0,"started":0,"completed":0,"minors":0,"entered_not_started":0,"repeat_visitors":0,"urgent_clicks":1,"hide_clicks":1,"restarts":0,"completion_rate":0.0,"start_rate":1.0}
+### platform with refresh token as bearer -> 401
+  www-authenticate: Bearer=Bearer
+  {"detail":"Sesión inválida o expirada."}
+### refresh #1 -> 200
+  set-cookie: refleja_rt=eyJhbGciOiJI…; HttpOnly; Max-Age=604800; Path=/api/auth; SameSite=lax
+  {"access_token":"<jwt>
+### refresh reuse of rotated -> 401
+  {"detail":"Sesión revocada por seguridad."}
+### refresh after family revoke -> 401
+  {"detail":"Sesión revocada por seguridad."}
+### refresh no cookie -> 401
+  {"detail":"Sin sesión."}
+### logout -> 200
+  set-cookie: refleja_rt=""; expires=…; expires=Sun, 18 Oct 2026 06:16:41 GMT; Max-Age=0; Path=/api/auth; SameSite=lax
+  {"ok":true}
+### logout no cookie -> 200
+  set-cookie: refleja_rt=""; expires=…; expires=Sun, 18 Oct 2026 06:16:41 GMT; Max-Age=0; Path=/api/auth; SameSite=lax
+  {"ok":true}

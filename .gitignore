@@ -38,3 +38,8 @@ node_modules/
 # Respuestas de transparencia, oficios y archivos de análisis temporales.
 tmp/
 
+
+# === Rust (back-rs) ===
+back-rs/target/
+back-rs/.env
+back-rs/*.db

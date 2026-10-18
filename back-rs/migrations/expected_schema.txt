@@ -1,0 +1,8 @@
+admin_user: id username password_hash is_active last_login_at created_at updated_at
+admin_session: id admin_user_id refresh_jti token_hash user_agent_hash expires_at revoked_at created_at updated_at
+visitor: id vid_hash country device page_views events_count run_count completed_count action_count last_seen_at created_at updated_at
+form_run: id run_uid visitor_id age_bucket flow_type started max_step last_question_id completed municipio risk_level score_psicologica score_fisica score_economica score_patrimonial score_sexual score_intimidacion counted created_at updated_at
+question_stat: id question_id reached_count answered_count created_at updated_at
+daily_metric: id metric_date page_views form_starts form_completes minors new_visitors created_at updated_at
+admin_login: id admin_user_id username browser os device country user_agent created_at updated_at
+event_counter: id name count created_at updated_at

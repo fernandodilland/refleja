@@ -5,7 +5,8 @@
 
 Se trabaja en la **PC Debian «computadora»** (usuario `dev`, consolas de Sistemas › Desarrollo), no en la Mac.
 Antes de tocar nada lee la guía ~/git/Personal/sistema.fernandodilland/docs/desarrollo/FLUJO.md (§3: reglas para el LLM) y, si existe,
-`~/dev/registros/refleja/ULTIMO.md` (lo último que se probó, compiló o desplegó y qué falló).
+`~/dev/registros/refleja/ULTIMO.md` (lo último que se probó, compiló o desplegó y qué falló). En la misma carpeta:
+`REFERENCIA.md` (comandos, API, tablas, archivos) y `OPERACION.md` (qué hacer cuando algo falla).
 
 - **Nunca** pruebes contra productivo ni leas sus `.env`: los de la PC son locales (claves de la PC).
 - **Nunca** uses scripts que entren por `ssh hivelocity` como root: son de la Mac. A productivo solo se llega con
@@ -15,7 +16,7 @@ Antes de tocar nada lee la guía ~/git/Personal/sistema.fernandodilland/docs/des
   transacción; el DDL de MariaDB hace commit implícito. Revertir = `desplegar-paquete revertir` (el esquema se queda).
 - Si un despliegue falla, no reintentes a ciegas: lee la bitácora que imprime y repórtala.
 
-**Con registro (úsalo siempre):** `dev probar refleja` (gate) · `dev probar refleja completo` · `dev compilar refleja` · `dev desplegar refleja [--migrar] [--simulacro]` · `dev revertir refleja` · `dev estado` · `dev ultimo refleja`. Cada corrida queda en `~/dev/registros` y en Sistemas › Desarrollo; `dev desplegar` se niega si no está limpio, en GitHub y compilado en verde. La tabla es lo que corre por dentro.
+**Con registro (úsalo siempre):** `dev probar refleja` (gate) · `dev probar refleja completo` · `dev compilar refleja` · `dev desplegar refleja [--migrar] [--simulacro]` · `dev revertir refleja` · `dev respaldar refleja` · `dev estado` · `dev ultimo refleja`. Cada corrida queda en `~/dev/registros` y en Sistemas › Desarrollo; `dev desplegar` se niega si no está limpio, en GitHub y compilado en verde, y con `--migrar` respalda antes (base y sitio) y no instala si el respaldo no quedó comprobado. Antes de una migración a mano en el servidor: `dev respaldar`. La tabla es lo que corre por dentro.
 
 | Paso | Cómo |
 |---|---|

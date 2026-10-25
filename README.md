@@ -175,3 +175,8 @@ Redes sociales:
 
 Refleja is released under the [MIT License](https://github.com/fernandodilland/refleja/blob/main/LICENSE).
 
+<!-- flujo-pc-readme:inicio -->
+## Desarrollo y despliegue
+
+Se prueba, compila y despliega desde la PC Debian: los comandos de este repo están en el bloque «Flujo PC» de [`AGENTS.md`](AGENTS.md) y la guía completa en `~/git/Personal/sistema.fernandodilland/docs/desarrollo/FLUJO.md` (repo `fernandodilland/sistema`).
+<!-- flujo-pc-readme:fin -->

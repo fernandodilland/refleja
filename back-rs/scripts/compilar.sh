@@ -74,8 +74,10 @@ cp despliegue/instalar-en-servidor.sh "$PAQ/"
 echo "$ID" >"$PAQ/VERSION"
 (cd "$PAQ" && shasum -a 256 bin/* systemd/* migraciones/* instalar-en-servidor.sh VERSION >SHA256SUMS)
 
-# COPYFILE_DISABLE: sin los `._*` de macOS dentro del tar.
-COPYFILE_DISABLE=1 tar --no-xattrs --no-mac-metadata -C dist -czf "dist/refleja-api-rs-${ID}.tar.gz" "refleja-api-rs-${ID}"
+# COPYFILE_DISABLE: sin los `._*` de macOS dentro del tar (--no-mac-metadata solo existe en el tar de macOS;
+# en la PC con Debian, GNU tar no lo conoce).
+SIN_MAC=(); [[ $(uname) == Darwin ]] && SIN_MAC=(--no-mac-metadata)
+COPYFILE_DISABLE=1 tar --no-xattrs "${SIN_MAC[@]}" -C dist -czf "dist/refleja-api-rs-${ID}.tar.gz" "refleja-api-rs-${ID}"
 rm -rf "$PAQ"
 ln -sfn "refleja-api-rs-${ID}.tar.gz" dist/ultimo.tar.gz
 log "Paquete: back-rs/dist/refleja-api-rs-${ID}.tar.gz ($(du -h "dist/refleja-api-rs-${ID}.tar.gz" | cut -f1))"

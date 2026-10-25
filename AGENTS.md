@@ -15,6 +15,8 @@ Antes de tocar nada lee la guía ~/git/Personal/sistema.fernandodilland/docs/des
   transacción; el DDL de MariaDB hace commit implícito. Revertir = `desplegar-paquete revertir` (el esquema se queda).
 - Si un despliegue falla, no reintentes a ciegas: lee la bitácora que imprime y repórtala.
 
+**Con registro (úsalo siempre):** `dev probar refleja` (gate) · `dev probar refleja completo` · `dev compilar refleja` · `dev desplegar refleja [--migrar] [--simulacro]` · `dev revertir refleja` · `dev estado` · `dev ultimo refleja`. Cada corrida queda en `~/dev/registros` y en Sistemas › Desarrollo; `dev desplegar` se niega si no está limpio, en GitHub y compilado en verde. La tabla es lo que corre por dentro.
+
 | Paso | Cómo |
 |---|---|
 | Probar (obligatorio) | `cd back-rs && scripts/mariadb_local.sh start` y `scripts/compilar.sh` (fmt, clippy, audit, test y la paridad `tests/contract/diff.py`, que usa `../back/.venv`) |

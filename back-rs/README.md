@@ -4,6 +4,10 @@ Reescritura en **Rust + Axum + Tokio** del backend FastAPI (`../back/`). Mismo c
 efectos en MariaDB, mismas variables de entorno. Documentación completa de la migración en
 [`../docs/migration/`](../docs/migration/README.md).
 
+<!-- aviso-historico:inicio (flujo-pc-docs.py) -->
+> **Ojo (oct 2026):** este back está en producción desde el 18 oct; donde diga «no desplegado», es de antes. Manda el bloque «Flujo PC» de [`AGENTS.md`](../AGENTS.md).
+<!-- aviso-historico:fin -->
+
 | | |
 |---|---|
 | Rutas | 15 (`/api/health`, `/api/public/{session,ping,collect}`, `/api/auth/{login,refresh,logout,me}`, `/api/platform/{overview,realtime,funnel,violence,municipios,logins,timeseries}`) |

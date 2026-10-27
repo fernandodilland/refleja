@@ -2,6 +2,10 @@
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=social)](https://github.com/fernandodilland/refleja/blob/main/LICENSE)
 
+<!-- aviso-historico:inicio (flujo-pc-docs.py) -->
+> **Ojo (oct 2026):** el back Rust (`back-rs/`) está en producción desde el 18 oct; donde diga «no desplegado», es de antes. Manda el bloque «Flujo PC» de [`AGENTS.md`](AGENTS.md).
+<!-- aviso-historico:fin -->
+
 **Una herramienta digital, colaborativa, clara y accesible para visibilizar, nombrar y comprender las distintas formas de violencia de género.**
 
 Refleja es un **proyecto ciudadano de [LABNL – Lab Cultural Ciudadano](https://wiki.labnuevoleon.mx/index.php?title=Refleja:_Una_herramienta_para_la_concientizaci%C3%B3n_sobre_la_Violencia_de_G%C3%A9nero)**, libre y de código abierto. Ofrece un autoescaneo confidencial y gratuito para reconocer señales de violencia de género y un directorio de apoyo para los 51 municipios de Nuevo León.
@@ -178,5 +182,5 @@ Refleja is released under the [MIT License](https://github.com/fernandodilland/r
 <!-- flujo-pc-readme:inicio -->
 ## Desarrollo y despliegue
 
-Se prueba, compila y despliega desde la PC Debian: los comandos de este repo están en el bloque «Flujo PC» de [`AGENTS.md`](AGENTS.md) y la guía completa en `~/git/Personal/sistema.fernandodilland/docs/desarrollo/FLUJO.md` (repo `fernandodilland/sistema`).
+Se prueba, compila y despliega desde la PC Debian con `dev` (empieza con `dev contexto`): los comandos de este repo están en el bloque «Flujo PC» de [`AGENTS.md`](AGENTS.md) y la guía completa en `~/git/Personal/sistema.fernandodilland/docs/desarrollo/README.md` (repo `fernandodilland/sistema`).
 <!-- flujo-pc-readme:fin -->

@@ -13,7 +13,7 @@ set -Eeuo pipefail
 #
 #  El FRONT no se despliega aquí: Cloudflare Workers Builds lo publica solo con cada push a `main`
 #  (ver README.md). El backend va primero: hacer push a main DESPUÉS de que la API esté arriba.
-#  Los detalles están en back-rs/despliegue/README.md. Requiere el alias `hivelocity` en ~/.ssh/config.
+#  OBSOLETO desde la PC Debian (usa `dev desplegar refleja`). Detalles históricos: back-rs/README.md §Producción. Requiere el alias `hivelocity` en ~/.ssh/config.
 # ============================================================================
 
 URL_API="${URL_API:-https://api.refleja.org}"

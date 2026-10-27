@@ -62,42 +62,34 @@ cuentan en la estadística anónima igual que una respuesta normal.
 
 ---
 
-## Estructura del proyecto
+## Estructura y documentación (mapa para agentes)
 
 ```
 refleja/
-├── front/          # Sitio estático (JAMstack) desplegado en Cloudflare (wrangler)
-│   ├── src/
-│   │   ├── formulario.json    # Preguntas del cuestionario y puntajes
-│   │   └── municipios.json    # Directorio de recursos por municipio
-│   ├── generate.js            # Genera las páginas por municipio + sitemap
-│   ├── package.json           # Scripts build/dev/deploy y versión de wrangler
-│   └── wrangler.toml
-├── back/           # API FastAPI (Python 3.10) de estadística anónima + panel admin (backend en producción hoy)
-│   └── README.md   # Guía de despliegue del backend
-├── back-rs/        # Reescritura del backend en Rust (Axum/Tokio/SQLx); mismo contrato, ~10x menos RAM en reposo
-│   └── README.md   # Cómo correrlo, probarlo y desplegarlo
-└── docs/migration/ # Análisis, decisiones, plan de tareas, evidencia y runbook de la migración a Rust
+├── front/            # sitio estático (JAMstack) en Cloudflare Workers (wrangler); push a main = despliegue
+│   ├── src/formulario.json   # preguntas y puntajes (el back lo LEE del disco: qids válidos y orden del embudo)
+│   ├── src/municipios.json   # directorio de recursos por municipio (51)
+│   ├── src/llms.txt, llms-full.txt, robots.txt   # para rastreadores/LLM del sitio público (no son docs del repo)
+│   ├── generate.js           # genera páginas por municipio + sitemap
+│   └── package.json, wrangler.toml
+├── back-rs/          # API Rust (Axum/Tokio/SQLx) = PRODUCCIÓN (api.refleja.org, :20834). README.md: correr, verificar, desplegar, servidor, legado Python
+├── back/             # API FastAPI Python 3.10: APAGADA en prod; se conserva como oráculo de back-rs/tests/contract/diff.py (retirarla = TASK-0050, solo con permiso del dueño)
+├── docs/migration/   # README.md = referencia consolidada (contratos, endpoints, datos, seguridad, ADR, pruebas, cutover) · tareas.md = 50 fichas condensadas · evidence/ = sondas del Python (benchmark en README §9)
+├── AGENTS.md         # bloque «Flujo PC» (comandos `dev …`); lo genera flujo-pc-docs.py: no editar a mano
+└── desplegar.sh      # OBSOLETO (Mac + root); no usar
 ```
 
----
-
-## Correr en local (VS Code)
-
-Requiere **Python 3.10** y **Node.js**. Abre la carpeta raíz del proyecto en VS Code y pulsa **F5** → elige **“Refleja: front + back (local)”**. Eso levanta:
-
-- **Front** en http://localhost:8788 (wrangler dev)
-- **Back** en http://localhost:20832 (uvicorn)
-
-El front detecta el entorno automáticamente: en local apunta al backend en `localhost:20832`; en producción (`*.refleja.org`) apunta a `https://api.refleja.org`.
-
-> Detalle del backend (venv, `.env`, despliegue en producción) en [`back/README.md`](back/README.md).
->
-> **Backend en Rust (opcional, no desplegado aún):** `back-rs/` expone la misma API en el mismo puerto (`20832`). Para usarlo en local en lugar del de Python: `back-rs/scripts/mariadb_local.sh start`, aplicar el esquema y `cargo run --release` (ver [`back-rs/README.md`](back-rs/README.md)). Estado de la migración y plan de cutover: [`docs/migration/`](docs/migration/README.md).
+Lectura sugerida: `AGENTS.md` → este README → `back-rs/README.md` → `docs/migration/README.md` (solo si tocas el backend o sus contratos).
 
 ---
 
-## Despliegue del front (Cloudflare Workers Builds)
+## Correr en local
+
+Front: `cd front && npm install && npm run dev` (wrangler dev, `http://localhost:8788`). Back: `back-rs/scripts/dev.sh` (MariaDB local + esquema + admin `admin`/`admin-dev-local` + API en `http://localhost:20832`). VS Code: F5 → «Refleja: front + back (local)» levanta el back **Python** (`.vscode/launch.json`, `cwd back`, SQLite); para Rust hay una tarea `back-rs: correr (cargo run :20832)` en `.vscode/tasks.json`. El front detecta el entorno: local → `localhost:20832`; `*.refleja.org` → `https://api.refleja.org/api`. Detalle, verificación y despliegue del back: [`back-rs/README.md`](back-rs/README.md); contratos y estado de la migración a Rust (en producción desde el 18 oct 2026): [`docs/migration/README.md`](docs/migration/README.md).
+
+---
+
+## Despliegue del front (Cloudflare Workers Builds, «README §front»)
 
 El Worker `refleja` está conectado a este repositorio: **cada push a `main` despliega automáticamente** refleja.org. Los pushes a otras ramas suben una versión de vista previa sin tocar producción.
 
@@ -111,7 +103,7 @@ Configuración del Worker en Cloudflare (*Workers & Pages → refleja → Settin
 | Deploy command | `npx wrangler deploy` |
 | Build watch paths | incluir `front/*` (los cambios en `back/` no redespliegan el sitio) |
 
-Despliegue manual (por si se necesita):
+Manual (evitar; en la PC Debian el flujo es push a `main`):
 
 ```bash
 cd front

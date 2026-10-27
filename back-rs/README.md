@@ -3,7 +3,7 @@
 Backend productivo de `api.refleja.org` (Rust + Axum + Tokio + SQLx/MariaDB). Reescritura del FastAPI de `../back/` con el mismo contrato HTTP, mismos efectos en MariaDB y mismas variables de entorno. Contratos, endpoints, datos, seguridad y decisiones: [`../docs/migration/README.md`](../docs/migration/README.md).
 
 <!-- aviso-historico:inicio (flujo-pc-docs.py) -->
-> **Ojo (oct 2026):** este back está en producción desde el 18 oct; donde diga «no desplegado», es de antes. Manda el bloque «Flujo PC» de [`AGENTS.md`](../AGENTS.md).
+> **Ojo (oct 2026):** este back está en producción desde el 18 oct; donde diga «no desplegado», es de antes. Manda el bloque «Flujo de trabajo» de [`AGENTS.md`](../AGENTS.md).
 <!-- aviso-historico:fin -->
 
 <!-- Consolidado 2026-10-27 de: back-rs/README, back-rs/despliegue/README, back/README (Python). Formato denso para LLM. -->
